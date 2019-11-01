@@ -12,20 +12,21 @@ from controllers import pid
 bop = boptest.Boptest(url='http://localhost')
 
 osm_files = []
-for _ in range(5):
-    osm_files.append(thispath + '/CBI_EndtoEndTest_20190618_version2.osm')
+for _ in range(1):
+    osm_files.append(thispath + '/SmallOffice.osm')
 
 siteids = bop.submit_many(osm_files)
 bop.start_many(siteids, external_clock = "true")
 
-for i in range(30):
+for i in range(3):
+    print ("yanfei step: ", i)
     bop.advance(siteids)
     #total_rtu_power = 0.0
-    #for siteid in siteids:
-    #    rtu_power = bop.outputs(siteid)[u'RTU_Power']
-    #    total_rtu_power = total_rtu_power + rtu_power
-    #print(total_rtu_power)
-    time.sleep(2)
+    for siteid in siteids:
+        model_outputs = bop.inputs(siteid)
+        print (model_outputs) 
+        
+    time.sleep(5)
 
 bop.stop_many(siteids)
 

@@ -173,6 +173,25 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
     return point_json
   end
   
+  def create_controlpoint_simbuild(type2, id, uuid, siteRef, where,what,measurement,kind,unit)
+    point_json = Hash.new
+    point_json[:id] = create_ref(uuid)
+    point_json[:dis] = create_str(id)
+    point_json[:siteRef] = create_ref(siteRef)
+    point_json[:point] = "m:"
+    point_json["#{type2}"] = "m:"
+    point_json["#{measurement}"] = "m:"   
+    point_json["#{where}"] = "m:" 
+    point_json["#{what}"] = "m:" 
+    point_json[:kind] = create_str(kind) 
+    point_json[:unit] = create_str(unit) 
+    if type2 == "writable"
+      point_json[:writeStatus] = "s:ok" 
+    end
+    return point_json
+  end
+  
+  
   def create_fan(id, name, siteRef, equipRef, floorRef, variable)
     point_json = Hash.new
     point_json[:id] = create_ref(id)
@@ -272,6 +291,9 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
     return args
   end #end the arguments method
 
+  
+
+
   #define what happens when the measure is run
   def run(model, runner, user_arguments)
     super(model, runner, user_arguments)
@@ -301,12 +323,15 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
       #TODO uncomment out for real use
       externalInterface = model.getExternalInterface
       externalInterface.setNameofExternalInterface("PtolemyServer")
+	 	  
     else
       #EMS Version
       runner.registerInitialCondition("Initializing EnergyManagementSystem")
       master_enable = OpenStudio::Model::EnergyManagementSystemGlobalVariable.new(model, "MasterEnable")
     end
     
+	
+	
     #initialization program
     program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
     program.setName("Master_Enable")   
@@ -371,11 +396,13 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
     # 
     #end # end of do loop   
 
+	
     # Export all user defined OutputVariable objects
     # as haystack sensor points
     building = model.getBuilding
     output_vars = model.getOutputVariables
     output_vars.each do |outvar|
+      
       if outvar.exportToBCVTB
         uuid = create_ref(outvar.handle)
 
@@ -429,9 +456,14 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
     #loop through air loops and find economizers
     model.getAirLoopHVACs.each do |airloop|
       supply_components = airloop.supplyComponents
+      supply_air_nodes = airloop.supplySplitterOutletNodes
+     
+		  
       #find AirLoopHVACOutdoorAirSystem on loop
       supply_components.each do |supply_component|
         sc = supply_component.to_AirLoopHVACOutdoorAirSystem
+
+		
         if sc.is_initialized
           sc = sc.get
           #get ControllerOutdoorAir
@@ -446,6 +478,253 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
       end
     end  
 
+   
+	
+    #ExternalInterfaceVariables: supply_air_flow_rate command
+	supply_air_flow_zone_1_cmd = create_ems_str("SA FlowRate Zone 1 CMD")
+	supply_air_flow_zone_2_cmd = create_ems_str("SA FlowRate Zone 2 CMD")
+	supply_air_flow_zone_3_cmd = create_ems_str("SA FlowRate Zone 3 CMD")
+	supply_air_flow_zone_4_cmd = create_ems_str("SA FlowRate Zone 4 CMD")
+	supply_air_flow_zone_5_cmd = create_ems_str("SA FlowRate Zone 5 CMD")
+	supply_air_flow_zone_6_cmd = create_ems_str("SA FlowRate Zone 6 CMD")
+	supply_air_flow_zone_7_cmd = create_ems_str("SA FlowRate Zone 7 CMD")
+	supply_air_flow_zone_8_cmd = create_ems_str("SA FlowRate Zone 8 CMD")
+	supply_air_flow_zone_9_cmd = create_ems_str("SA FlowRate Zone 9 CMD")
+	supply_air_flow_zone_10_cmd = create_ems_str("SA FlowRate Zone 10 CMD")
+	
+	zone_1_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_1_cmd, 0.1)
+	zone_2_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_2_cmd, 0.1)
+	zone_3_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_3_cmd, 0.1)
+	zone_4_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_4_cmd, 0.1)
+	zone_5_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_5_cmd, 0.1)
+	zone_6_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_6_cmd, 0.1)
+	zone_7_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_7_cmd, 0.1)
+	zone_8_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_8_cmd, 0.1)
+	zone_9_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_9_cmd, 0.1)
+	zone_10_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_10_cmd, 0.1)
+	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_1_cmd, zone_1_sa_var.handle)
+	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_2_cmd, zone_2_sa_var.handle)
+	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_3_cmd, zone_3_sa_var.handle)
+	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_4_cmd, zone_4_sa_var.handle)
+	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_5_cmd, zone_5_sa_var.handle)
+	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_6_cmd, zone_6_sa_var.handle)
+	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_7_cmd, zone_7_sa_var.handle)
+	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_8_cmd, zone_8_sa_var.handle)
+	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_9_cmd, zone_9_sa_var.handle)
+	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_10_cmd, zone_10_sa_var.handle)
+	
+	
+	#zone sa haystack point	
+	haystack_zone_1_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_1_cmd, zone_1_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
+	haystack_zone_2_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_2_cmd, zone_2_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
+	haystack_zone_3_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_3_cmd, zone_3_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
+	haystack_zone_4_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_4_cmd, zone_4_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
+	haystack_zone_5_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_5_cmd, zone_5_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
+	haystack_zone_6_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_6_cmd, zone_6_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
+	haystack_zone_7_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_7_cmd, zone_7_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
+	haystack_zone_8_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_8_cmd, zone_8_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
+	haystack_zone_9_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_9_cmd, zone_9_sa_var.handle, building.handle, "where", "what", "measurement", "Number", "kg/s")
+	haystack_zone_10_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_10_cmd, zone_10_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
+	
+	haystack_json << haystack_zone_1_sa_json
+	haystack_json << haystack_zone_2_sa_json
+	haystack_json << haystack_zone_3_sa_json
+	haystack_json << haystack_zone_4_sa_json
+	haystack_json << haystack_zone_5_sa_json
+	haystack_json << haystack_zone_6_sa_json
+	haystack_json << haystack_zone_7_sa_json
+	haystack_json << haystack_zone_8_sa_json
+	haystack_json << haystack_zone_9_sa_json
+	haystack_json << haystack_zone_10_sa_json
+	
+	model.getAirLoopHVACs.each do |airloop|
+      demand_components = airloop.demandComponents
+	    demand_components.each do |demand_component|
+          dc_name = demand_component.name.to_s
+
+		  if dc_name.include? "Air Terminal Single Duct Uncontrolled"
+		        
+			if dc_name == "Air Terminal Single Duct Uncontrolled 1"
+                          sa_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(demand_component,"AirTerminal:SingleDuct:ConstantVolume:NoReheat","Mass Flow Rate") 
+			  sa_actuator.setName(create_ems_str("#{dc_name} actuator"))
+			  #EMS Program to set the sa flow rate
+			  program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+			  program.setName("SAFlow_Prgm_#{dc_name}")
+			  program.addLine("SET #{sa_actuator.handle.to_s} = #{supply_air_flow_zone_1_cmd}")
+  			  #EMS program calling manager
+			  pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+			  pcm.setName("SAFlow_Prgm_Mgr_#{dc_name}")
+			  pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
+			  pcm.addProgram(program)
+			elsif dc_name == "Air Terminal Single Duct Uncontrolled 2"
+                          sa_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(demand_component,"AirTerminal:SingleDuct:ConstantVolume:NoReheat","Mass Flow Rate") 
+			  sa_actuator.setName(create_ems_str("#{dc_name} actuator"))
+			  #EMS Program to set the sa flow rate
+			  program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+			  program.setName("SAFlow_Prgm_#{dc_name}")
+			  program.addLine("SET #{sa_actuator.handle.to_s} = #{supply_air_flow_zone_2_cmd}")
+  			  #EMS program calling manager
+			  pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+			  pcm.setName("SAFlow_Prgm_Mgr_#{dc_name}")
+			  pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
+			  pcm.addProgram(program)
+			elsif dc_name == "Air Terminal Single Duct Uncontrolled 3"
+                          sa_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(demand_component,"AirTerminal:SingleDuct:ConstantVolume:NoReheat","Mass Flow Rate") 
+			  sa_actuator.setName(create_ems_str("#{dc_name} actuator"))
+			  #EMS Program to set the sa flow rate
+			  program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+			  program.setName("SAFlow_Prgm_#{dc_name}")
+			  program.addLine("SET #{sa_actuator.handle.to_s} = #{supply_air_flow_zone_3_cmd}")
+  			  #EMS program calling manager
+			  pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+			  pcm.setName("SAFlow_Prgm_Mgr_#{dc_name}")
+			  pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
+			  pcm.addProgram(program)
+            		elsif dc_name == "Air Terminal Single Duct Uncontrolled 4"
+                          sa_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(demand_component,"AirTerminal:SingleDuct:ConstantVolume:NoReheat","Mass Flow Rate") 
+			  sa_actuator.setName(create_ems_str("#{dc_name} actuator"))
+			  #EMS Program to set the sa flow rate
+			  program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+			  program.setName("SAFlow_Prgm_#{dc_name}")
+			  program.addLine("SET #{sa_actuator.handle.to_s} = #{supply_air_flow_zone_4_cmd}")
+  			  #EMS program calling manager
+			  pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+			  pcm.setName("SAFlow_Prgm_Mgr_#{dc_name}")
+			  pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
+			  pcm.addProgram(program)
+            		elsif dc_name == "Air Terminal Single Duct Uncontrolled 5"
+                          sa_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(demand_component,"AirTerminal:SingleDuct:ConstantVolume:NoReheat","Mass Flow Rate") 
+			  sa_actuator.setName(create_ems_str("#{dc_name} actuator"))
+			  #EMS Program to set the sa flow rate
+			  program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+			  program.setName("SAFlow_Prgm_#{dc_name}")
+			  program.addLine("SET #{sa_actuator.handle.to_s} = #{supply_air_flow_zone_5_cmd}")
+  			  #EMS program calling manager
+			  pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+			  pcm.setName("SAFlow_Prgm_Mgr_#{dc_name}")
+			  pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
+			  pcm.addProgram(program)
+            		elsif dc_name == "Air Terminal Single Duct Uncontrolled 6"
+                          sa_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(demand_component,"AirTerminal:SingleDuct:ConstantVolume:NoReheat","Mass Flow Rate") 
+			  sa_actuator.setName(create_ems_str("#{dc_name} actuator"))
+			  #EMS Program to set the sa flow rate
+			  program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+			  program.setName("SAFlow_Prgm_#{dc_name}")
+			  program.addLine("SET #{sa_actuator.handle.to_s} = #{supply_air_flow_zone_6_cmd}")
+  			  #EMS program calling manager
+			  pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+			  pcm.setName("SAFlow_Prgm_Mgr_#{dc_name}")
+			  pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
+			  pcm.addProgram(program)
+            		elsif dc_name == "Air Terminal Single Duct Uncontrolled 7"
+			  sa_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(demand_component,"AirTerminal:SingleDuct:ConstantVolume:NoReheat","Mass Flow Rate") 
+			  sa_actuator.setName(create_ems_str("#{dc_name} actuator"))
+			  #EMS Program to set the sa flow rate
+			  program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+			  program.setName("SAFlow_Prgm_#{dc_name}")
+			  program.addLine("SET #{sa_actuator.handle.to_s} = #{supply_air_flow_zone_7_cmd}")
+  			  #EMS program calling manager
+			  pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+			  pcm.setName("SAFlow_Prgm_Mgr_#{dc_name}")
+			  pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
+			  pcm.addProgram(program)
+           		elsif dc_name == "Air Terminal Single Duct Uncontrolled 8"
+			  sa_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(demand_component,"AirTerminal:SingleDuct:ConstantVolume:NoReheat","Mass Flow Rate") 
+			  sa_actuator.setName(create_ems_str("#{dc_name} actuator"))
+			  #EMS Program to set the sa flow rate
+			  program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+			  program.setName("SAFlow_Prgm_#{dc_name}")
+			  program.addLine("SET #{sa_actuator.handle.to_s} = #{supply_air_flow_zone_8_cmd}")
+  			  #EMS program calling manager
+			  pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+			  pcm.setName("SAFlow_Prgm_Mgr_#{dc_name}")
+			  pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
+			  pcm.addProgram(program)
+			elsif dc_name == "Air Terminal Single Duct Uncontrolled 9"
+			  sa_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(demand_component,"AirTerminal:SingleDuct:ConstantVolume:NoReheat","Mass Flow Rate") 
+			  sa_actuator.setName(create_ems_str("#{dc_name} actuator"))
+			  #EMS Program to set the sa flow rate
+			  program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+			  program.setName("SAFlow_Prgm_#{dc_name}")
+			  program.addLine("SET #{sa_actuator.handle.to_s} = #{supply_air_flow_zone_9_cmd}")
+  			  #EMS program calling manager
+			  pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+			  pcm.setName("SAFlow_Prgm_Mgr_#{dc_name}")
+			  pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
+			  pcm.addProgram(program)
+			elsif dc_name == "Air Terminal Single Duct Uncontrolled 10"
+			  sa_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(demand_component,"AirTerminal:SingleDuct:ConstantVolume:NoReheat","Mass Flow Rate") 
+			  sa_actuator.setName(create_ems_str("#{dc_name} actuator"))
+			  #EMS Program to set the sa flow rate
+			  program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+			  program.setName("SAFlow_Prgm_#{dc_name}")
+			  program.addLine("SET #{sa_actuator.handle.to_s} = #{supply_air_flow_zone_10_cmd}")
+  			  #EMS program calling manager
+			  pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+			  pcm.setName("SAFlow_Prgm_Mgr_#{dc_name}")
+			  pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
+			  pcm.addProgram(program)
+			else
+			  puts "You are done!"
+			end
+			
+		  end
+	  end
+	end
+	  	 
+	
+	  
+	#ExternalInterfaceVariables: heating/cooling setpoint command
+	heating_setpoint_cmd = create_ems_str("Heating Setpoint CMD")
+    	cooling_setpoint_cmd = create_ems_str("Cooling Setpoint CMD")
+    	heating_sp_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, heating_setpoint_cmd, 24)
+	cooling_sp_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, cooling_setpoint_cmd, 28)
+	mapping_json << create_mapping_output_uuid(heating_setpoint_cmd, heating_sp_var.handle)
+	mapping_json << create_mapping_output_uuid(cooling_setpoint_cmd, cooling_sp_var.handle)
+	heating_sp_json = create_controlpoint_simbuild("writable", heating_setpoint_cmd, heating_sp_var.handle, building.handle,  "where", "what", "measurement", "Number", "Celsius")
+	cooling_sp_json = create_controlpoint_simbuild("writable", cooling_setpoint_cmd, cooling_sp_var.handle, building.handle,  "where", "what", "measurement", "Number", "Celsius")
+	haystack_json << heating_sp_json
+	haystack_json << cooling_sp_json
+	
+        
+        heating_sch = OpenStudio::Model::ScheduleConstant.new(model)
+        heating_sch.setName("Heating SP")
+        heating_sch.setValue(24)
+        cooling_sch = OpenStudio::Model::ScheduleConstant.new(model)
+        cooling_sch.setName("Cooling SP")
+        cooling_sch.setValue(28)
+	    
+	heating_sp_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(heating_sch,"Schedule:Constant","Schedule Value") 
+	heating_sp_actuator.setName(create_ems_str("heating setpoint actuator"))
+	program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+	program.setName("Prgm_Heating_Setpoint")
+	program.addLine("SET #{heating_sp_actuator.handle.to_s} = #{heating_setpoint_cmd}")
+	pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+	pcm.setName("Prgm_Mgr_Heating_Setpoint")
+	pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
+	pcm.addProgram(program)
+
+
+	cooling_sp_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(cooling_sch,"Schedule:Constant","Schedule Value") 
+	cooling_sp_actuator.setName(create_ems_str("cooling setpoint actuator"))
+	program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+	program.setName("Prgm_Cooling_Setpoint")
+	program.addLine("SET #{cooling_sp_actuator.handle.to_s} = #{cooling_setpoint_cmd}")
+	pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+	pcm.setName("Prgm_Mgr_Cooling_Setpoint")
+	pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
+	pcm.addProgram(program)
+
+	
+	
+    report_edd = model.getOutputEnergyManagementSystem
+    report_edd.setActuatorAvailabilityDictionaryReporting("Verbose")
+    report_edd.setInternalVariableAvailabilityDictionaryReporting("None")
+    report_edd.setEMSRuntimeLanguageDebugOutputLevel("None")
+    #print report_edd
+	
+	
+			
     #loop through economizer loops and find fans and cooling coils    
     model.getAirLoopHVACs.each do |airloop|
       ahu_json = create_ahu(airloop.handle,airloop.name.to_s, building.handle, simCon.handle)
@@ -453,6 +732,7 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
       #AHU discharge sensors
       #discharge air node
       discharge_air_node = airloop.supplyOutletNode
+	  
       #Temp Sensor
       haystack_temp_json, temp_uuid = create_point_uuid("sensor", "#{airloop.name.to_s} Discharge Air Temp Sensor", building.handle, airloop.handle, simCon.handle, "discharge", "air", "temp", "Number", "C")            
       haystack_json << haystack_temp_json
@@ -496,14 +776,17 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
           damper_actuator.setName(create_ems_str("#{airloop.name.to_s} Outside Air Mass Flow Rate"))
           #Variable to read the Damper CMD
           if local_test == false
-            #ExternalInterfaceVariables
+            #ExternalInterfaceVariables: damper_command_enable
             damper_variable_enable = OpenStudio::Model::ExternalInterfaceVariable.new(model, damper_command_enable, 1)
             mapping_json << create_mapping_output_uuid(damper_command_enable, damper_variable_enable.handle)
+			#ExternalInterfaceVariables: damper_command
             damper_variable = OpenStudio::Model::ExternalInterfaceVariable.new(model, damper_command, 0.5)
-            mapping_json << create_mapping_output_uuid(damper_command, damper_variable.handle)
+            mapping_json << create_mapping_output_uuid(damper_command, damper_variable.handle)	
+			
             #Damper CMD
             haystack_temp_json = create_controlpoint2("cmd", "writable", damper_command, damper_variable.handle, building.handle, airloop.handle, simCon.handle, "outside", "air", "damper", "Number", "%")     
             haystack_json << haystack_temp_json 
+
           else
             #EnergyManagementSystemVariables
             damper_variable_enable = OpenStudio::Model::EnergyManagementSystemGlobalVariable.new(model, "#{damper_command_enable}")
@@ -525,6 +808,7 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
             pcm.setCallingPoint("BeginNewEnvironment")
             pcm.addProgram(program)
           end
+
           #mixed air node
           if sc.mixedAirModelObject.is_initialized
             #AHU mixed sensors
@@ -549,7 +833,8 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
             haystack_json << haystack_temp_json 
             mixed_air_flow_sensor, temp_json = create_EMS_sensor_bcvtb("System Node Mass Flow Rate", mix_air_node, "#{airloop.name.to_s} Mixed Air Flow Sensor", temp_uuid, report_freq, model)
             mapping_json << temp_json
-          end          
+          end     
+     
           #outdoor air node
           if sc.outdoorAirModelObject.is_initialized
             #AHU outside sensors
@@ -574,7 +859,8 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
             haystack_json << haystack_temp_json 
             outside_air_flow_sensor, temp_json = create_EMS_sensor_bcvtb("System Node Mass Flow Rate", outdoor_air_node, "#{airloop.name.to_s} Outside Air Flow Sensor", temp_uuid, report_freq, model)            
             mapping_json << temp_json
-          end         
+          end    
+     
           #return air node
           if sc.returnAirModelObject.is_initialized
             #AHU return sensors
@@ -600,6 +886,7 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
             return_air_flow_sensor, temp_json = create_EMS_sensor_bcvtb("System Node Mass Flow Rate", return_air_node, "#{airloop.name.to_s} Return Air Flow Sensor", temp_uuid, report_freq, model)          
             mapping_json << temp_json
           end        
+
           #relief air node
           if sc.reliefAirModelObject.is_initialized
             #AHU exhaust sensors
@@ -626,22 +913,7 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
             mapping_json << temp_json
           end           
           
-          #Program to set the Damper Position
-          program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
-          program.setName("#{damper_command}_Prgm")
-          program.addLine("SET #{damper_actuator.handle.to_s} = Null")
-          program.addLine("IF #{master_enable.handle.to_s} == 1")
-          program.addLine(" SET DampPos = #{damper_variable.handle.to_s}")
-          program.addLine(" SET MixAir = #{mixed_air_flow_sensor.handle.to_s}")
-          program.addLine(" IF #{damper_variable_enable.handle.to_s} == 1")
-          program.addLine("   SET #{damper_actuator.handle.to_s} = DampPos*MixAir")
-          program.addLine(" ENDIF")
-          program.addLine("ENDIF")
-
-          pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
-          pcm.setName("#{damper_command}_Prgm_Mgr")
-          pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
-          pcm.addProgram(program)
+  
       
         #its a UnitarySystem so get sub components
         elsif sc.to_AirLoopHVACUnitarySystem.is_initialized

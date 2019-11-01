@@ -74,5 +74,5 @@ common.replace_siteid(upload_id, points_jsonpath, mapping_jsonpath)
 
 common.upload_site_DB_Cloud(points_jsonpath, bucket, directory)
 
-shutil.rmtree(directory)
+#shutil.rmtree(directory)
 

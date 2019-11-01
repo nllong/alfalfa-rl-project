@@ -4,6 +4,9 @@ thispath = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(thispath + '/../')
 import boptest
 import time
+
+sys.path.insert(0, './controllers')
+
 from controllers import pid
 
 bop = boptest.Boptest(url='http://localhost')

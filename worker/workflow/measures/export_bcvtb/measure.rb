@@ -95,14 +95,14 @@ class ExportBCVTB < OpenStudio::Ruleset::ModelUserScript
     
     #loop through outputVariables 
     outputVariables = model.getOutputVariables
-    target=open('checkvar.txt','w') 
+    #target=open('checkvar.txt','w') 
     #alphabetize
     #outputVariables = outputVariables.sort_by{ |m| [ m.name.to_s.downcase, m.keyValue.to_s]}  
     outputVariables = outputVariables.sort_by{ |m| [ m.keyValue.to_s, m.name.to_s.downcase]}    
     outputVariables.each do |outvar|
       #If flag set to true and keyValue is not * then add output variable to BCVTB xml 
       #print outvar
-      target.write(outvar)
+      
       if (outvar.keyValue.to_s =="*")
         print " \n ****** You are good here ******"
       end
@@ -113,7 +113,7 @@ class ExportBCVTB < OpenStudio::Ruleset::ModelUserScript
         counter += 1
       end
     end  #end outputVariables
-    target.close
+    
     
     #loop through EMSoutputVariables 
     #my time variables will be written to cfg file here
