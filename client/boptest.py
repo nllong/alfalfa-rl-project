@@ -140,7 +140,8 @@ class Boptest:
         for point in points:
             tags = point["tags"]
             for tag in tags:
-                if tag["key"] == "writeVal":
+                #if tag["key"] == "writeVal":
+                if tag["key"] == "writeStatus":
                     result[convert(point["dis"])] = convert(tag["value"])
                     break
 

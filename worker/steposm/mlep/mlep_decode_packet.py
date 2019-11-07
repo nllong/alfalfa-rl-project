@@ -97,10 +97,11 @@ def mlep_decode_packet(packet):
     # Convert packet string to a vector of numbers
     data = ()
     packet_list = packet.split()
+    
     for i in range(0, len(packet_list)):
         try:
             if i < 5:
-                data = data + (int(packet_list[i]),)
+                data = data + (int(float(packet_list[i])),)
             else:
                 data = data + (float(packet_list[i]),)
         except ValueError:

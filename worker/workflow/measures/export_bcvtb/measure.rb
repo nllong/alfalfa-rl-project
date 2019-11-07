@@ -42,7 +42,8 @@ class ExportBCVTB < OpenStudio::Ruleset::ModelUserScript
 
   # human readable description of modeling approach
   def modeler_description
-    return "This measure loops through outputvariables, EMS:outputvariables and ExternalInterface objects and will create the variables.cfg xml file for BCVTB."
+    return "This measure loops through outputvariables, EMS:outputvariables and ExternalInterface objects and will create the variables.cfg xml file for BCVTB.
+            Those variables need to be in cfg file, being used for data exchange."
   end
     
   def create_ems_str(id)

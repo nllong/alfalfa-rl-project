@@ -159,7 +159,7 @@ def reset(tarinfo):
     return tarinfo
 
 def finalize_simulation():
-    # subprocess.call(['ReadVarsESO'])
+    #subprocess.call(['ReadVarsESO'])
     sim_id = str(uuid.uuid4())
     tar_name = "%s.tar.gz" % sim_id
     
@@ -380,7 +380,7 @@ try:
         t = datetime.datetime.now().timestamp()
 
         if external_clock:
-            message = pubsub.get_message()
+            message = pubsub.get_message()            
             if message:
                 data = message['data']
                 if data == b'advance':
@@ -392,7 +392,7 @@ try:
         if ( ep.is_running and (sp.sim_status == 1) and (not stop) and t >= next_t and (not external_clock) ) or \
            ( (ep.is_running and (sp.sim_status == 1) and (not stop) and bypass_flag) ) or \
            ( ep.is_running and (sp.sim_status == 1) and (not stop) and (not bypass_flag) and external_clock and advance ):
-
+            print ("yanfei bypass-flag: ", bypass_flag) 
             # Check for "Stopping" here so we don't hit the database as fast as the event loop will run
             # Instead we only check the database for stopping at each simulation step
             rec = recs.find_one({"_id": sp.site_ref})
