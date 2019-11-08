@@ -39,20 +39,38 @@ for i in range(1000):
         
         
         temp1 = model_outputs["Core_ZN ZN_Zone Mean Air Temperature"]
-        temp2 = model_outputs["Perimeter_ZN_4 ZN_Zone Mean Air Temperature"]
+        temp2 = model_outputs["Perimeter_ZN_1 ZN_Zone Mean Air Temperature"]
+        temp3 = model_outputs["Perimeter_ZN_2 ZN_Zone Mean Air Temperature"]
+        temp4 = model_outputs["Perimeter_ZN_3 ZN_Zone Mean Air Temperature"]
+        temp5 = model_outputs["Perimeter_ZN_4 ZN_Zone Mean Air Temperature"]
         state_vars.append(temp1)
         state_vars.append(temp2)
-        print ("statevars: ", temp1, " + ", temp2, "\n")
+        state_vars.append(temp3)
+        state_vars.append(temp4)
+        state_vars.append(temp5)
+
+        print ("statevars: ", temp1, " + ", temp2, " + ", temp3,\
+                " + ", temp4, " + ", temp5, "\n")
+
+        csp = model_outputs["Perimeter_ZN_2 ZN_Zone Air System Sensible Cooling Rate"]
+        hsp = model_outputs["Perimeter_ZN_2 ZN_Zone Air System Sensible Heating Rate"]
+        print ("cooling: ", csp, "heting: ", hsp , "\n")
+
         #Here i only use a fake RL control.
         #Here you may need to replace it using your RL control
         flow = RL_control(state_vars)
-        print ("new control inputs: ", flow[0], " + ", flow[1], "\n" )        
+        print ("new control inputs: ", flow[0], " + ", flow[1], \
+                " + ", flow[2], " + ", flow[3], " + ", flow[4], "\n" )        
         model_inputs = bop.inputs(siteid)
         #print ('model-inputs: ', model_inputs)
         
         #new_inputs must be dictionary format
         new_inputs["SA_FlowRate_Zone_Core_CMD"] = flow[0]
-        new_inputs["SA_FlowRate_Zone_P4_CMD"] = flow[1]
+        new_inputs["SA_FlowRate_Zone_P1_CMD"] = flow[1]
+        new_inputs["SA_FlowRate_Zone_P2_CMD"] = flow[2]
+        new_inputs["SA_FlowRate_Zone_P3_CMD"] = flow[3]
+        new_inputs["SA_FlowRate_Zone_P4_CMD"] = flow[4]
+        
 
         bop.setInputs(siteid, new_inputs)
         
