@@ -115,7 +115,7 @@ class Boptest:
         result = {}
 
         for point in points:
-            print ('a point: ', point)
+            #print ('a point: ', point)
             tags = point["tags"]
             for tag in tags:
                 if tag["key"] == "curVal":
