@@ -1,14 +1,14 @@
 <measure>
   <schema_version>3.0</schema_version>
-  <name>haystack</name>
-  <uid>a3201f8c-bc3d-4fe1-a945-4a4f22471c06</uid>
-  <version_id>967b2a78-232e-479d-bf84-f21e146f6737</version_id>
-  <version_modified>20180109T180541Z</version_modified>
-  <xml_checksum>A9D5932A</xml_checksum>
-  <class_name>Haystack</class_name>
-  <display_name>Haystack</display_name>
-  <description>This measure will find economizers on airloops and add haystack tags.</description>
-  <modeler_description>This measure loops through the existing airloops, looking for loops that have outdoor airsystems with economizers</modeler_description>
+  <name>sim_build_20</name>
+  <uid>c4d18da5-438e-4578-b59b-2a99b2785bed</uid>
+  <version_id>497f152a-c699-4503-92d5-7fbad460ee19</version_id>
+  <version_modified>20191108T012832Z</version_modified>
+  <xml_checksum>C49A7DAB</xml_checksum>
+  <class_name>SimBuild20</class_name>
+  <display_name>SimBuild20</display_name>
+  <description>This measure will tag the state variables and command variables, which are to be tagged by Haystack. The state variables are: zone mean air temprature, zone PPD, zone heating/cooling load. The command variables are: zone supply airflowrate, which is implemented by overwriting the fan mass flow rate.</description>
+  <modeler_description>state variables are tagged into sensors; command variables are put into ExternalInterface:Variables, and tagged into CMDs</modeler_description>
   <arguments>
     <argument>
       <name>local_test</name>
@@ -17,7 +17,7 @@
       <type>Boolean</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
-      <default_value>true</default_value>
+      <default_value>false</default_value>
       <choices>
         <choice>
           <value>true</value>
@@ -56,28 +56,54 @@
       <value>Parametric Analysis Tool</value>
       <datatype>string</datatype>
     </attribute>
-    <attribute>
-      <name>Intended Use Case</name>
-      <value>Model Articulation</value>
-      <datatype>string</datatype>
-    </attribute>
-    <attribute>
-      <name>Intended Use Case</name>
-      <value>New Construction EE</value>
-      <datatype>string</datatype>
-    </attribute>
   </attributes>
   <files>
     <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>CD7F5672</checksum>
+    </file>
+    <file>
+      <filename>README.md.erb</filename>
+      <filetype>erb</filetype>
+      <usage_type>readmeerb</usage_type>
+      <checksum>703C9964</checksum>
+    </file>
+    <file>
+      <filename>.gitkeep</filename>
+      <filetype>gitkeep</filetype>
+      <usage_type>doc</usage_type>
+      <checksum>00000000</checksum>
+    </file>
+    <file>
+      <filename>sim_build_20_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>36D0DB8B</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>53D14E69</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>A4A3B9B5</checksum>
+    </file>
+    <file>
       <version>
         <software_program>OpenStudio</software_program>
-        <identifier>1.12.2</identifier>
-        <min_compatible>1.12.2</min_compatible>
+        <identifier>2.7.0</identifier>
+        <min_compatible>2.7.0</min_compatible>
       </version>
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>5D641FEE</checksum>
+      <checksum>134DC7ED</checksum>
     </file>
   </files>
 </measure>

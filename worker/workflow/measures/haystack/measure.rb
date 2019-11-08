@@ -21,7 +21,17 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
     return 'state variables are tagged into sensors; command variables are put into ExternalInterface:Variables, and tagged into CMDs'
   end
 
-    def create_uuid(dummyinput)
+  def hyphen_replace(mystr)
+     return mystr.gsub("-","_")
+  end
+
+  def braces_replace(mystr)
+      str1=mystr.to_s.gsub("{","")
+	  str2=str1.to_s.gsub("}","")
+	  return str2
+  end
+  
+  def create_uuid(dummyinput)
     return "r:#{OpenStudio.removeBraces(OpenStudio.createUUID)}"
   end
   
@@ -88,6 +98,28 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
     return mapping_json
   end
 
+  def create_point_simbuild(outvar_str, siteRef)
+    #this function will add haystack tag to the time-variables created by user. 
+    #the time-variables are also written to variables.cfg file to coupling energyplus
+    #the uuid is unique to be used for mapping purpose
+    #the point_json generated here caontains the tags for the tim-variables 
+    point_json = Hash.new
+    #id = outvar_time.keyValue.to_s + outvar_time.name.to_s
+    uuid = create_uuid("")
+    point_json[:id]=uuid
+    #point_json[:source] = create_str("EnergyPlus")
+    #point_json[:type] = "Output:Variable"
+    #point_json[:name] = create_str(outvar_time.name.to_s)
+    #point_json[:variable] = create_str(outvar_time.name)
+    point_json[:dis] = create_str(outvar_str)
+    point_json[:siteRef]=create_ref(siteRef)
+    point_json[:point]="m:"
+    point_json[:cur]="m:" 
+    point_json[:curStatus] = "s:disabled"    
+
+    return point_json, uuid
+  end # end of create_point_timevar
+  
 
   def create_point_uuid(type, id, siteRef, equipRef, floorRef, where,what,measurement,kind,unit)
     point_json = Hash.new
@@ -269,13 +301,12 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
     return args
   end
 
-  print ("\n Boss here \n")
+
 
   # define what happens when the measure is run
   def run(model, runner, user_arguments)
     super(model, runner, user_arguments)
 
-    print ("\n Boss here 02 \n")
     # Use the built-in error checking 
     if not runner.validateUserArguments(arguments(model), user_arguments)
       return false
@@ -297,16 +328,16 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
     #########################       get a list of available EMS actuators        #############################
     ###############################################################################################################################
     report_edd = model.getOutputEnergyManagementSystem
-    puts report_edd.inspect
-    print ("\n yanfei 001 \n")
+    #puts report_edd.inspect
+
     report_edd.setActuatorAvailabilityDictionaryReporting("Verbose")
     report_edd.setInternalVariableAvailabilityDictionaryReporting("None")
     report_edd.setEMSRuntimeLanguageDebugOutputLevel("None")
     #print report_edd
 	
     externalInterface = model.getExternalInterface
-    puts externalInterface.inspect
-    print ("\n yanfei 002 \n")
+    #puts externalInterface.inspect
+
     externalInterface.setNameofExternalInterface("PtolemyServer")
 	
     ###############################################################################################################################
@@ -317,7 +348,6 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
     if model.weatherFile.is_initialized 
       puts model.weatherFile.is_initialized
 
-      print ("\n yanfei 003 \n")
       site_json = Hash.new
       weather_json = Hash.new
       floor_json = Hash.new
@@ -363,60 +393,26 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
       zonename = tz.name.to_s
   
       if zonename =="Core_ZN ZN" or zonename =="Perimeter_ZN_1 ZN" or zonename =="Perimeter_ZN_2 ZN" or zonename =="Perimeter_ZN_3 ZN" or zonename =="Perimeter_ZN_4 ZN"
-        outputVariable = OpenStudio::Model::OutputVariable.new("Zone Mean Air Temperature",model)
-        outputVariable.setKeyValue(zonename)
-        outputVariable.setReportingFrequency(report_freq) 
-	#outputVariable.setExportToBCVTB(true)
-		  
-	outputVariable = OpenStudio::Model::OutputVariable.new("Zone Thermal Comfort Fanger Model PPD",model)
-        outputVariable.setKeyValue(zonename)
-        outputVariable.setReportingFrequency(report_freq)
-	#outputVariable.setExportToBCVTB(true)
-		  
-	outputVariable = OpenStudio::Model::OutputVariable.new("Zone Air System Sensible Heating Rate",model)
-        outputVariable.setKeyValue(zonename)
-        outputVariable.setReportingFrequency(report_freq)		  
-	#outputVariable.setExportToBCVTB(true)
-		  
-	outputVariable = OpenStudio::Model::OutputVariable.new("Zone Air System Sensible Cooling Rate",model)
-        outputVariable.setKeyValue(zonename)
-        outputVariable.setReportingFrequency(report_freq)
-	#outputVariable.setExportToBCVTB(true)
+	  
+	    temperature_sensor, temperature_json = create_EMS_sensor_bcvtb("Zone Mean Air Temperature", tz, zonename+" temp sensor", create_uuid("dummy"), "Timestep", model)	
+	    mapping_json << temperature_json
+	  
+	    #ppd_sensor, ppd_json = create_EMS_sensor_bcvtb("Zone Thermal Comfort Fanger Model PPD", tz, zonename+" ppd sensor", create_uuid("dummy"), "Timestep", model)	
+	    #mapping_json << ppd_json
+		
+	    heating_sensor, heating_json = create_EMS_sensor_bcvtb("Zone Air System Sensible Heating Rate", tz, zonename+" heatingE sensor", create_uuid("dummy"), "Timestep", model)	
+	    mapping_json << heating_json
+		
+	    cooling_sensor, cooling_json = create_EMS_sensor_bcvtb("Zone Air System Sensible Cooling Rate", tz, zonename+" coolingE sensor", create_uuid("dummy"), "Timestep", model)	
+	    mapping_json << cooling_json
+		
+
       end
     end
 		
 		
 		
-		
-    ###############################################################################################################################
-    #########################       Tag all the Output:Variables        #############################
-    #########################       as haystack-sensors                 #############################
-    ###############################################################################################################################
-    # Export all user defined OutputVariable objects
-    # as haystack sensor points
-    building = model.getBuilding
-    output_vars = model.getOutputVariables
-    output_vars.each do |outvar|
-      uuid = create_ref(outvar.handle)
 
-      var_haystack_json = Hash.new
-      var_haystack_json[:id] = uuid
-      var_haystack_json[:dis] = create_str(outvar.nameString)
-      var_haystack_json[:siteRef] = create_ref(building.handle)
-      var_haystack_json[:point]="m:"
-      var_haystack_json[:cur]="m:" 
-      var_haystack_json[:curStatus] = "s:disabled"
-      haystack_json << var_haystack_json
-
-      var_map_json = Hash.new
-      var_map_json[:id] = uuid
-      var_map_json[:source] = "EnergyPlus"
-      var_map_json[:type] = outvar.variableName
-      var_map_json[:name] = outvar.keyValue
-      var_map_json[:variable] = ""
-      mapping_json << var_map_json
-      
-    end
 	
 	###############################################################################################################################
 	#########################       Create SAflow Commands/Actuators in Haystack,       #############################
@@ -472,10 +468,10 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
           fan_name = fan.name.to_s
 	  #print fan_name
 	  zone_sa_actuator = OpenStudio::Model::EnergyManagementSystemActuator.new(fan,"Fan","Fan Air Mass Flow Rate") 
-	  zone_sa_actuator.setName(create_ems_str("#{fan_name} actuator"))
+	  zone_sa_actuator.setName(create_ems_str("#{hyphen_replace(fan_name)} actuator"))
 	  
 	  program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
-	  program.setName("SAFlow_Prgm_#{fan_name}")
+	  program.setName("SAFlow_Prgm_#{hyphen_replace(fan_name)}")
 	  if fan_name == "Core_ZN ZN PSZ-AC-1 Fan"
 	    program.addLine("SET #{zone_sa_actuator.handle.to_s} = #{supply_air_flow_zone_core_cmd}")	
           elsif fan_name == "Perimeter_ZN_1 ZN PSZ-AC-2 Fan"	
@@ -491,7 +487,7 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
           end		
 	  #EMS program calling manager
 	  pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
-	  pcm.setName("SAFlow_Prgm_Mgr_#{fan_name}")
+	  pcm.setName("SAFlow_Prgm_Mgr_#{ hyphen_replace(fan_name) }")
 	  pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
 	  pcm.addProgram(program)
 	
@@ -571,7 +567,48 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
 	pcm.setCallingPoint("AfterPredictorAfterHVACManagers")
 	pcm.addProgram(program)
 	
+	################################################################################################################################
+	#########################       wake up Fanger model for People Modules                      #############################
+	#########################                           #############################
+	################################################################################################################################	    	
+    people_defs = model.getPeopleDefinitions
+    people_defs.sort.each do |people_def|
+	  people_def.setThermalComfortModelType(0, 'FANGER')
+    end
+	
+    ################################################################################################################################
+	#########################      create sensors for output variables                    #############################
+	#########################                           #############################
+	################################################################################################################################
+    building = model.getBuilding
+    output_vars = model.getOutputVariables
+    output_vars.each do |outvar|
+      
+      if outvar.exportToBCVTB
+        uuid = create_ref(outvar.handle)
 
+        var_haystack_json = Hash.new
+        var_haystack_json[:id] = uuid
+        var_haystack_json[:dis] = create_str(outvar.keyValue + "_"+ outvar.variableName)
+        var_haystack_json[:siteRef] = create_ref(building.handle)
+        var_haystack_json[:point]="m:"
+        var_haystack_json[:cur]="m:" 
+        var_haystack_json[:curStatus] = "s:disabled"
+        haystack_json << var_haystack_json
+
+        var_map_json = Hash.new
+        var_map_json[:id] = uuid
+        var_map_json[:source] = "EnergyPlus"
+        var_map_json[:type] = outvar.variableName
+        var_map_json[:name] = outvar.keyValue
+        var_map_json[:variable] = ""
+        mapping_json << var_map_json
+      end
+    end
+	
+    
+		  
+		  
     runner.registerFinalCondition("The building has applied the Simbuild20 Measure") 
 	
 	################################################################################################################################

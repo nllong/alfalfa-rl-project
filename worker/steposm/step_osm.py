@@ -137,7 +137,7 @@ def get_energyplus_datetime(variables, outputs):
     day_index = variables.outputIndexFromTypeAndName("current_day","EMS")
     hour_index = variables.outputIndexFromTypeAndName("current_hour","EMS")
     minute_index = variables.outputIndexFromTypeAndName("current_minute","EMS")
-    
+    print ("Yanfei 002: ", month_index, day_index, hour_index, minute_index ) 
     day = int(round(outputs[ day_index ]))
     hour= int(round(outputs[ hour_index ]))
     minute= int(round(outputs[ minute_index ]))
@@ -409,6 +409,7 @@ try:
                 [ep.flag, eptime, outputs] = mlep.mlep_decode_packet(packet)
                 ep.outputs = outputs
                 energyplus_datetime = get_energyplus_datetime(sp.variables, outputs)
+                print ("yanfei 001: ", energyplus_datetime)
                 ep.kStep = ep.kStep + 1
 
                 if energyplus_datetime >= sp.startDatetime:  

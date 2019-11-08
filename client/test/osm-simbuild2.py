@@ -20,7 +20,7 @@ bop = boptest.Boptest(url='http://localhost')
 
 osm_files = []
 for _ in range(1):
-    osm_files.append(thispath + '/RefBuildingSmallOffice2013.osm')
+    osm_files.append(thispath + '/RefBuildingSmallOffice2013_270.osm')
 
 siteids = bop.submit_many(osm_files)
 bop.start_many(siteids, external_clock = "true")
@@ -33,27 +33,28 @@ for i in range(10):
     
     for siteid in siteids:
         model_outputs = bop.outputs(siteid)
-        #print (model_outputs)
+        print ('model-outputs: ', model_outputs)
         
-        temp1 = model_outputs["Packaged Rooftop Air Conditioner 1 Mixed Air Temp Sensor"]
-        temp2 = model_outputs["Packaged Rooftop Air Conditioner 2 Mixed Air Temp Sensor"]
+        '''
+        temp1 = model_outputs["Sensor"]
+        temp2 = model_outputs["Sensor"]
         state_vars.append(temp1)
         state_vars.append(temp2)
 
         #Here i only use a fake RL control.
         #Here you may need to replace it using your RL control
         flow = RL_control(state_vars)
-
+        '''
         
         model_inputs = bop.inputs(siteid)
-        #print (model_inputs)
-
+        print ('model-inputs: ', model_inputs)
+        '''
         #new_inputs must be dictionary format
-        new_inputs["SA_FlowRate_Zone_1_CMD"] = flow[0]
-        new_inputs["SA_FlowRate_Zone_2_CMD"] = flow[1]
+        new_inputs["SA_FlowRate_Zone_P1_CMD"] = flow[0]
+        new_inputs["SA_FlowRate_Zone_P2_CMD"] = flow[1]
 
         bop.setInputs(siteid, new_inputs)
-        
+        '''
         
     time.sleep(5)
 
