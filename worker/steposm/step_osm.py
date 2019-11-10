@@ -176,7 +176,7 @@ def finalize_simulation():
     cmd_postprocess = '/usr/local/EnergyPlus-9-1-0/runreadvars' + esofile_path
     print ("Yanfei: cmd-postprocess: ", cmd_postprocess )
     
-    subprocess.call([ cmd_postprocess ])
+    #subprocess.call([ cmd_postprocess ])
     
     
     s3_key = "simulated/%s/%s" % (sp.site_ref,tar_name)

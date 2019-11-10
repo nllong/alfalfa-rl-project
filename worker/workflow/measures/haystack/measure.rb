@@ -320,7 +320,7 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
     mapping_json = []
 	
     #Global Vars
-    report_freq = "timestep"
+    report_freq = "Timestep"
     runner.registerInitialCondition("starting the measure SimBuild20") 
     
 
@@ -628,13 +628,29 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
     #outvar.setName("Core_SAMassFlow")
     outvar.setExportToBCVTB(true)  
 
-
-    outvar = OpenStudio::Model::OutputVariable.new("Zone Thermal Comfort Fanger PPD", model)
+    '''
+    outvar = OpenStudio::Model::OutputVariable.new("Zone Thermal Comfort Fanger Model PPD", model)
     outvar.setKeyValue("Core_ZN ZN")
     outvar.setReportingFrequency(report_freq)
     #outvar.setName("Core_SAMassFlow")
     #outvar.setExportToBCVTB(true)  
+    # this outputvar can not be output from EnergyPlus,key error. 
+    # so i wrap it into a EMS:sensor, then EMS:outputVar
+    ppd_sensor = OpenStudio::Model::EnergyManagementSystemSensor.new(model, outvar)
+    ppd_sensor.setKeyName("Core_ZN ZN")
+    ppd_sensor.setName(create_ems_str("Core Zone PPD"))
+    
+    ppd_sensor_emsout = OpenStudio::Model::EnergyManagementSystemOutputVariable.new(model, ppd_sensor)
+    ppd_sensor_emsout.setTypeOfDataInVariable("Averaged")
+    ppd_sensor_emsout.setUpdateFrequency("ZoneTimeStep")
+    ppd_sensor_emsout.setEMSVariableName(ppd_sensor)
+    ppd_sensor_emsout.setName("PPD_Core_Zone")
+    ppd_sensor_emsout.setExportToBCVTB(true)
+    '''
+    
 
+   
+    
 
 
     ################################################################################################################################
