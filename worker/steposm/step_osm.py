@@ -1,4 +1,4 @@
-########################################################################################################################
+########################################################################################################################  
 #  Copyright (c) 2008-2018, Alliance for Sustainable Energy, LLC, and other contributors. All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
@@ -137,7 +137,12 @@ def get_energyplus_datetime(variables, outputs):
     day_index = variables.outputIndexFromTypeAndName("current_day","EMS")
     hour_index = variables.outputIndexFromTypeAndName("current_hour","EMS")
     minute_index = variables.outputIndexFromTypeAndName("current_minute","EMS")
-    print ("Yanfei 002: ", month_index, day_index, hour_index, minute_index ) 
+
+    #print ("month_index: ", month_index, "day_index: ", day_index, "hour_index: ", \
+    #        hour_index, "minute_index: ", minute_index)
+
+    #print ("variable output list: ", variables.outputs_list)
+
     day = int(round(outputs[ day_index ]))
     hour= int(round(outputs[ hour_index ]))
     minute= int(round(outputs[ minute_index ]))
@@ -159,7 +164,6 @@ def reset(tarinfo):
     return tarinfo
 
 def finalize_simulation():
-    #subprocess.call(['ReadVarsESO'])
     sim_id = str(uuid.uuid4())
     tar_name = "%s.tar.gz" % sim_id
     
@@ -167,11 +171,19 @@ def finalize_simulation():
     tar_file.add(sp.workflow_directory, filter=reset, arcname=site_ref)
     tar_file.close()
     
+    esofile_path = " "+ sp.workflow_directory+ "/"+ "workflow/run/Output/" + \
+                   sp.site_ref + ".eso"
+    cmd_postprocess = '/usr/local/EnergyPlus-9-1-0/runreadvars' + esofile_path
+    print ("Yanfei: cmd-postprocess: ", cmd_postprocess )
+    
+    subprocess.call([ cmd_postprocess ])
+    
+    
     s3_key = "simulated/%s/%s" % (sp.site_ref,tar_name)
     bucket.upload_file(tar_name, s3_key)
     
     os.remove(tar_name)
-    shutil.rmtree(sp.workflow_directory)
+    #shutil.rmtree(sp.workflow_directory)
 
     site = recs.find_one({"_id": sp.site_ref})
     name = site.get("rec",{}).get("dis", "Unknown") if site else "Unknown"
@@ -183,21 +195,24 @@ def finalize_simulation():
 
 def getInputs(bypass_flag):
     master_index = sp.variables.inputIndexFromVariableName("MasterEnable")
+    #print ("Yanfei: masterindex: ", master_index)
     if bypass_flag:
         ep.inputs[master_index] = 0
     else:
-        ep.inputs = [0] * ((len(sp.variables.inputIds())) + 1)
+        #ep.inputs = [0] * ((len(sp.variables.inputIds())) + 1)
+        ep.inputs = [0] * ((len(sp.variables.inputIds())) + 0)
         ep.inputs[master_index] = 1
         write_arrays = mongodb.writearrays
         for array in write_arrays.find({"siteRef": sp.site_ref}):
             for val in array.get('val'):
                 if val:
                     index = sp.variables.inputIndex(array.get('_id'))
+                    #print ("Yanfei: index: ", index)
                     if index == -1:
                         logger.error('bad input index for: %s' % array.get('_id'))
                     else:
                         ep.inputs[index] = val
-                        ep.inputs[index + 1] = 1
+                        #ep.inputs[index + 1] = 1
                         break
     # Convert to tuple
     inputs = tuple(ep.inputs)
@@ -320,6 +335,7 @@ try:
     tar.close()
     
     sp.variables = Variables(variables_path, sp.mapping)
+    #print ("yanfei input list: ", sp.variables.inputs_list)
     
     subprocess.call(['openstudio', 'steposm/translate_osm.rb', osmpath, sp.idf])
     shutil.copyfile(variables_path, variables_new_path)
@@ -338,8 +354,9 @@ try:
     ep.arguments = (sp.idf, sp.weather)
     
     # Initialize input tuplet
-    ep.inputs = [0] * ((len(sp.variables.inputIds())) + 1)
-    
+    print ("yanfei input list: ", sp.variables.inputs_list )
+    #ep.inputs = [0] * ((len(sp.variables.inputIds())) + 1)
+    ep.inputs = [0] * ((len(sp.variables.inputIds())) + 0) 
     # Start EnergyPlus co-simulation
     (ep.status, ep.msg) = ep.start()
     
@@ -392,7 +409,7 @@ try:
         if ( ep.is_running and (sp.sim_status == 1) and (not stop) and t >= next_t and (not external_clock) ) or \
            ( (ep.is_running and (sp.sim_status == 1) and (not stop) and bypass_flag) ) or \
            ( ep.is_running and (sp.sim_status == 1) and (not stop) and (not bypass_flag) and external_clock and advance ):
-            print ("yanfei bypass-flag: ", bypass_flag) 
+            #print ("yanfei bypass-flag: ", bypass_flag) 
             # Check for "Stopping" here so we don't hit the database as fast as the event loop will run
             # Instead we only check the database for stopping at each simulation step
             rec = recs.find_one({"_id": sp.site_ref})
@@ -402,14 +419,18 @@ try:
             if stop == False:
                 # Write user inputs to E+
                 inputs = getInputs(bypass_flag)
+                #print ("Yanfei inputs: ", inputs)
+
                 ep.write(mlep.mlep_encode_real_data(2, 0, (ep.kStep - 1) * ep.deltaT, inputs))
 
                 # Read outputs
                 packet = ep.read()
                 [ep.flag, eptime, outputs] = mlep.mlep_decode_packet(packet)
                 ep.outputs = outputs
+                #print ("yanfei check ep outputs: ", ep.outputs)
+                #print ("yanfei variables: ", sp.variables)
                 energyplus_datetime = get_energyplus_datetime(sp.variables, outputs)
-                print ("yanfei 001: ", energyplus_datetime)
+                #print ("yanfei check energyplus datetime: ", energyplus_datetime)
                 ep.kStep = ep.kStep + 1
 
                 if energyplus_datetime >= sp.startDatetime:  

@@ -5,6 +5,7 @@ sys.path.append(thispath + '/../')
 import boptest
 import time
 import random
+import datetime 
 
 def RL_control(temp):
     flow = []
@@ -17,6 +18,13 @@ sys.path.insert(0, './controllers')
 
 from controllers import pid
 
+start_time = datetime.datetime.now()
+simu_length = datetime.timedelta( minutes = 2 )
+end_time = start_time + simu_length
+simu_steps = int(simu_length.total_seconds() / 60.0) # number of time steps, of which each timestep is 1 minute
+
+
+
 bop = boptest.Boptest(url='http://localhost')
 
 osm_files = []
@@ -24,11 +32,13 @@ for _ in range(1):
     osm_files.append(thispath + '/RefBuildingSmallOffice2013_270.osm')
 
 siteids = bop.submit_many(osm_files)
-bop.start_many(siteids, external_clock = "true")
+
+bop.start_many(siteids, external_clock = "true", \
+               start_datetime= start_time, end_datetime=end_time)
 
 #new_inputs = {}
 #state_vars=[]
-for i in range(1000):
+for i in range(simu_steps):
     print ("yanfei step: ", i)
     bop.advance(siteids)
     new_inputs = {}
@@ -54,7 +64,7 @@ for i in range(1000):
 
         csp = model_outputs["Perimeter_ZN_2 ZN_Zone Air System Sensible Cooling Rate"]
         hsp = model_outputs["Perimeter_ZN_2 ZN_Zone Air System Sensible Heating Rate"]
-        print ("cooling: ", csp, "heting: ", hsp , "\n")
+        print ("cooling: ", csp, "heating: ", hsp , "\n")
 
         #Here i only use a fake RL control.
         #Here you may need to replace it using your RL control
@@ -70,7 +80,8 @@ for i in range(1000):
         new_inputs["SA_FlowRate_Zone_P2_CMD"] = flow[2]
         new_inputs["SA_FlowRate_Zone_P3_CMD"] = flow[3]
         new_inputs["SA_FlowRate_Zone_P4_CMD"] = flow[4]
-        
+        new_inputs["Cooling_Setpoint_CMD"] =  22.2
+        new_inputs["Heating_Setpoint_CMD"] =  18.2
 
         bop.setInputs(siteid, new_inputs)
         

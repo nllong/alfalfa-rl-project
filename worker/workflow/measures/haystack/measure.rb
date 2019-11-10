@@ -185,8 +185,8 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
   
   def create_controlpoint_simbuild(type2, id, uuid, siteRef, where,what,measurement,kind,unit)
     point_json = Hash.new
-    point_json[:id] = create_ref(uuid)
     point_json[:dis] = create_str(id)
+    point_json[:id] = create_ref(uuid)
     point_json[:siteRef] = create_ref(siteRef)
     point_json[:point] = "m:"
     point_json["#{type2}"] = "m:"
@@ -323,6 +323,33 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
     report_freq = "timestep"
     runner.registerInitialCondition("starting the measure SimBuild20") 
     
+
+    ###############################################################################################################################
+    #########################       add an ExternalInterface:Variable       #############################
+    #########################       Enable ==1, Because in hardware control, it is needed.       #############################
+    #########################       add this variable to EMS     #############################
+    ###############################################################################################################################
+    building = model.getBuilding
+    master_enable_cmd = create_ems_str("MasterEnable")
+    master_enable = OpenStudio::Model::ExternalInterfaceVariable.new(model, master_enable_cmd, 1)
+    master_enable.setExportToBCVTB(true)
+
+    mapping_json << create_mapping_output_uuid("MasterEnable", master_enable.handle)
+    haystack_MasterEnable_json = create_controlpoint_simbuild("writable", master_enable_cmd, master_enable.handle, building.handle,  "where", "what", "measurement", "Number", "1")
+    haystack_json << haystack_MasterEnable_json
+
+
+    #initialization program
+    program = OpenStudio::Model::EnergyManagementSystemProgram.new(model)
+    program.setName("Master_Enable")   
+    program.addLine("SET #{master_enable.handle.to_s} = 1")
+
+    pcm = OpenStudio::Model::EnergyManagementSystemProgramCallingManager.new(model)
+    pcm.setName("Master_Enable_Prgm_Mgr")
+    pcm.setCallingPoint("BeginNewEnvironment")
+    pcm.addProgram(program)
+
+
     ###############################################################################################################################
     #########################       Open up the EMS:ReportingVariables to       #############################
     #########################       get a list of available EMS actuators        #############################
@@ -336,8 +363,6 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
     #print report_edd
 	
     externalInterface = model.getExternalInterface
-    #puts externalInterface.inspect
-
     externalInterface.setNameofExternalInterface("PtolemyServer")
 	
     ###############################################################################################################################
@@ -425,19 +450,30 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
 	supply_air_flow_zone_p3_cmd = create_ems_str("SA FlowRate Zone P3 CMD")
 	supply_air_flow_zone_p4_cmd = create_ems_str("SA FlowRate Zone P4 CMD")
 
-	
-	zone_core_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_core_cmd, 0.1)
-	zone_core_sa_var.setExportToBCVTB(true)
-	zone_p1_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_p1_cmd, 0.1)
-	zone_p1_sa_var.setExportToBCVTB(true)
-	zone_p2_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_p2_cmd, 0.1)
-	zone_p2_sa_var.setExportToBCVTB(true)
-	zone_p3_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_p3_cmd, 0.1)
-	zone_p3_sa_var.setExportToBCVTB(true)
-	zone_p4_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_p4_cmd, 0.1)
-	zone_p4_sa_var.setExportToBCVTB(true)
+	model.getFanOnOffs.each do |fan|
+          fan_name = fan.name.to_s
+	  if fan_name == "Core_ZN ZN PSZ-AC-1 Fan"
+	    #zone_core_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_core_cmd, 0.1)
+            zone_core_sa_var = OpenStudio::Model::ExternalInterfaceActuator.new(fan,"Fan","Fan Air Mass Flow Rate")
+	    zone_core_sa_var.setExportToBCVTB(true)
+            zone_core_sa_var.setOptionalInitialValue(0.1)
+	    zone_core_sa_var.setName(supply_air_flow_zone_core_cmd.to_s)
+            mapping_json << create_mapping_output_uuid(supply_air_flow_zone_core_cmd, zone_core_sa_var.handle)
+            haystack_zone_core_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_core_cmd, zone_core_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
+	    haystack_json << haystack_zone_core_sa_json
+          end
+        end
 
-	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_core_cmd, zone_core_sa_var.handle)
+	  zone_p1_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_p1_cmd, 0.1)
+	  zone_p1_sa_var.setExportToBCVTB(true)
+	  zone_p2_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_p2_cmd, 0.1)
+	  zone_p2_sa_var.setExportToBCVTB(true)
+	  zone_p3_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_p3_cmd, 0.1)
+	  zone_p3_sa_var.setExportToBCVTB(true)
+	  zone_p4_sa_var = OpenStudio::Model::ExternalInterfaceVariable.new(model, supply_air_flow_zone_p4_cmd, 0.1)
+	  zone_p4_sa_var.setExportToBCVTB(true)
+
+	
 	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_p1_cmd, zone_p1_sa_var.handle)
 	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_p2_cmd, zone_p2_sa_var.handle)
 	mapping_json << create_mapping_output_uuid(supply_air_flow_zone_p3_cmd, zone_p3_sa_var.handle)
@@ -445,14 +481,14 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
 
 	
 	#zone sa haystack point	as actuator
-	haystack_zone_core_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_core_cmd, zone_core_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
+	
 	haystack_zone_p1_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_p1_cmd, zone_p1_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
 	haystack_zone_p2_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_p2_cmd, zone_p2_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
 	haystack_zone_p3_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_p3_cmd, zone_p3_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
 	haystack_zone_p4_sa_json = create_controlpoint_simbuild("writable", supply_air_flow_zone_p4_cmd, zone_p4_sa_var.handle, building.handle,  "where", "what", "measurement", "Number", "kg/s")
 
 	
-	haystack_json << haystack_zone_core_sa_json
+	
 	haystack_json << haystack_zone_p1_sa_json
 	haystack_json << haystack_zone_p2_sa_json
 	haystack_json << haystack_zone_p3_sa_json
@@ -576,6 +612,31 @@ class SimBuild20 < OpenStudio::Measure::ModelMeasure
 	  people_def.setThermalComfortModelType(0, 'FANGER')
     end
 	
+    ################################################################################################################################
+	#########################      add new output variables                    #############################
+	#########################             check if its value == I give              #############################
+	################################################################################################################################
+    outvar = OpenStudio::Model::OutputVariable.new("System Node Mass Flow Rate", model)
+    outvar.setKeyValue("Core_ZN ZN PSZ-AC-1 Supply Outlet Node")
+    outvar.setReportingFrequency(report_freq)
+    #outvar.setName("Core_SAMassFlow")
+    outvar.setExportToBCVTB(true)   
+
+    outvar = OpenStudio::Model::OutputVariable.new("Schedule Value", model)
+    outvar.setKeyValue("Cooling SP")
+    outvar.setReportingFrequency(report_freq)
+    #outvar.setName("Core_SAMassFlow")
+    outvar.setExportToBCVTB(true)  
+
+
+    outvar = OpenStudio::Model::OutputVariable.new("Zone Thermal Comfort Fanger PPD", model)
+    outvar.setKeyValue("Core_ZN ZN")
+    outvar.setReportingFrequency(report_freq)
+    #outvar.setName("Core_SAMassFlow")
+    #outvar.setExportToBCVTB(true)  
+
+
+
     ################################################################################################################################
 	#########################      create sensors for output variables                    #############################
 	#########################                           #############################
