@@ -1,5 +1,5 @@
-1. The alfalfa/client/test of SimBuild2020 branch is where the model currently locates.\ 
-   The model name: RefBuildingSmallOffice2013_270.osm. \
+1. The alfalfa/client/test of SimBuild2020 branch is where the model currently locates. </br> 
+   The model name: RefBuildingSmallOffice2013_270.osm. </br>
 2. The model for test is an OpenStudio Model, version 2.7, which will be 
    automatically updated by docker image (OpenStudio 2.8.1). \ 
    It follows the ASHRAE 2013 building standard.\
