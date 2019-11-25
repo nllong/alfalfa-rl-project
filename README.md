@@ -2,7 +2,7 @@
 
 This is a Haystack implementation backed by a virtual building. Virtual building simulation is performed using OpenStudio and EnergyPlus.
 
-## Getting Started
+## Getting Started (Server)
 
 1. Install [Docker](https://www.docker.com) for your platform.
 1. From a command prompt ```docker-compose up web```.
@@ -11,6 +11,14 @@ This is a Haystack implementation backed by a virtual building. Virtual building
 1. Navigate to http://localhost:9000 to view the minio file server. The default login is "user" and "password"
 This is a local implementation of Amazon S3 for bulk file storage during development.
 1. Use ```Ctrl-C``` to stop the services.
+
+### Getting Started (Client)
+
+The client is a set of examples that can run to test the functionality of Alfalfa. Note that development of new control strategies should not occur here, rather, a new repo should be created with these examples. 
+  
+1. Navigate to client directory (`cd client`)
+1. Install needed dependencies for client by calling `pip install -r requirements.txt`
+1. 
 
 ## Running Worker Tests
 
