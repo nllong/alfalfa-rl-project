@@ -17,8 +17,11 @@ This is a local implementation of Amazon S3 for bulk file storage during develop
 The client is a set of examples that can run to test the functionality of Alfalfa. Note that development of new control strategies should not occur here, rather, a new repo should be created with these examples. 
   
 1. Navigate to client directory (`cd client`)
-1. Install needed dependencies for client by calling `pip install -r requirements.txt`
-1. 
+1. Install needed dependencies for client the by calling `pip install -r requirements.txt`
+1. Navigate to RL example project (`cd rl-example`)
+1. run the example project assuming that the Server is running: `python rl-base.py`
+1. The results in the form of a CSV will be saved into the results-rl-base directory.
+1. There is a Jupyter Notebook that can be used to plot the results of RL-base. See `post-process.ipynb`
 
 ## Running Worker Tests
 

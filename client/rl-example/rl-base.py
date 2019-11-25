@@ -1,5 +1,5 @@
-# Author: Nicholas Long / Yanfei
-#
+# Author: Nicholas Long / Yanfei Li / Sourav Dey
+
 import datetime
 import os
 import random
@@ -16,11 +16,11 @@ def dummy_flow():
     """
     :return: list, control actions
     """
-    # create a number roughly between 1 and 10
-    return [random.random() * random.random() for _ in range(0, 5)]
+    # create a number for the Supply Fan status
+    return [random.random() * 0.5 for _ in range(0, 5)]
 
 
-def RL_control(temp):
+def rl_control(temp):
     flow = []
     for i in range(len(temp)):
         flow.append(random.random() * 2.0)
@@ -31,15 +31,18 @@ def RL_control(temp):
 # Setup
 bop = boptest.Boptest(url='http://localhost')
 
-# Winter Heating Window: 2019-11-06 7:30:00
-start_time = datetime.datetime(2019, 11, 6, 8, 15, 0)
+# Winter Heating Window: 2019-11-06 --- 9AM for now
+start_time = datetime.datetime(2019, 11, 6, 9, 00, 0)
 simu_length = datetime.timedelta(hours=10)
 end_time = start_time + simu_length
 simu_steps = int(simu_length.total_seconds() / 60.0)  # number of time steps, of which each timestep is 1 minute
-# simu_steps = 60  # 1 hour hard coded
+# simu_steps = 60
+print(
+    f'Simulation start {start_time.strftime("%m/%d/%Y %H:%M:%S")}, end {end_time.strftime("%m/%d/%Y %H:%M:%S")} with {simu_steps} total steps'
+)
 
 # Submit only one file
-files = [os.path.join(os.path.dirname(__file__), 'RefBuildingSmallOffice2013_270.osm')]
+files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'RefBuildingSmallOffice2013.osm')]
 siteids = bop.submit_many(files)
 bop.start_many(siteids, external_clock="false", start_datetime=start_time, end_datetime=end_time)
 
@@ -131,17 +134,17 @@ for i in range(simu_steps):
 
         flow = dummy_flow()
         print(f"new control inputs: core/p1/p2/p3/p4: {flow[0]}/{flow[1]}/{flow[2]}/{flow[3]}/{flow[4]}")
-        history['u1'] = flow[0]
-        history['u2'] = flow[1]
-        history['u3'] = flow[2]
-        history['u4'] = flow[3]
-        history['u5'] = flow[4]
+        history['u1'].append(flow[0])
+        history['u2'].append(flow[1])
+        history['u3'].append(flow[2])
+        history['u4'].append(flow[3])
+        history['u5'].append(flow[4])
 
-        history['vdot1'] = flow[0]
-        history['vdot2'] = flow[1]
-        history['vdot3'] = flow[2]
-        history['vdot4'] = flow[3]
-        history['vdot5'] = flow[4]
+        history['vdot1'].append(flow[0])
+        history['vdot2'].append(flow[1])
+        history['vdot3'].append(flow[2])
+        history['vdot4'].append(flow[3])
+        history['vdot5'].append(flow[4])
 
         model_inputs = bop.inputs(siteid)
 
@@ -155,17 +158,18 @@ for i in range(simu_steps):
         # here the setpoints are dummy, for test only
         new_inputs["Cooling_Setpoint_CMD"] = 22.2
         new_inputs["Heating_Setpoint_CMD"] = 18.2
-        history['Tsetpoint_cooling'] = 22.2
-        history['Tsetpoint_heating'] = 18.2
+        history['Tsetpoint_cooling'].append(22.2)
+        history['Tsetpoint_heating'].append(18.2)
 
         bop.setInputs(siteid, new_inputs)
 
-    time.sleep(0.05)
+    # throttle the requests a bit
+    time.sleep(0.01)
 
 bop.stop_many(siteids)
 
 # storage for results
-result_dir = f'{os.path.splitext(os.path.basename(__file__))[0]}-results'
+result_dir = f'results-{os.path.splitext(os.path.basename(__file__))[0]}'
 os.makedirs(result_dir, exist_ok=True)
 history_df = pd.DataFrame.from_dict(history)
 print(history_df)
