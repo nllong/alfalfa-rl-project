@@ -1,8 +1,14 @@
 EnergyPlus Starting
-EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.25 20:49
+EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.25 21:09
 Initializing Response Factors
 Calculating CTFs for "INTERIORFURNISHINGS", Construction # 1
 Calculating CTFs for "TYPICAL ATTIC SOFFIT", Construction # 2
+Calculating CTFs for "TYPICAL INSULATED CARPETED 8IN SLAB FLOOR", Construction # 4
+Calculating CTFs for "TYPICAL INSULATED CARPETED 8IN SLAB FLOOR", Construction # 4
+Calculating CTFs for "TYPICAL INSULATED CARPETED 8IN SLAB FLOOR", Construction # 4
+Calculating CTFs for "TYPICAL INSULATED CARPETED 8IN SLAB FLOOR", Construction # 4
+Calculating CTFs for "TYPICAL INSULATED CARPETED 8IN SLAB FLOOR", Construction # 4
+Calculating CTFs for "TYPICAL INSULATED CARPETED 8IN SLAB FLOOR", Construction # 4
 Calculating CTFs for "TYPICAL INSULATED CARPETED 8IN SLAB FLOOR", Construction # 4
 Calculating CTFs for "TYPICAL INSULATED WOOD FRAMED EXTERIOR WALL R-19.61", Construction # 7
 Calculating CTFs for "TYPICAL INTERIOR WALL", Construction # 12
@@ -109,5 +115,5 @@ Continuing Simulation at 12/27/2006 for RUN PERIOD 1
 Writing tabular output file results using HTML format.
 Computing Life Cycle Costs and Reporting
 Writing final SQL reports
-EnergyPlus Run Time=00hr 00min 35.40sec
+EnergyPlus Run Time=00hr 03min 10.56sec
 EnergyPlus Completed Successfully.

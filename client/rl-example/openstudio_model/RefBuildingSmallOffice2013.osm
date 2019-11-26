@@ -822,7 +822,7 @@ OS:SubSurface,
 
 OS:Timestep,
   {eb583d9a-28e0-49c6-8519-cae0088b5073}, !- Handle
-  6;                                      !- Number of Timesteps per Hour
+  60;                                     !- Number of Timesteps per Hour
 
 OS:Surface,
   {1f023a99-6062-4e6b-a2ee-74cc9513d97f}, !- Handle
@@ -8215,4 +8215,40 @@ OS:Rendering:Color,
   255,                                    !- Rendering Red Value
   20,                                     !- Rendering Green Value
   147;                                    !- Rendering Blue Value
+
+OS:RadianceParameters,
+  {f52af564-7472-4bca-a7e7-e95194391563}, !- Handle
+  1,                                      !- Accumulated Rays per Record
+  0,                                      !- Direct Threshold
+  1,                                      !- Direct Certainty
+  1,                                      !- Direct Jitter
+  1,                                      !- Direct Pretest
+  6,                                      !- Ambient Bounces VMX
+  2,                                      !- Ambient Bounces DMX
+  4050,                                   !- Ambient Divisions VMX
+  512,                                    !- Ambient Divisions DMX
+  256,                                    !- Ambient Supersamples
+  0.001,                                  !- Limit Weight VMX
+  0.001,                                  !- Limit Weight DMX
+  500,                                    !- Klems Sampling Density
+  146;                                    !- Sky Discretization Resolution
+
+OS:ProgramControl,
+  {620e1734-e322-4133-ae08-24e9a0fbd0ad}; !- Handle
+
+OS:OutputControl:ReportingTolerances,
+  {812399d7-e60a-4eaf-97e4-222fdfab3762}; !- Handle
+
+OS:ZoneAirHeatBalanceAlgorithm,
+  {cbb11039-c273-42cf-8019-1f61a1ae15af}, !- Handle
+  ThirdOrderBackwardDifference;           !- Algorithm
+
+OS:ZoneAirContaminantBalance,
+  {e20e6be8-f0b7-460f-a9b0-dcab23160a65}; !- Handle
+
+OS:ZoneCapacitanceMultiplier:ResearchSpecial,
+  {5b3ef084-5d47-4408-9cf4-68f1156b7145}, !- Handle
+  ,                                       !- Temperature Capacity Multiplier
+  ,                                       !- Humidity Capacity Multiplier
+  ;                                       !- Carbon Dioxide Capacity Multiplier
 

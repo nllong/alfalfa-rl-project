@@ -822,7 +822,7 @@ OS:SubSurface,
 
 OS:Timestep,
   {eb583d9a-28e0-49c6-8519-cae0088b5073}, !- Handle
-  6;                                      !- Number of Timesteps per Hour
+  60;                                     !- Number of Timesteps per Hour
 
 OS:Surface,
   {1f023a99-6062-4e6b-a2ee-74cc9513d97f}, !- Handle
@@ -3267,7 +3267,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {246c1889-e62b-4a65-9bbe-a0c333537e0a}, !- Group Rendering Name
   {c892e56c-e995-4335-ad8a-e9fef4768248}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -3358,7 +3358,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {3baa8fec-a42d-48fb-b854-35aac5d2f82e}, !- Group Rendering Name
   {058f3966-48da-47df-a237-4d358331db5f}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -3459,7 +3459,7 @@ OS:ThermalZone,
   {cb15831a-9a03-4081-b8d6-2e6c345aa5f3}, !- Secondary Daylighting Control Name
   0.0302,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {70f53569-f093-48ea-93f1-2f7bf55290fd}, !- Group Rendering Name
   {44ab086d-134e-41de-a836-694790b3468f}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -3560,7 +3560,7 @@ OS:ThermalZone,
   {47d6946f-e9ad-4198-9993-e0c0cc89062d}, !- Secondary Daylighting Control Name
   0.0302,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {243c8142-8d16-4009-8ffd-f577e4933f94}, !- Group Rendering Name
   {5e3d159d-4df9-4510-ba7b-1841f97d108f}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -3661,7 +3661,7 @@ OS:ThermalZone,
   {6226a1a2-28d1-4edb-b0fa-d5193545176d}, !- Secondary Daylighting Control Name
   0.0302,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {8099925b-bbb3-4288-82ad-ca9d72507faf}, !- Group Rendering Name
   {20c60451-53d3-4681-b37d-e904d396f5d1}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -3762,7 +3762,7 @@ OS:ThermalZone,
   {627dad3e-5081-480f-972e-fedac2af7954}, !- Secondary Daylighting Control Name
   0.0302,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {09fe54ee-333d-4141-b67e-950510581a11}, !- Group Rendering Name
   {4e1baa59-f6f8-45ed-8c13-ca0628f9bac5}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -8171,6 +8171,84 @@ OS:WeatherFile,
   -87.92,                                 !- Longitude {deg}
   -6,                                     !- Time Zone {hr}
   201,                                    !- Elevation {m}
-  file:///private/var/folders/ry/9qrp5ths0g13dj7j20c3c_x93s6z2r/T/OpenStudioApp.A50992/resources/files/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw, !- Url
+  file:///private/var/folders/ry/9qrp5ths0g13dj7j20c3c_x93s6z2r/T/OpenStudioApp.w71211/resources/files/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw, !- Url
   C254B53F;                               !- Checksum
+
+OS:Rendering:Color,
+  {246c1889-e62b-4a65-9bbe-a0c333537e0a}, !- Handle
+  Rendering Color 1,                      !- Name
+  95,                                     !- Rendering Red Value
+  158,                                    !- Rendering Green Value
+  160;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {3baa8fec-a42d-48fb-b854-35aac5d2f82e}, !- Handle
+  Rendering Color 2,                      !- Name
+  65,                                     !- Rendering Red Value
+  105,                                    !- Rendering Green Value
+  225;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {70f53569-f093-48ea-93f1-2f7bf55290fd}, !- Handle
+  Rendering Color 3,                      !- Name
+  119,                                    !- Rendering Red Value
+  136,                                    !- Rendering Green Value
+  153;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {243c8142-8d16-4009-8ffd-f577e4933f94}, !- Handle
+  Rendering Color 4,                      !- Name
+  128,                                    !- Rendering Red Value
+  0,                                      !- Rendering Green Value
+  128;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {8099925b-bbb3-4288-82ad-ca9d72507faf}, !- Handle
+  Rendering Color 5,                      !- Name
+  0,                                      !- Rendering Red Value
+  128,                                    !- Rendering Green Value
+  0;                                      !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {09fe54ee-333d-4141-b67e-950510581a11}, !- Handle
+  Rendering Color 6,                      !- Name
+  255,                                    !- Rendering Red Value
+  20,                                     !- Rendering Green Value
+  147;                                    !- Rendering Blue Value
+
+OS:RadianceParameters,
+  {f52af564-7472-4bca-a7e7-e95194391563}, !- Handle
+  1,                                      !- Accumulated Rays per Record
+  0,                                      !- Direct Threshold
+  1,                                      !- Direct Certainty
+  1,                                      !- Direct Jitter
+  1,                                      !- Direct Pretest
+  6,                                      !- Ambient Bounces VMX
+  2,                                      !- Ambient Bounces DMX
+  4050,                                   !- Ambient Divisions VMX
+  512,                                    !- Ambient Divisions DMX
+  256,                                    !- Ambient Supersamples
+  0.001,                                  !- Limit Weight VMX
+  0.001,                                  !- Limit Weight DMX
+  500,                                    !- Klems Sampling Density
+  146;                                    !- Sky Discretization Resolution
+
+OS:ProgramControl,
+  {620e1734-e322-4133-ae08-24e9a0fbd0ad}; !- Handle
+
+OS:OutputControl:ReportingTolerances,
+  {812399d7-e60a-4eaf-97e4-222fdfab3762}; !- Handle
+
+OS:ZoneAirHeatBalanceAlgorithm,
+  {cbb11039-c273-42cf-8019-1f61a1ae15af}, !- Handle
+  ThirdOrderBackwardDifference;           !- Algorithm
+
+OS:ZoneAirContaminantBalance,
+  {e20e6be8-f0b7-460f-a9b0-dcab23160a65}; !- Handle
+
+OS:ZoneCapacitanceMultiplier:ResearchSpecial,
+  {5b3ef084-5d47-4408-9cf4-68f1156b7145}, !- Handle
+  ,                                       !- Temperature Capacity Multiplier
+  ,                                       !- Humidity Capacity Multiplier
+  ;                                       !- Carbon Dioxide Capacity Multiplier
 

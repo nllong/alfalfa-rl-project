@@ -3,7 +3,7 @@ Version,
   9.1;                                    !- Version Identifier
 
 Timestep,
-  6;                                      !- Number of Timesteps per Hour
+  60;                                     !- Number of Timesteps per Hour
 
 LifeCycleCost:Parameters,
   Life Cycle Cost Parameters,             !- Name
@@ -2322,6 +2322,20 @@ SurfaceConvectionAlgorithm:Outside,
 Sizing:Parameters,
   1.2,                                    !- Heating Sizing Factor
   1.2;                                    !- Cooling Sizing Factor
+
+ZoneAirContaminantBalance,
+  No;                                     !- Carbon Dioxide Concentration
+
+ZoneAirHeatBalanceAlgorithm,
+  ThirdOrderBackwardDifference;           !- Algorithm
+
+ZoneCapacitanceMultiplier:ResearchSpecial,
+  Zone Capacitance Multiplier Research Special, !- Name
+  ,                                       !- Zone or ZoneList Name
+  ,                                       !- Temperature Capacity Multiplier
+  ,                                       !- Humidity Capacity Multiplier
+  ,                                       !- Carbon Dioxide Capacity Multiplier
+  ;                                       !- Generic Contaminant Capacity Multiplier
 
 GlobalGeometryRules,
   UpperLeftCorner,                        !- Starting Vertex Position
@@ -5938,6 +5952,10 @@ PlantEquipmentList,
 RunPeriodControl:DaylightSavingTime,
   2nd Sunday in March,                    !- Start Date
   1st Sunday in November;                 !- End Date
+
+OutputControl:ReportingTolerances,
+  0.2,                                    !- Tolerance for Time Heating Setpoint Not Met {deltaC}
+  0.2;                                    !- Tolerance for Time Cooling Setpoint Not Met {deltaC}
 
 Site:Location,
   Chicago Ohare Intl Ap,                  !- Name

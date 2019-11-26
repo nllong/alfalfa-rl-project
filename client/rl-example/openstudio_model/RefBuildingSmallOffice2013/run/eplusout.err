@@ -1,4 +1,4 @@
-Program Version,EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.25 20:49,
+Program Version,EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.25 21:09,
    ************* Beginning Zone Sizing Calculations
    ** Warning ** ProcessScheduleInput: Schedule:Day:Interval="ECONOMIZER MAX OA FRACTION 70 PCT DEFAULT", Blank Schedule Type Limits Name input -- will not be validated.
    ** Warning ** ProcessScheduleInput: Schedule:Constant="ALWAYS OFF DISCRETE", Blank Schedule Type Limits Name input -- will not be validated.
@@ -74,7 +74,7 @@ Program Version,EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.25 20:49,
    ************* The following recurring error messages occurred.
    *************
    *************  ** Warning ** Plant loop exceeding upper temperature limit, PlantLoop="MAIN SERVICE WATER LOOP"
-   *************  **   ~~~   **   This error occurred 214522 total times;
+   *************  **   ~~~   **   This error occurred 903817 total times;
    *************  **   ~~~   **   during Warmup 0 times;
    *************  **   ~~~   **   during Sizing 0 times.
    *************  **   ~~~   **   Max=82.222222
@@ -89,4 +89,4 @@ Program Version,EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.25 20:49,
    *************
    ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.
    ************* EnergyPlus Sizing Error Summary. During Sizing: 8 Warning; 0 Severe Errors.
-   ************* EnergyPlus Completed Successfully-- 214550 Warning; 0 Severe Errors; Elapsed Time=00hr 00min 35.40sec
+   ************* EnergyPlus Completed Successfully-- 903845 Warning; 0 Severe Errors; Elapsed Time=00hr 03min 10.56sec
