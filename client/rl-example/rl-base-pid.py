@@ -12,6 +12,10 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import boptest
 
 
+def pe_signal():
+    k_pe = 20000
+    return [random.random() * k_pe for _ in range(5)]
+
 def dummy_flow():
     """
     :return: list, control actions
@@ -20,10 +24,29 @@ def dummy_flow():
     return [random.random() * 0.5 for _ in range(0, 5)]
 
 
-def rl_control(temp):
-    flow = []
-    for i in range(len(temp)):
-        flow.append(random.random() * 2.0)
+def pid_control(temp_states, previous_flow, setpoint, deadband = 1):
+    """
+    Simple proportional controller, need to add integrator, no need for derivative
+
+    :param temp_states: list, zone temperatures (C)
+    :param previous_flow: list, previous control inputs, u, (scalar)
+    :param setpoint: float, setpoint (C)
+    :param deadband: float, deadband for setpoint (C)
+    :return: list, new control inputs
+    """
+    # this is for 5 zones, assuming uniform setpoint
+    pid_flow = []
+    for index, temp in enumerate(temp_states):
+        k_p = 2000
+        if temp <= setpoint + deadband/2 and temp >= setpoint - deadband/2:
+            pid_flow.append(previous_flow[index])
+        else:
+            if temp < setpoint - deadband/2:
+                e = abs(setpoint - temp)
+                pid_flow.append(max(k_p * e, 0))
+            elif temp > setpoint + deadband/2:
+                e = abs(temp - setpoint)
+                pid_flow.append(max(k_p * e, 0))
 
     return flow
 
@@ -44,7 +67,7 @@ print(
 # Submit only one file
 files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'RefBuildingSmallOffice2013.osm')]
 siteids = bop.submit_many(files)
-bop.start_many(siteids, external_clock="false", start_datetime=start_time, end_datetime=end_time)
+bop.start_many(siteids, external_clock="true", start_datetime=start_time, end_datetime=end_time)
 
 history = {
     'timestamp': [],
@@ -77,6 +100,12 @@ history = {
     'Tsetpoint_heating': [],
 }
 
+# Initialize the flow control to random values
+flow = dummy_flow()
+# dual band thermostat
+heating_setpoint = 21
+cooling_setpoint = 25
+
 for i in range(simu_steps):
     print(f"Simulation step: {i}")
     bop.advance(siteids)
@@ -84,7 +113,8 @@ for i in range(simu_steps):
     state_vars = []
     for siteid in siteids:
         model_outputs = bop.outputs(siteid)
-        # print ('model-outputs: ', model_outputs)
+
+
         current_time = start_time + datetime.timedelta(minutes=i)
         history['timestamp'].append(current_time.strftime('%m/%d/%Y %H:%M:%S'))
 
@@ -132,7 +162,8 @@ for i in range(simu_steps):
         print(f"cooling rate: core/p1/p2/p3/p4: {cooling_core}/{cooling_p1}/{cooling_p2}/{cooling_p3}/{cooling_p4}")
         print(f"heating rate: core/p1/p2/p3/p4: {heating_core}/{heating_p1}/{heating_p2}/{heating_p3}/{heating_p4}")
 
-        flow = dummy_flow()
+        temps = [temp_core, temp_p1, temp_p2, temp_p3, temp_p4]
+        flow = pid_control(temps, flow, cooling_setpoint)
         print(f"new control inputs: core/p1/p2/p3/p4: {flow[0]}/{flow[1]}/{flow[2]}/{flow[3]}/{flow[4]}")
         history['u1'].append(flow[0])
         history['u2'].append(flow[1])
@@ -156,14 +187,12 @@ for i in range(simu_steps):
         new_inputs["SA_FlowRate_Zone_P4_CMD"] = flow[4]
 
         # here the setpoints are dummy, for test only
-        heating_setpoint = 21
-        cooling_setpoint = 25
         new_inputs["Cooling_Setpoint_CMD"] = cooling_setpoint
         new_inputs["Heating_Setpoint_CMD"] = heating_setpoint
         history['Tsetpoint_cooling'].append(cooling_setpoint)
         history['Tsetpoint_heating'].append(heating_setpoint)
 
-        bop.setInputs(siteid, new_inputs)
+    bop.setInputs(siteid, new_inputs)
 
     # throttle the requests a bit
     time.sleep(0.01)
