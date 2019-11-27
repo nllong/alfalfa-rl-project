@@ -106,7 +106,6 @@ class Haystack < OpenStudio::Ruleset::ModelUserScript
     mapping_json[:type] = outvar_time.nameString
     mapping_json[:variable] = ""
 
-
     return mapping_json
   end
 
