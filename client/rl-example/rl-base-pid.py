@@ -59,7 +59,7 @@ def pid_control(temp_states, previous_flow, setpoint, deadband=1):
 # Setup
 bop = boptest.Boptest(url='http://localhost')
 
-# Winter Heating Window: 2019-11-06 --- 9AM for now
+# Winter
 start_time = datetime.datetime(2019, 2, 6, 9, 00, 0)
 simu_length = datetime.timedelta(hours=10)
 end_time = start_time + simu_length

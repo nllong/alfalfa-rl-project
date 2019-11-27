@@ -31,12 +31,12 @@ def rl_control(temp):
 # Setup
 bop = boptest.Boptest(url='http://localhost')
 
-# Winter Heating Window: 2019-11-06 --- 9AM for now
-start_time = datetime.datetime(2019, 11, 6, 9, 00, 0)
+# Winter
+start_time = datetime.datetime(2019, 2, 6, 9, 00, 0)
 simu_length = datetime.timedelta(hours=10)
 end_time = start_time + simu_length
-simu_steps = int(simu_length.total_seconds() / 60.0)  # number of time steps, of which each timestep is 1 minute
-# simu_steps = 60
+# simu_steps = int(simu_length.total_seconds() / 60.0)  # number of time steps, of which each timestep is 1 minute
+simu_steps = 60
 print(
     f'Simulation start {start_time.strftime("%m/%d/%Y %H:%M:%S")}, end {end_time.strftime("%m/%d/%Y %H:%M:%S")} with {simu_steps} total steps'
 )
