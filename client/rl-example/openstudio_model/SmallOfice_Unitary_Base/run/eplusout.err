@@ -1,4 +1,4 @@
-Program Version,EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.26 14:39,
+Program Version,EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.27 11:58,
    ************* Beginning Zone Sizing Calculations
    ** Warning ** ProcessScheduleInput: Schedule:Day:Interval="ECONOMIZER MAX OA FRACTION 70 PCT DEFAULT", Blank Schedule Type Limits Name input -- will not be validated.
    ** Warning ** ProcessScheduleInput: Schedule:Constant="ALWAYS OFF DISCRETE", Blank Schedule Type Limits Name input -- will not be validated.
@@ -89,4 +89,4 @@ Program Version,EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.26 14:39,
    *************
    ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.
    ************* EnergyPlus Sizing Error Summary. During Sizing: 8 Warning; 0 Severe Errors.
-   ************* EnergyPlus Completed Successfully-- 77500 Warning; 0 Severe Errors; Elapsed Time=00hr 00min 19.03sec
+   ************* EnergyPlus Completed Successfully-- 77500 Warning; 0 Severe Errors; Elapsed Time=00hr 00min 19.59sec
