@@ -2,8 +2,8 @@
   <schema_version>3.0</schema_version>
   <name>add_output_variable</name>
   <uid>2a058afb-e349-49ae-a4bf-2c56a42b4352</uid>
-  <version_id>eabf1a4e-7313-4674-9c12-5cc4a990f709</version_id>
-  <version_modified>20191126T213926Z</version_modified>
+  <version_id>aac7ccdc-7b95-47b4-bb28-807294214fea</version_id>
+  <version_modified>20191127T185805Z</version_modified>
   <xml_checksum>0CA4D54C</xml_checksum>
   <class_name>AddOutputVariable</class_name>
   <display_name>Add Output Variable</display_name>
@@ -140,7 +140,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>90BE78A6</checksum>
+      <checksum>A439EF4E</checksum>
     </file>
   </files>
 </measure>

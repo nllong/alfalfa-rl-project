@@ -1,9 +1,5 @@
 {
-  "Add Output Variable": {
-    "variable_name": "Zone Mean Radiant Temperature",
-    "reporting_frequency": "timestep",
-    "key_value": "*",
-    "export_bcvtb": "True",
+  "Add Alfalfa for PSZ": {
     "applicable": true
   },
   "OpenStudio Results": {

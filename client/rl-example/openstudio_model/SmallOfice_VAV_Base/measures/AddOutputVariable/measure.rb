@@ -147,8 +147,8 @@ class AddOutputVariable < OpenStudio::Measure::ModelMeasure
       outputVariable.setReportingFrequency(reporting_frequency)
       outputVariable.setKeyValue(v)
       outputVariable.setExportToBCVTB(export_bcvtb)
+      outputVariable.setName("#{v}_#{variable_name}")
       runner.registerInfo("Adding output variable for #{outputVariable.variableName} reporting #{reporting_frequency}.")
-      runner.registerInfo("Key value for variable is #{outputVariable.keyValue}.")
     end
 
     outputVariables = model.getOutputVariables

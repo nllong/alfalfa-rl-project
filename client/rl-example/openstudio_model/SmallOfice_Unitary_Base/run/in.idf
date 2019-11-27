@@ -201,7 +201,7 @@ LifeCycleCost:UsePriceEscalation,
   1.0950;                                 !- Year Escalation 30
 
 Building,
-  -SmallOffice-ASHRAE 169-2006-5A created: 2019-11-05 14:52:18 -0700, !- Name
+  SmallOffice-5A Unitary,                 !- Name
   0,                                      !- North Axis {deg}
   City,                                   !- Terrain
   0.04,                                   !- Loads Convergence Tolerance Value
@@ -6122,8 +6122,58 @@ Output:Meter:MeterFileOnly,
   Hourly;                                 !- Reporting Frequency
 
 Output:Variable,
-  Perimeter_ZN_4 ZN,                      !- Key Value
+  Core_ZN ZN,                             !- Key Value
+  Zone Air System Sensible Cooling Rate,  !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Core_ZN ZN,                             !- Key Value
+  Zone Air System Sensible Heating Rate,  !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Core_ZN ZN,                             !- Key Value
+  Zone Mean Air Temperature,              !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Core_ZN ZN,                             !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_1 ZN,                      !- Key Value
+  Zone Air System Sensible Cooling Rate,  !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_1 ZN,                      !- Key Value
+  Zone Air System Sensible Heating Rate,  !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_1 ZN,                      !- Key Value
+  Zone Mean Air Temperature,              !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_1 ZN,                      !- Key Value
+  Zone Mean Radiant Temperature,          !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_2 ZN,                      !- Key Value
+  Zone Air System Sensible Cooling Rate,  !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_2 ZN,                      !- Key Value
+  Zone Air System Sensible Heating Rate,  !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_2 ZN,                      !- Key Value
+  Zone Mean Air Temperature,              !- Variable Name
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
@@ -6133,23 +6183,48 @@ Output:Variable,
 
 Output:Variable,
   Perimeter_ZN_3 ZN,                      !- Key Value
+  Zone Air System Sensible Cooling Rate,  !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_3 ZN,                      !- Key Value
+  Zone Air System Sensible Heating Rate,  !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_3 ZN,                      !- Key Value
+  Zone Mean Air Temperature,              !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_3 ZN,                      !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
-  Perimeter_ZN_1 ZN,                      !- Key Value
-  Zone Mean Radiant Temperature,          !- Variable Name
+  Perimeter_ZN_4 ZN,                      !- Key Value
+  Zone Air System Sensible Cooling Rate,  !- Variable Name
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
-  Core_ZN ZN,                             !- Key Value
-  Zone Mean Radiant Temperature,          !- Variable Name
+  Perimeter_ZN_4 ZN,                      !- Key Value
+  Zone Air System Sensible Heating Rate,  !- Variable Name
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
-  Attic ZN,                               !- Key Value
+  Perimeter_ZN_4 ZN,                      !- Key Value
+  Zone Mean Air Temperature,              !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_4 ZN,                      !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep;                               !- Reporting Frequency
+
+Output:EnergyManagementSystem,
+  Verbose,                                !- Actuator Availability Dictionary Reporting
+  None,                                   !- Internal Variable Availability Dictionary Reporting
+  None;                                   !- EMS Runtime Language Debug Output Level
 
 OutputControl:Table:Style,
   HTML;                                   !- Column Separator

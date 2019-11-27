@@ -3,15 +3,11 @@
    "seed_file" : "../SmallOfice_Unitary_Base.osm",
    "steps" : [
       {
-         "arguments" : {
-            "export_bcvtb" : "True",
-            "reporting_frequency" : "timestep",
-            "variable_name" : "Zone Mean Radiant Temperature"
-         },
-         "description" : "This measure adds an output variable at the requested reporting frequency.",
-         "measure_dir_name" : "AddOutputVariable",
-         "modeler_description" : "The measure just passes in the string and does not validate that it is a proper variable name. It is up to the user to know this or to look at the .rdd file from a previous simulation run.",
-         "name" : "Add Output Variable"
+         "arguments" : {},
+         "description" : "Add in Alfalfa controllers for PSZ",
+         "measure_dir_name" : "add_alfalfa_for_psz",
+         "modeler_description" : "",
+         "name" : "Add Alfalfa for PSZ"
       },
       {
          "arguments" : {},
@@ -21,6 +17,6 @@
          "name" : "OpenStudio Results"
       }
    ],
-   "updated_at" : "20191127T162311Z",
+   "updated_at" : "20191127T185844Z",
    "weather_file" : "USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
 }

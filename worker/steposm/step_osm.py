@@ -1,4 +1,4 @@
-########################################################################################################################  
+########################################################################################################################
 #  Copyright (c) 2008-2018, Alliance for Sustainable Energy, LLC, and other contributors. All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
@@ -57,7 +57,7 @@ def replace_idf_settings(idf_file, pattern, startDatetime, endDatetime, time_ste
     begin_year_line = '  {},                                   !- Begin Year\n'.format(startDatetime.year)
     end_year_line = '  {},                                   !- End Year\n'.format(endDatetime.year)
     dayOfweek_line = '  {},                                   !- Day of Week for Start Day\n'.format(startDatetime.strftime("%A"))
-    
+
     # Overwrite File
     # the basic idea is to locate the pattern first (e.g. Timestep, RunPeriod)
     # then find the relavant lines by couting how many lines away from the patten.
@@ -68,13 +68,13 @@ def replace_idf_settings(idf_file, pattern, startDatetime, endDatetime, time_ste
         f.seek(0)
         f.truncate()
         for line in lines:
-            count = count + 1             
+            count = count + 1
             if pattern in line:
                 #RunPeriod block
                 line_runperiod = count
             if 'Timestep,' in line:
-                line_timestep = count+1 
-        
+                line_timestep = count+1
+
         for i, line in enumerate(lines):
             if (i<line_runperiod or i>line_runperiod+12) and (i != line_timestep) :
                 f.write(line)
@@ -91,11 +91,11 @@ def replace_idf_settings(idf_file, pattern, startDatetime, endDatetime, time_ste
                elif i == line_runperiod + 5:
                   line = end_month_line
                elif i == line_runperiod + 6:
-                  line = end_day_line      
+                  line = end_day_line
                elif i == line_runperiod + 7:
                   line = end_year_line
                elif i == line_runperiod + 8:
-                  line = dayOfweek_line 
+                  line = dayOfweek_line
                else:
                   line = lines[i]
                f.write(line)
@@ -138,16 +138,24 @@ def get_energyplus_datetime(variables, outputs):
     hour_index = variables.outputIndexFromTypeAndName("current_hour","EMS")
     minute_index = variables.outputIndexFromTypeAndName("current_minute","EMS")
 
-    #print ("month_index: ", month_index, "day_index: ", day_index, "hour_index: ", \
-    #        hour_index, "minute_index: ", minute_index)
-
-    #print ("variable output list: ", variables.outputs_list)
+    # print(variables)
+    # print(outputs)
+    # print("month_index %s" % month_index)
+    # print("day_index %s" % day_index)
+    # print("hour_index %s" % hour_index)
+    # print("minute_index %s" % minute_index)
 
     day = int(round(outputs[ day_index ]))
     hour= int(round(outputs[ hour_index ]))
     minute= int(round(outputs[ minute_index ]))
     month = int(round(outputs[ month_index ]))
     year = sp.startDatetime.year
+
+    # print("day %s" % day)
+    # print("hour %s" % hour)
+    # print("minute %s" % minute)
+    # print("month %s" % month)
+    # print("year %s" % year)
 
     if minute == 60 and hour == 23:
         hour = 0
@@ -166,23 +174,16 @@ def reset(tarinfo):
 def finalize_simulation():
     sim_id = str(uuid.uuid4())
     tar_name = "%s.tar.gz" % sim_id
-    
+
     tar_file = tarfile.open(tar_name, "w:gz")
     tar_file.add(sp.workflow_directory, filter=reset, arcname=site_ref)
     tar_file.close()
-    
-    esofile_path = " "+ sp.workflow_directory+ "/"+ "workflow/run/Output/" + \
-                   sp.site_ref + ".eso"
-    cmd_postprocess = '/usr/local/EnergyPlus-9-1-0/runreadvars' + esofile_path
-    print ("Yanfei: cmd-postprocess: ", cmd_postprocess )
-    
-    #subprocess.call([ cmd_postprocess ])
-    
-    
+
     s3_key = "simulated/%s/%s" % (sp.site_ref,tar_name)
     bucket.upload_file(tar_name, s3_key)
-    
+
     os.remove(tar_name)
+    # NL: Do not remove files? Not sure why.
     #shutil.rmtree(sp.workflow_directory)
 
     site = recs.find_one({"_id": sp.site_ref})
@@ -195,24 +196,24 @@ def finalize_simulation():
 
 def getInputs(bypass_flag):
     master_index = sp.variables.inputIndexFromVariableName("MasterEnable")
-    #print ("Yanfei: masterindex: ", master_index)
     if bypass_flag:
         ep.inputs[master_index] = 0
     else:
-        #ep.inputs = [0] * ((len(sp.variables.inputIds())) + 1)
-        ep.inputs = [0] * ((len(sp.variables.inputIds())) + 0)
+        # original has the following (+1), keep it this way for now.
+        ep.inputs = [0] * ((len(sp.variables.inputIds())) + 1)
+        # ep.inputs = [0] * ((len(sp.variables.inputIds())) + 0)
         ep.inputs[master_index] = 1
         write_arrays = mongodb.writearrays
         for array in write_arrays.find({"siteRef": sp.site_ref}):
             for val in array.get('val'):
                 if val:
                     index = sp.variables.inputIndex(array.get('_id'))
-                    #print ("Yanfei: index: ", index)
                     if index == -1:
                         logger.error('bad input index for: %s' % array.get('_id'))
                     else:
                         ep.inputs[index] = val
-                        #ep.inputs[index + 1] = 1
+                        # original had the following (+1), but was commented out for testing. Leave uncommented for now.
+                        ep.inputs[index + 1] = 1
                         break
     # Convert to tuple
     inputs = tuple(ep.inputs)
@@ -246,7 +247,7 @@ if len(sys.argv) == 7:
         time_scale = int(time_scale)
 
     if real_time_flag:
-        time_scale = 1 
+        time_scale = 1
 
     year = datetime.datetime.today().year
 
@@ -329,114 +330,109 @@ variables_new_path = os.path.join(directory, 'workflow/run/variables.cfg')
 try:
     bucket = s3.Bucket(os.environ['S3_BUCKET'])
     bucket.download_file(key, tarpath)
-    
+
     tar = tarfile.open(tarpath)
     tar.extractall(sim_path)
     tar.close()
-    
+
     sp.variables = Variables(variables_path, sp.mapping)
-    #print ("yanfei input list: ", sp.variables.inputs_list)
-    
+
     subprocess.call(['openstudio', 'steposm/translate_osm.rb', osmpath, sp.idf])
     shutil.copyfile(variables_path, variables_new_path)
-    
+
     ## Simulation Parameters
     replace_idf_settings(sp.idf + '.idf', 'RunPeriod,', sp.startDatetime, sp.endDatetime, sp.sim_step_per_hour)
-    
+
     # Arguments
     ep.accept_timeout = sp.accept_timeout
     ep.mapping = sp.mapping
     ep.flag = 0
-    
+
     # Parse directory
     idf_file_details = os.path.split(sp.idf)
     ep.workDir = idf_file_details[0]
     ep.arguments = (sp.idf, sp.weather)
-    
+
     # Initialize input tuplet
-    print ("yanfei input list: ", sp.variables.inputs_list )
-    #ep.inputs = [0] * ((len(sp.variables.inputIds())) + 1)
-    ep.inputs = [0] * ((len(sp.variables.inputIds())) + 0) 
+
+    # NL: Updated to fix index Orignial had the + 1
+    ep.inputs = [0] * ((len(sp.variables.inputIds())) + 1)
+    # ep.inputs = [0] * ((len(sp.variables.inputIds())) + 0)
     # Start EnergyPlus co-simulation
     (ep.status, ep.msg) = ep.start()
-    
+
     # Check E+
     if ep.status != 0:
         logger.error('Could not start EnergyPlus: %s.' % ep.msg)
         ep.flag = 1
-    
+
     # Accept Socket
     [ep.status, ep.msg] = ep.accept_socket()
-    
+
     if ep.status != 0:
         logger.error('Could not connect EnergyPlus: %s.' % ep.msg)
         ep.flag = 1
-    
+
     # The main simulation loop
     ep.deltaT = sp.sim_step_time    # time step - sec
     ep.kStep = 1                    # current simulation step
     bypass_flag = True
-    
+
     # Simulation Status
     if ep.is_running == True:
         sp.sim_status = 1
-    
+
     # Set next step
-    next_t = datetime.datetime.now().timestamp() 
+    next_t = datetime.datetime.now().timestamp()
 
     # only used for external_clock
     advance = False
     if external_clock:
         pubsub.subscribe(sp.site_ref)
-     
+
     recs.update_one({"_id": sp.site_ref}, {"$set": {"rec.simStatus": "s:Starting"}}, False)
-    real_time_step=0 
+    real_time_step=0
 
     while True:
         stop = False;
         t = datetime.datetime.now().timestamp()
 
         if external_clock:
-            message = pubsub.get_message()            
+            message = pubsub.get_message()
             if message:
                 data = message['data']
                 if data == b'advance':
                     advance = True
                 elif data == b'stop':
                     stop = True
-            
+
         # Iterating over timesteps
         if ( ep.is_running and (sp.sim_status == 1) and (not stop) and t >= next_t and (not external_clock) ) or \
            ( (ep.is_running and (sp.sim_status == 1) and (not stop) and bypass_flag) ) or \
            ( ep.is_running and (sp.sim_status == 1) and (not stop) and (not bypass_flag) and external_clock and advance ):
-            #print ("yanfei bypass-flag: ", bypass_flag) 
+
             # Check for "Stopping" here so we don't hit the database as fast as the event loop will run
             # Instead we only check the database for stopping at each simulation step
             rec = recs.find_one({"_id": sp.site_ref})
             if rec and (rec.get("rec",{}).get("simStatus") == "s:Stopping") :
                 stop = True;
-                
+
             if stop == False:
                 # Write user inputs to E+
                 inputs = getInputs(bypass_flag)
-                #print ("Yanfei inputs: ", inputs)
-
                 ep.write(mlep.mlep_encode_real_data(2, 0, (ep.kStep - 1) * ep.deltaT, inputs))
 
                 # Read outputs
                 packet = ep.read()
                 [ep.flag, eptime, outputs] = mlep.mlep_decode_packet(packet)
                 ep.outputs = outputs
-                #print ("yanfei check ep outputs: ", ep.outputs)
-                #print ("yanfei variables: ", sp.variables)
                 energyplus_datetime = get_energyplus_datetime(sp.variables, outputs)
-                #print ("yanfei check energyplus datetime: ", energyplus_datetime)
                 ep.kStep = ep.kStep + 1
 
-                if energyplus_datetime >= sp.startDatetime:  
+                if energyplus_datetime >= sp.startDatetime:
                     bypass_flag = False  # Stop bypass
                     redis_client.hset(site_ref, 'control', 'idle')
-            
+
                 if bypass_flag == False:
                     for output_id in sp.variables.outputIds():
                         output_index = sp.variables.outputIndex(output_id)
@@ -444,16 +440,16 @@ try:
                             logger.error('bad output index for: %s' % output_id)
                         else:
                             output_value = ep.outputs[output_index]
-                            
+
                             # TODO: Make this better with a bulk update
                             # Also at some point consider removing curVal and related fields after sim ends
                             recs.update_one({"_id": output_id}, {
                                 "$set": {"rec.curVal": "n:%s" % output_value, "rec.curStatus": "s:ok", "rec.cur": "m:"}}, False)
-    
+
                     real_time_step = real_time_step + 1
                     output_time_string = "s:%s" % energyplus_datetime.isoformat()
                     recs.update_one({"_id": sp.site_ref}, {"$set": {"rec.datetime": output_time_string, "rec.step": "n:" + str(real_time_step), "rec.simStatus": "s:Running"}}, False)
-    
+
                     # Advance time
                     next_t = next_t + sp.sim_step_time / sp.time_scale
 
@@ -467,10 +463,10 @@ try:
                     advance = False
                     redis_client.publish(sp.site_ref, 'complete')
                     redis_client.hset(site_ref, 'control', 'idle')
-    
+
         if stop:
             finalize_simulation()
-            ep.stop(True)      
+            ep.stop(True)
             ep.is_running = 0
             sp.sim_status = 0
             break

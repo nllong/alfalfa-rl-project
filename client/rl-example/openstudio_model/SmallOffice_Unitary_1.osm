@@ -1204,7 +1204,7 @@ OS:SubSurface,
 
 OS:Building,
   {6b25c3c7-39e4-4be7-84a9-17e80feecaf5}, !- Handle
-  -SmallOffice-ASHRAE 169-2006-5A created: 2019-11-05 14:52:18 -0700, !- Name
+  SmallOffice-5A Unitary,                 !- Name
   ,                                       !- Building Sector Type
   0,                                      !- North Axis {deg}
   ,                                       !- Nominal Floor to Floor Height {m}
@@ -8171,7 +8171,7 @@ OS:WeatherFile,
   -87.92,                                 !- Longitude {deg}
   -6,                                     !- Time Zone {hr}
   201,                                    !- Elevation {m}
-  file:///private/var/folders/ry/9qrp5ths0g13dj7j20c3c_x93s6z2r/T/OpenStudioApp.if5111/resources/files/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw, !- Url
+  file:///private/var/folders/ry/9qrp5ths0g13dj7j20c3c_x93s6z2r/T/OpenStudioApp.T35332/resources/files/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw, !- Url
   C254B53F;                               !- Checksum
 
 OS:Rendering:Color,
@@ -8399,9 +8399,25 @@ OS:Rendering:Color,
   248,                                    !- Rendering Green Value
   220;                                    !- Rendering Blue Value
 
+OS:Output:EnergyManagementSystem,
+  {7aee727b-90d9-40de-bc90-48326f434c64}, !- Handle
+  Output Energy Management System 1,      !- Name
+  Verbose,                                !- Actuator Availability Dictionary Reporting
+  None,                                   !- Internal Variable Availability Dictionary Reporting
+  None;                                   !- EMS Runtime Language Debug Output Level
+
 OS:Output:Variable,
-  {711fb518-616a-40e4-82e4-c1694b4f6e90}, !- Handle
-  Output Variable 1,                      !- Name
+  {4c499353-92b9-42df-b609-6e6a40c766ca}, !- Handle
+  Perimeter_ZN_4 ZN_Zone Mean Air Temperature, !- Name
+  Perimeter_ZN_4 ZN,                      !- Key Value
+  Zone Mean Air Temperature,              !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {c564b63d-1ab4-4f02-a69b-0971c2dee702}, !- Handle
+  Perimeter_ZN_4 ZN_Zone Mean Radiant Temperature, !- Name
   Perimeter_ZN_4 ZN,                      !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -8409,8 +8425,35 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {8c065c11-9a49-4519-a771-d249e748627b}, !- Handle
-  Output Variable 2,                      !- Name
+  {25c2898c-277f-493d-b711-c05c19792f06}, !- Handle
+  Perimeter_ZN_4 ZN_Zone Air System Sensible Heating Rate, !- Name
+  Perimeter_ZN_4 ZN,                      !- Key Value
+  Zone Air System Sensible Heating Rate,  !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {d5d04d3e-3195-4288-bc84-dbddd46717ca}, !- Handle
+  Perimeter_ZN_4 ZN_Zone Air System Sensible Cooling Rate, !- Name
+  Perimeter_ZN_4 ZN,                      !- Key Value
+  Zone Air System Sensible Cooling Rate,  !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {a91d87ae-775e-4fce-a435-02e4b0b3408d}, !- Handle
+  Perimeter_ZN_2 ZN_Zone Mean Air Temperature, !- Name
+  Perimeter_ZN_2 ZN,                      !- Key Value
+  Zone Mean Air Temperature,              !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {889ded85-c421-41ee-bfcf-c8f1a201de3b}, !- Handle
+  Perimeter_ZN_2 ZN_Zone Mean Radiant Temperature, !- Name
   Perimeter_ZN_2 ZN,                      !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -8418,8 +8461,35 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {03f4502a-3e50-4be4-a480-4f4845854268}, !- Handle
-  Output Variable 3,                      !- Name
+  {ad894711-dd6d-4494-84df-5a2eb342a67f}, !- Handle
+  Perimeter_ZN_2 ZN_Zone Air System Sensible Heating Rate, !- Name
+  Perimeter_ZN_2 ZN,                      !- Key Value
+  Zone Air System Sensible Heating Rate,  !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {dd80f838-c648-4c0a-9c71-9e2199a60c2a}, !- Handle
+  Perimeter_ZN_2 ZN_Zone Air System Sensible Cooling Rate, !- Name
+  Perimeter_ZN_2 ZN,                      !- Key Value
+  Zone Air System Sensible Cooling Rate,  !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {a7d7aec1-0e10-4c52-95e3-38b5c1949aa5}, !- Handle
+  Perimeter_ZN_3 ZN_Zone Mean Air Temperature, !- Name
+  Perimeter_ZN_3 ZN,                      !- Key Value
+  Zone Mean Air Temperature,              !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {4c38fb67-3ff7-4a17-81d5-30e0f604bb9c}, !- Handle
+  Perimeter_ZN_3 ZN_Zone Mean Radiant Temperature, !- Name
   Perimeter_ZN_3 ZN,                      !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -8427,8 +8497,35 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {0f62e3b6-de78-4b22-b8d6-a9920ea7fd59}, !- Handle
-  Output Variable 4,                      !- Name
+  {0f3ce572-141b-40c9-834b-83c76c69e5d3}, !- Handle
+  Perimeter_ZN_3 ZN_Zone Air System Sensible Heating Rate, !- Name
+  Perimeter_ZN_3 ZN,                      !- Key Value
+  Zone Air System Sensible Heating Rate,  !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {3f9e0363-d479-4fa8-adf1-05f98bea7957}, !- Handle
+  Perimeter_ZN_3 ZN_Zone Air System Sensible Cooling Rate, !- Name
+  Perimeter_ZN_3 ZN,                      !- Key Value
+  Zone Air System Sensible Cooling Rate,  !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {bb45f742-3851-4b62-9a5e-7ddc18316965}, !- Handle
+  Perimeter_ZN_1 ZN_Zone Mean Air Temperature, !- Name
+  Perimeter_ZN_1 ZN,                      !- Key Value
+  Zone Mean Air Temperature,              !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {07cc6a2a-6cda-48c7-b29c-38d790bc7c1f}, !- Handle
+  Perimeter_ZN_1 ZN_Zone Mean Radiant Temperature, !- Name
   Perimeter_ZN_1 ZN,                      !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -8436,8 +8533,35 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {2d9b3db4-f13c-4e29-b64f-5e70ddaeac06}, !- Handle
-  Output Variable 5,                      !- Name
+  {79b5986d-85e2-480e-aff9-00a47946a577}, !- Handle
+  Perimeter_ZN_1 ZN_Zone Air System Sensible Heating Rate, !- Name
+  Perimeter_ZN_1 ZN,                      !- Key Value
+  Zone Air System Sensible Heating Rate,  !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {48b7054e-1800-4b8b-b202-739e050db745}, !- Handle
+  Perimeter_ZN_1 ZN_Zone Air System Sensible Cooling Rate, !- Name
+  Perimeter_ZN_1 ZN,                      !- Key Value
+  Zone Air System Sensible Cooling Rate,  !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {d5b99d54-ac30-4c57-aa11-fd3b537e231b}, !- Handle
+  Core_ZN ZN_Zone Mean Air Temperature,   !- Name
+  Core_ZN ZN,                             !- Key Value
+  Zone Mean Air Temperature,              !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {7ac0a84f-5aff-4022-9a55-9a7b24fb6cc7}, !- Handle
+  Core_ZN ZN_Zone Mean Radiant Temperature, !- Name
   Core_ZN ZN,                             !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -8445,10 +8569,19 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {55756100-d3fa-442a-9e55-0299b5050c0a}, !- Handle
-  Output Variable 6,                      !- Name
-  Attic ZN,                               !- Key Value
-  Zone Mean Radiant Temperature,          !- Variable Name
+  {bcd2185d-8829-4958-a883-83e464674150}, !- Handle
+  Core_ZN ZN_Zone Air System Sensible Heating Rate, !- Name
+  Core_ZN ZN,                             !- Key Value
+  Zone Air System Sensible Heating Rate,  !- Variable Name
+  timestep,                               !- Reporting Frequency
+  ,                                       !- Schedule Name
+  True;                                   !- Export To BCVTB
+
+OS:Output:Variable,
+  {bff551c7-463d-47e3-8b9f-f9f904aad8c9}, !- Handle
+  Core_ZN ZN_Zone Air System Sensible Cooling Rate, !- Name
+  Core_ZN ZN,                             !- Key Value
+  Zone Air System Sensible Cooling Rate,  !- Variable Name
   timestep,                               !- Reporting Frequency
   ,                                       !- Schedule Name
   True;                                   !- Export To BCVTB

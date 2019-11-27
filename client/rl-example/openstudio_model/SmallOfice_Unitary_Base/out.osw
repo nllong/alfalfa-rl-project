@@ -1,74 +1,61 @@
 {
-   "completed_at" : "20191126T214001Z",
+   "completed_at" : "20191127T185844Z",
    "completed_status" : "Success",
    "created_at" : "20191126T034130Z",
    "current_step" : 2,
-   "eplusout_err" : "Program Version,EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.26 14:39,\n   ************* Beginning Zone Sizing Calculations\n   ** Warning ** ProcessScheduleInput: Schedule:Day:Interval=\"ECONOMIZER MAX OA FRACTION 70 PCT DEFAULT\", Blank Schedule Type Limits Name input -- will not be validated.\n   ** Warning ** ProcessScheduleInput: Schedule:Constant=\"ALWAYS OFF DISCRETE\", Blank Schedule Type Limits Name input -- will not be validated.\n   ** Warning ** ProcessScheduleInput: Schedule:Constant=\"ALWAYS ON CONTINUOUS\", Blank Schedule Type Limits Name input -- will not be validated.\n   ** Warning ** CheckUsedConstructions: There are 11 nominally unused constructions in input.\n   **   ~~~   ** For explicit details on each unused construction, use Output:Diagnostics,DisplayExtraWarnings;\n   ** Warning ** GetDaylightingControls: Fraction of Zone controlled by the Daylighting reference points is < 1.0.\n   **   ~~~   ** ..discovered in \"Daylighting:Controls\" for Zone=\"PERIMETER_ZN_1 ZN\", only 0.27 of the zone is controlled.\n   ** Warning ** GetDaylightingControls: Fraction of Zone controlled by the Daylighting reference points is < 1.0.\n   **   ~~~   ** ..discovered in \"Daylighting:Controls\" for Zone=\"PERIMETER_ZN_2 ZN\", only 0.27 of the zone is controlled.\n   ** Warning ** GetDaylightingControls: Fraction of Zone controlled by the Daylighting reference points is < 1.0.\n   **   ~~~   ** ..discovered in \"Daylighting:Controls\" for Zone=\"PERIMETER_ZN_3 ZN\", only 0.27 of the zone is controlled.\n   ** Warning ** GetDaylightingControls: Fraction of Zone controlled by the Daylighting reference points is < 1.0.\n   **   ~~~   ** ..discovered in \"Daylighting:Controls\" for Zone=\"PERIMETER_ZN_4 ZN\", only 0.27 of the zone is controlled.\n   ************* Beginning System Sizing Calculations\n   ************* Beginning Plant Sizing Calculations\n   ** Warning ** GetDXCoils: Coil:Heating:DX:SingleSpeed=\"CORE_ZN ZN HP HTG COIL 21 CLG KBTU/HR 8.0HSPF\" curve values\n   **   ~~~   ** ... Defrost Energy Input Ratio Function of Temperature Curve Name = CORE_ZN ZN HP HTG COIL DEFROST EIR FUNC OF TEMP CURVE 1 output is not equal to 1.0 (+ or - 10%) at rated conditions.\n   **   ~~~   ** ... Curve output at rated conditions = 0.787\n   ** Warning ** GetDXCoils: Coil:Heating:DX:SingleSpeed=\"PERIMETER_ZN_1 ZN HP HTG COIL 23 CLG KBTU/HR 8.0HSPF\" curve values\n   **   ~~~   ** ... Defrost Energy Input Ratio Function of Temperature Curve Name = PERIMETER_ZN_1 ZN HP HTG COIL DEFROST EIR FUNC OF TEMP CURVE 1 output is not equal to 1.0 (+ or - 10%) at rated conditions.\n   **   ~~~   ** ... Curve output at rated conditions = 0.787\n   ** Warning ** GetDXCoils: Coil:Heating:DX:SingleSpeed=\"PERIMETER_ZN_2 ZN HP HTG COIL 17 CLG KBTU/HR 8.0HSPF\" curve values\n   **   ~~~   ** ... Defrost Energy Input Ratio Function of Temperature Curve Name = PERIMETER_ZN_2 ZN HP HTG COIL DEFROST EIR FUNC OF TEMP CURVE 1 output is not equal to 1.0 (+ or - 10%) at rated conditions.\n   **   ~~~   ** ... Curve output at rated conditions = 0.787\n   ** Warning ** GetDXCoils: Coil:Heating:DX:SingleSpeed=\"PERIMETER_ZN_3 ZN HP HTG COIL 20 CLG KBTU/HR 8.0HSPF\" curve values\n   **   ~~~   ** ... Defrost Energy Input Ratio Function of Temperature Curve Name = PERIMETER_ZN_3 ZN HP HTG COIL DEFROST EIR FUNC OF TEMP CURVE 1 output is not equal to 1.0 (+ or - 10%) at rated conditions.\n   **   ~~~   ** ... Curve output at rated conditions = 0.787\n   ** Warning ** GetDXCoils: Coil:Heating:DX:SingleSpeed=\"PERIMETER_ZN_4 ZN HP HTG COIL 20 CLG KBTU/HR 8.0HSPF\" curve values\n   **   ~~~   ** ... Defrost Energy Input Ratio Function of Temperature Curve Name = PERIMETER_ZN_4 ZN HP HTG COIL DEFROST EIR FUNC OF TEMP CURVE 1 output is not equal to 1.0 (+ or - 10%) at rated conditions.\n   **   ~~~   ** ... Curve output at rated conditions = 0.787\n   ** Warning ** The Standard Ratings is calculated for Coil:Cooling:DX:SingleSpeed = CORE_ZN ZN PSZ-AC-1 1SPD DX HP CLG COIL 21KBTU/HR 14.0SEER but not at the AHRI test condition due to curve out of bound.\n   **   ~~~   **  Review the Standard Ratings calculations in the Engineering Reference for this coil type. Also, use Output:Diagnostics, DisplayExtraWarnings for further guidance.\n   ** Warning ** The Standard Ratings is calculated for Coil:Cooling:DX:SingleSpeed = PERIMETER_ZN_1 ZN PSZ-AC-2 1SPD DX HP CLG COIL 23KBTU/HR 14.0SEER but not at the AHRI test condition due to curve out of bound.\n   **   ~~~   **  Review the Standard Ratings calculations in the Engineering Reference for this coil type. Also, use Output:Diagnostics, DisplayExtraWarnings for further guidance.\n   ** Warning ** The Standard Ratings is calculated for Coil:Cooling:DX:SingleSpeed = PERIMETER_ZN_2 ZN PSZ-AC-3 1SPD DX HP CLG COIL 17KBTU/HR 14.0SEER but not at the AHRI test condition due to curve out of bound.\n   **   ~~~   **  Review the Standard Ratings calculations in the Engineering Reference for this coil type. Also, use Output:Diagnostics, DisplayExtraWarnings for further guidance.\n   ** Warning ** The Standard Ratings is calculated for Coil:Cooling:DX:SingleSpeed = PERIMETER_ZN_3 ZN PSZ-AC-4 1SPD DX HP CLG COIL 20KBTU/HR 14.0SEER but not at the AHRI test condition due to curve out of bound.\n   **   ~~~   **  Review the Standard Ratings calculations in the Engineering Reference for this coil type. Also, use Output:Diagnostics, DisplayExtraWarnings for further guidance.\n   ** Warning ** The Standard Ratings is calculated for Coil:Cooling:DX:SingleSpeed = PERIMETER_ZN_4 ZN PSZ-AC-5 1SPD DX HP CLG COIL 20KBTU/HR 14.0SEER but not at the AHRI test condition due to curve out of bound.\n   **   ~~~   **  Review the Standard Ratings calculations in the Engineering Reference for this coil type. Also, use Output:Diagnostics, DisplayExtraWarnings for further guidance.\n   ** Warning ** Check input. Pump nominal power or motor efficiency is set to 0, for pump=SERVICE WATER LOOP PUMP\n   ** Warning ** Output:Meter: invalid Key Name=\"DISTRICTCOOLING:FACILITY\" - not found.\n   ** Warning ** Output:Meter: invalid Key Name=\"DISTRICTHEATING:FACILITY\" - not found.\n   ** Warning ** Output:Meter:MeterFileOnly requested for \"Electricity:Facility\" (TimeStep), already on \"Output:Meter\". Will report to both eplusout.eso and eplusout.mtr\n   ************* Testing Individual Branch Integrity\n   ************* All Branches passed integrity testing\n   ************* Testing Individual Supply Air Path Integrity\n   ************* All Supply Air Paths passed integrity testing\n   ************* Testing Individual Return Air Path Integrity\n   ************* All Return Air Paths passed integrity testing\n   ************* No node connection errors were found.\n   ************* Beginning Simulation\n   ** Warning ** Processing Monthly Tabular Reports: Variable names not valid for this simulation\n   **   ~~~   ** ...use Output:Diagnostics,DisplayExtraWarnings; to show more details on individual variables.\n   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= \"U.S. AVG  COMMERCIAL-ELECTRICITY\" has no energy cost. \n   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.\n   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= \"U.S. AVG  COMMERCIAL-DISTILLATE OIL\" has no energy cost. \n   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.\n   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= \"U.S. AVG  COMMERCIAL-RESIDUAL OIL\" has no energy cost. \n   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.\n   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= \"U.S. AVG  COMMERCIAL-NATURAL GAS\" has no energy cost. \n   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.\n   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= \"U.S. AVG  COMMERCIAL-COAL\" has no energy cost. \n   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.\n   ************* Simulation Error Summary *************\n   ************* There are 6 unused schedules in input.\n   ************* There are 6 unused week schedules in input.\n   ************* There are 14 unused day schedules in input.\n   ************* Use Output:Diagnostics,DisplayUnusedSchedules; to see them.\n   *************\n   ************* ===== Recurring Error Summary =====\n   ************* The following recurring error messages occurred.\n   *************\n   *************  ** Warning ** Plant loop exceeding upper temperature limit, PlantLoop=\"MAIN SERVICE WATER LOOP\"\n   *************  **   ~~~   **   This error occurred 77472 total times;\n   *************  **   ~~~   **   during Warmup 12393 times;\n   *************  **   ~~~   **   during Sizing 0 times.\n   *************  **   ~~~   **   Max=82.222222\n   *************\n   *************\n   ************* ===== Final Error Summary =====\n   ************* The following error categories occurred.  Consider correcting or noting.\n   ************* Nominally Unused Constructions\n   ************* ..The nominally unused constructions warning is provided to alert you to potential conditions that can cause\n   ************* ..extra time during simulation. Each construction is calculated by the algorithm indicated in the HeatBalanceAlgorithm\n   ************* ..object. You may remove the constructions indicated (when you use the DisplayExtraWarnings option).\n   *************\n   ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.\n   ************* EnergyPlus Sizing Error Summary. During Sizing: 8 Warning; 0 Severe Errors.\n   ************* EnergyPlus Completed Successfully-- 77500 Warning; 0 Severe Errors; Elapsed Time=00hr 00min 19.03sec\n",
-   "hash" : "DE7D4C7A",
-   "seed_file" : "../RefBuildingSmallOffice2013.osm",
-   "started_at" : "20191126T213936Z",
+   "eplusout_err" : "Program Version,EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.27 11:58,\n   ************* Beginning Zone Sizing Calculations\n   ** Warning ** ProcessScheduleInput: Schedule:Day:Interval=\"ECONOMIZER MAX OA FRACTION 70 PCT DEFAULT\", Blank Schedule Type Limits Name input -- will not be validated.\n   ** Warning ** ProcessScheduleInput: Schedule:Constant=\"ALWAYS OFF DISCRETE\", Blank Schedule Type Limits Name input -- will not be validated.\n   ** Warning ** ProcessScheduleInput: Schedule:Constant=\"ALWAYS ON CONTINUOUS\", Blank Schedule Type Limits Name input -- will not be validated.\n   ** Warning ** CheckUsedConstructions: There are 11 nominally unused constructions in input.\n   **   ~~~   ** For explicit details on each unused construction, use Output:Diagnostics,DisplayExtraWarnings;\n   ** Warning ** GetDaylightingControls: Fraction of Zone controlled by the Daylighting reference points is < 1.0.\n   **   ~~~   ** ..discovered in \"Daylighting:Controls\" for Zone=\"PERIMETER_ZN_1 ZN\", only 0.27 of the zone is controlled.\n   ** Warning ** GetDaylightingControls: Fraction of Zone controlled by the Daylighting reference points is < 1.0.\n   **   ~~~   ** ..discovered in \"Daylighting:Controls\" for Zone=\"PERIMETER_ZN_2 ZN\", only 0.27 of the zone is controlled.\n   ** Warning ** GetDaylightingControls: Fraction of Zone controlled by the Daylighting reference points is < 1.0.\n   **   ~~~   ** ..discovered in \"Daylighting:Controls\" for Zone=\"PERIMETER_ZN_3 ZN\", only 0.27 of the zone is controlled.\n   ** Warning ** GetDaylightingControls: Fraction of Zone controlled by the Daylighting reference points is < 1.0.\n   **   ~~~   ** ..discovered in \"Daylighting:Controls\" for Zone=\"PERIMETER_ZN_4 ZN\", only 0.27 of the zone is controlled.\n   ************* Beginning System Sizing Calculations\n   ************* Beginning Plant Sizing Calculations\n   ** Warning ** GetDXCoils: Coil:Heating:DX:SingleSpeed=\"CORE_ZN ZN HP HTG COIL 21 CLG KBTU/HR 8.0HSPF\" curve values\n   **   ~~~   ** ... Defrost Energy Input Ratio Function of Temperature Curve Name = CORE_ZN ZN HP HTG COIL DEFROST EIR FUNC OF TEMP CURVE 1 output is not equal to 1.0 (+ or - 10%) at rated conditions.\n   **   ~~~   ** ... Curve output at rated conditions = 0.787\n   ** Warning ** GetDXCoils: Coil:Heating:DX:SingleSpeed=\"PERIMETER_ZN_1 ZN HP HTG COIL 23 CLG KBTU/HR 8.0HSPF\" curve values\n   **   ~~~   ** ... Defrost Energy Input Ratio Function of Temperature Curve Name = PERIMETER_ZN_1 ZN HP HTG COIL DEFROST EIR FUNC OF TEMP CURVE 1 output is not equal to 1.0 (+ or - 10%) at rated conditions.\n   **   ~~~   ** ... Curve output at rated conditions = 0.787\n   ** Warning ** GetDXCoils: Coil:Heating:DX:SingleSpeed=\"PERIMETER_ZN_2 ZN HP HTG COIL 17 CLG KBTU/HR 8.0HSPF\" curve values\n   **   ~~~   ** ... Defrost Energy Input Ratio Function of Temperature Curve Name = PERIMETER_ZN_2 ZN HP HTG COIL DEFROST EIR FUNC OF TEMP CURVE 1 output is not equal to 1.0 (+ or - 10%) at rated conditions.\n   **   ~~~   ** ... Curve output at rated conditions = 0.787\n   ** Warning ** GetDXCoils: Coil:Heating:DX:SingleSpeed=\"PERIMETER_ZN_3 ZN HP HTG COIL 20 CLG KBTU/HR 8.0HSPF\" curve values\n   **   ~~~   ** ... Defrost Energy Input Ratio Function of Temperature Curve Name = PERIMETER_ZN_3 ZN HP HTG COIL DEFROST EIR FUNC OF TEMP CURVE 1 output is not equal to 1.0 (+ or - 10%) at rated conditions.\n   **   ~~~   ** ... Curve output at rated conditions = 0.787\n   ** Warning ** GetDXCoils: Coil:Heating:DX:SingleSpeed=\"PERIMETER_ZN_4 ZN HP HTG COIL 20 CLG KBTU/HR 8.0HSPF\" curve values\n   **   ~~~   ** ... Defrost Energy Input Ratio Function of Temperature Curve Name = PERIMETER_ZN_4 ZN HP HTG COIL DEFROST EIR FUNC OF TEMP CURVE 1 output is not equal to 1.0 (+ or - 10%) at rated conditions.\n   **   ~~~   ** ... Curve output at rated conditions = 0.787\n   ** Warning ** The Standard Ratings is calculated for Coil:Cooling:DX:SingleSpeed = CORE_ZN ZN PSZ-AC-1 1SPD DX HP CLG COIL 21KBTU/HR 14.0SEER but not at the AHRI test condition due to curve out of bound.\n   **   ~~~   **  Review the Standard Ratings calculations in the Engineering Reference for this coil type. Also, use Output:Diagnostics, DisplayExtraWarnings for further guidance.\n   ** Warning ** The Standard Ratings is calculated for Coil:Cooling:DX:SingleSpeed = PERIMETER_ZN_1 ZN PSZ-AC-2 1SPD DX HP CLG COIL 23KBTU/HR 14.0SEER but not at the AHRI test condition due to curve out of bound.\n   **   ~~~   **  Review the Standard Ratings calculations in the Engineering Reference for this coil type. Also, use Output:Diagnostics, DisplayExtraWarnings for further guidance.\n   ** Warning ** The Standard Ratings is calculated for Coil:Cooling:DX:SingleSpeed = PERIMETER_ZN_2 ZN PSZ-AC-3 1SPD DX HP CLG COIL 17KBTU/HR 14.0SEER but not at the AHRI test condition due to curve out of bound.\n   **   ~~~   **  Review the Standard Ratings calculations in the Engineering Reference for this coil type. Also, use Output:Diagnostics, DisplayExtraWarnings for further guidance.\n   ** Warning ** The Standard Ratings is calculated for Coil:Cooling:DX:SingleSpeed = PERIMETER_ZN_3 ZN PSZ-AC-4 1SPD DX HP CLG COIL 20KBTU/HR 14.0SEER but not at the AHRI test condition due to curve out of bound.\n   **   ~~~   **  Review the Standard Ratings calculations in the Engineering Reference for this coil type. Also, use Output:Diagnostics, DisplayExtraWarnings for further guidance.\n   ** Warning ** The Standard Ratings is calculated for Coil:Cooling:DX:SingleSpeed = PERIMETER_ZN_4 ZN PSZ-AC-5 1SPD DX HP CLG COIL 20KBTU/HR 14.0SEER but not at the AHRI test condition due to curve out of bound.\n   **   ~~~   **  Review the Standard Ratings calculations in the Engineering Reference for this coil type. Also, use Output:Diagnostics, DisplayExtraWarnings for further guidance.\n   ** Warning ** Check input. Pump nominal power or motor efficiency is set to 0, for pump=SERVICE WATER LOOP PUMP\n   ** Warning ** Output:Meter: invalid Key Name=\"DISTRICTCOOLING:FACILITY\" - not found.\n   ** Warning ** Output:Meter: invalid Key Name=\"DISTRICTHEATING:FACILITY\" - not found.\n   ** Warning ** Output:Meter:MeterFileOnly requested for \"Electricity:Facility\" (TimeStep), already on \"Output:Meter\". Will report to both eplusout.eso and eplusout.mtr\n   ************* Testing Individual Branch Integrity\n   ************* All Branches passed integrity testing\n   ************* Testing Individual Supply Air Path Integrity\n   ************* All Supply Air Paths passed integrity testing\n   ************* Testing Individual Return Air Path Integrity\n   ************* All Return Air Paths passed integrity testing\n   ************* No node connection errors were found.\n   ************* Beginning Simulation\n   ** Warning ** Processing Monthly Tabular Reports: Variable names not valid for this simulation\n   **   ~~~   ** ...use Output:Diagnostics,DisplayExtraWarnings; to show more details on individual variables.\n   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= \"U.S. AVG  COMMERCIAL-ELECTRICITY\" has no energy cost. \n   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.\n   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= \"U.S. AVG  COMMERCIAL-DISTILLATE OIL\" has no energy cost. \n   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.\n   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= \"U.S. AVG  COMMERCIAL-RESIDUAL OIL\" has no energy cost. \n   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.\n   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= \"U.S. AVG  COMMERCIAL-NATURAL GAS\" has no energy cost. \n   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.\n   ** Warning ** The resource referenced by LifeCycleCost:UsePriceEscalation= \"U.S. AVG  COMMERCIAL-COAL\" has no energy cost. \n   **   ~~~   ** ... It is likely that the wrong resource is used. The resource should match the meter used in Utility:Tariff.\n   ************* Simulation Error Summary *************\n   ************* There are 6 unused schedules in input.\n   ************* There are 6 unused week schedules in input.\n   ************* There are 14 unused day schedules in input.\n   ************* Use Output:Diagnostics,DisplayUnusedSchedules; to see them.\n   *************\n   ************* ===== Recurring Error Summary =====\n   ************* The following recurring error messages occurred.\n   *************\n   *************  ** Warning ** Plant loop exceeding upper temperature limit, PlantLoop=\"MAIN SERVICE WATER LOOP\"\n   *************  **   ~~~   **   This error occurred 77472 total times;\n   *************  **   ~~~   **   during Warmup 12393 times;\n   *************  **   ~~~   **   during Sizing 0 times.\n   *************  **   ~~~   **   Max=82.222222\n   *************\n   *************\n   ************* ===== Final Error Summary =====\n   ************* The following error categories occurred.  Consider correcting or noting.\n   ************* Nominally Unused Constructions\n   ************* ..The nominally unused constructions warning is provided to alert you to potential conditions that can cause\n   ************* ..extra time during simulation. Each construction is calculated by the algorithm indicated in the HeatBalanceAlgorithm\n   ************* ..object. You may remove the constructions indicated (when you use the DisplayExtraWarnings option).\n   *************\n   ************* EnergyPlus Warmup Error Summary. During Warmup: 0 Warning; 0 Severe Errors.\n   ************* EnergyPlus Sizing Error Summary. During Sizing: 8 Warning; 0 Severe Errors.\n   ************* EnergyPlus Completed Successfully-- 77500 Warning; 0 Severe Errors; Elapsed Time=00hr 00min 19.59sec\n",
+   "hash" : "9BAAD63D",
+   "seed_file" : "../SmallOfice_Unitary_Base.osm",
+   "started_at" : "20191127T185815Z",
    "steps" : [
       {
-         "arguments" : {
-            "export_bcvtb" : "True",
-            "reporting_frequency" : "timestep",
-            "variable_name" : "Zone Mean Radiant Temperature"
-         },
-         "description" : "This measure adds an output variable at the requested reporting frequency.",
-         "measure_dir_name" : "AddOutputVariable",
-         "modeler_description" : "The measure just passes in the string and does not validate that it is a proper variable name. It is up to the user to know this or to look at the .rdd file from a previous simulation run.",
-         "name" : "Add Output Variable",
+         "arguments" : {},
+         "description" : "Add in Alfalfa controllers for PSZ",
+         "measure_dir_name" : "add_alfalfa_for_psz",
+         "modeler_description" : "",
+         "name" : "Add Alfalfa for PSZ",
          "result" : {
-            "completed_at" : "20191126T213936Z",
-            "measure_class_name" : "AddOutputVariable",
-            "measure_display_name" : "Add Output Variable",
-            "measure_name" : "add_output_variable",
+            "completed_at" : "20191127T185815Z",
+            "measure_class_name" : "AddAlfalfaForPSZ",
+            "measure_display_name" : "Add Alfalfa for PSZ",
+            "measure_name" : "add_alfalfa_for_psz",
             "measure_taxonomy" : "Reporting.QAQC",
             "measure_type" : "ModelMeasure",
-            "measure_uid" : "2a058afb-e349-49ae-a4bf-2c56a42b4352",
-            "measure_version_id" : "eabf1a4e-7313-4674-9c12-5cc4a990f709",
-            "measure_version_modified" : "20191126T213926Z",
-            "measure_xml_checksum" : "0CA4D54C",
-            "started_at" : "20191126T213936Z",
+            "measure_uid" : "60c68be8-3749-484f-9dbc-5a33212f7b56",
+            "measure_version_id" : "a6927b85-66a2-49d2-bc41-bf0a74c10d14",
+            "measure_version_modified" : "20191127T185810Z",
+            "measure_xml_checksum" : "38F77548",
+            "started_at" : "20191127T185815Z",
             "stderr" : "",
             "stdout" : "",
             "step_errors" : [],
             "step_files" : [],
-            "step_final_condition" : "The model finished with 6 output variable objects.",
+            "step_final_condition" : "Finished adding variables",
             "step_info" : [
-               "Adding output variable for Zone Mean Radiant Temperature reporting timestep.",
-               "Key value for variable is Perimeter_ZN_4 ZN.",
-               "Adding output variable for Zone Mean Radiant Temperature reporting timestep.",
-               "Key value for variable is Perimeter_ZN_2 ZN.",
-               "Adding output variable for Zone Mean Radiant Temperature reporting timestep.",
-               "Key value for variable is Perimeter_ZN_3 ZN.",
-               "Adding output variable for Zone Mean Radiant Temperature reporting timestep.",
-               "Key value for variable is Perimeter_ZN_1 ZN.",
-               "Adding output variable for Zone Mean Radiant Temperature reporting timestep.",
-               "Key value for variable is Core_ZN ZN.",
-               "Adding output variable for Zone Mean Radiant Temperature reporting timestep.",
-               "Key value for variable is Attic ZN."
+               "Adding output variable for Zone Mean Air Temperature.",
+               "Adding output variable for Zone Mean Radiant Temperature.",
+               "Adding output variable for Zone Air System Sensible Heating Rate.",
+               "Adding output variable for Zone Air System Sensible Cooling Rate.",
+               "Adding output variable for Zone Mean Air Temperature.",
+               "Adding output variable for Zone Mean Radiant Temperature.",
+               "Adding output variable for Zone Air System Sensible Heating Rate.",
+               "Adding output variable for Zone Air System Sensible Cooling Rate.",
+               "Adding output variable for Zone Mean Air Temperature.",
+               "Adding output variable for Zone Mean Radiant Temperature.",
+               "Adding output variable for Zone Air System Sensible Heating Rate.",
+               "Adding output variable for Zone Air System Sensible Cooling Rate.",
+               "Adding output variable for Zone Mean Air Temperature.",
+               "Adding output variable for Zone Mean Radiant Temperature.",
+               "Adding output variable for Zone Air System Sensible Heating Rate.",
+               "Adding output variable for Zone Air System Sensible Cooling Rate.",
+               "Adding output variable for Zone Mean Air Temperature.",
+               "Adding output variable for Zone Mean Radiant Temperature.",
+               "Adding output variable for Zone Air System Sensible Heating Rate.",
+               "Adding output variable for Zone Air System Sensible Cooling Rate."
             ],
-            "step_initial_condition" : "The model started with 0 output variable objects.",
+            "step_initial_condition" : "Starting to add variables for Alfalfa",
             "step_result" : "Success",
-            "step_values" : [
-               {
-                  "name" : "variable_name",
-                  "value" : "Zone Mean Radiant Temperature"
-               },
-               {
-                  "name" : "reporting_frequency",
-                  "value" : "timestep"
-               },
-               {
-                  "name" : "key_value",
-                  "value" : "*"
-               },
-               {
-                  "name" : "export_bcvtb",
-                  "value" : "True"
-               }
-            ],
+            "step_values" : [],
             "step_warnings" : []
          }
       },
@@ -79,7 +66,7 @@
          "modeler_description" : "For the most part consumption data comes from the tabular EnergyPlus results, however there are a few requests added for time series results. Space type and loop details come from the OpenStudio model. The code for this is modular, making it easy to use as a template for your own custom reports. The structure of the report uses bootstrap, and the graphs use dimple js.",
          "name" : "OpenStudio Results",
          "result" : {
-            "completed_at" : "20191126T214000Z",
+            "completed_at" : "20191127T185840Z",
             "measure_class_name" : "OpenStudioResults",
             "measure_display_name" : "OpenStudio Results",
             "measure_name" : "openstudio_results",
@@ -89,12 +76,12 @@
             "measure_version_id" : "861c42ba-2105-49e6-b727-9fc3567f4834",
             "measure_version_modified" : "20170323T160651Z",
             "measure_xml_checksum" : "557BF06F",
-            "started_at" : "20191126T213956Z",
+            "started_at" : "20191127T185836Z",
             "stderr" : "",
             "stdout" : "",
             "step_errors" : [],
             "step_files" : [
-               "/private/var/folders/ry/9qrp5ths0g13dj7j20c3c_x93s6z2r/T/OpenStudioApp.if5111/resources/run/001_OpenStudioResults/report.html"
+               "/private/var/folders/ry/9qrp5ths0g13dj7j20c3c_x93s6z2r/T/OpenStudioApp.T35332/resources/run/001_OpenStudioResults/report.html"
             ],
             "step_final_condition" : "Generated report with 21 sections to ./report.html.",
             "step_info" : [],
@@ -186,7 +173,7 @@
                   "value" : true
                },
                {
-                  "display_name" : "-SmallOffice-ASHRAE 169-2006-5A created: 2019-11-05 14:52:18 -0700",
+                  "display_name" : "SmallOffice-5A Unitary",
                   "name" : "building_name",
                   "value" : "building_name"
                },
@@ -1019,6 +1006,6 @@
          }
       }
    ],
-   "updated_at" : "20191126T214001Z",
+   "updated_at" : "20191127T185844Z",
    "weather_file" : "USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
 }

@@ -6004,7 +6004,7 @@ OS:WeatherFile,
   -87.92,                                 !- Longitude {deg}
   -6,                                     !- Time Zone {hr}
   201,                                    !- Elevation {m}
-  file:///private/var/folders/ry/9qrp5ths0g13dj7j20c3c_x93s6z2r/T/OpenStudioApp.Mv5111/resources/files/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw, !- Url
+  file:///private/var/folders/ry/9qrp5ths0g13dj7j20c3c_x93s6z2r/T/OpenStudioApp.q35332/resources/files/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw, !- Url
   C254B53F;                               !- Checksum
 
 OS:Rendering:Color,
@@ -9154,8 +9154,8 @@ OS:Connection,
   2;                                      !- Inlet Port
 
 OS:Output:Variable,
-  {934137dc-6d5c-4173-89c4-5e6890d33f79}, !- Handle
-  Output Variable 1,                      !- Name
+  {bdf31e00-115d-40bb-8f16-779a07d03d0b}, !- Handle
+  Perimeter_ZN_4 ZN_Zone Mean Radiant Temperature, !- Name
   Perimeter_ZN_4 ZN,                      !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9163,8 +9163,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {d8c56bf9-4b27-4311-ac68-a0db94c966a4}, !- Handle
-  Output Variable 2,                      !- Name
+  {2fb542b6-d7eb-42d5-b011-4b7f8ef2c8ef}, !- Handle
+  Perimeter_ZN_2 ZN_Zone Mean Radiant Temperature, !- Name
   Perimeter_ZN_2 ZN,                      !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9172,8 +9172,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {1edd34b4-aeee-4dc5-8bbf-f745f19a790c}, !- Handle
-  Output Variable 3,                      !- Name
+  {a9d89e15-5470-4085-94cb-23fde4a20013}, !- Handle
+  Perimeter_ZN_3 ZN_Zone Mean Radiant Temperature, !- Name
   Perimeter_ZN_3 ZN,                      !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9181,8 +9181,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {5d8d464a-06e4-42c8-a09e-0ff09224ad7d}, !- Handle
-  Output Variable 4,                      !- Name
+  {25969c1e-1892-4b04-9aeb-f0ec68284304}, !- Handle
+  Perimeter_ZN_1 ZN_Zone Mean Radiant Temperature, !- Name
   Perimeter_ZN_1 ZN,                      !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9190,8 +9190,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {48a326af-760d-4370-a035-6e15ee3b9ca4}, !- Handle
-  Output Variable 5,                      !- Name
+  {1014b635-ead0-444c-91dc-a88b6de09db7}, !- Handle
+  Core_ZN ZN_Zone Mean Radiant Temperature, !- Name
   Core_ZN ZN,                             !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9199,8 +9199,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {0ab64b64-6b2d-4d29-92ad-2ffdd476e4e6}, !- Handle
-  Output Variable 6,                      !- Name
+  {e57e409a-afce-4fe2-9403-152993101fcd}, !- Handle
+  Attic ZN_Zone Mean Radiant Temperature, !- Name
   Attic ZN,                               !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9208,8 +9208,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {836c7f07-8ae3-474e-a33e-81670897e4af}, !- Handle
-  Output Variable 7,                      !- Name
+  {f8583e29-6089-47d1-a8e6-93b70610c742}, !- Handle
+  Perimeter_ZN_4 ZN_Zone Air Relative Humidity, !- Name
   Perimeter_ZN_4 ZN,                      !- Key Value
   Zone Air Relative Humidity,             !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9217,8 +9217,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {b0e66bf3-5632-438f-9392-51e0381fa981}, !- Handle
-  Output Variable 8,                      !- Name
+  {7029d7c1-27bd-4d7e-86ec-b10498240186}, !- Handle
+  Perimeter_ZN_2 ZN_Zone Air Relative Humidity, !- Name
   Perimeter_ZN_2 ZN,                      !- Key Value
   Zone Air Relative Humidity,             !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9226,8 +9226,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {f59ced55-52b3-4793-a9b9-38d5765ad5f9}, !- Handle
-  Output Variable 9,                      !- Name
+  {b20818cb-6003-4bff-b760-479a57a4f24e}, !- Handle
+  Perimeter_ZN_3 ZN_Zone Air Relative Humidity, !- Name
   Perimeter_ZN_3 ZN,                      !- Key Value
   Zone Air Relative Humidity,             !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9235,8 +9235,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {82fdd4e0-10dd-45dd-a07c-9c100e297ab1}, !- Handle
-  Output Variable 10,                     !- Name
+  {706597f7-e6ec-4e8f-98f4-7f8dd727462a}, !- Handle
+  Perimeter_ZN_1 ZN_Zone Air Relative Humidity, !- Name
   Perimeter_ZN_1 ZN,                      !- Key Value
   Zone Air Relative Humidity,             !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9244,8 +9244,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {386048f9-bc64-4dc4-8f03-8d49cf436d38}, !- Handle
-  Output Variable 11,                     !- Name
+  {763b412e-b3c1-4dc6-9fa3-8ae60ce5cd54}, !- Handle
+  Core_ZN ZN_Zone Air Relative Humidity,  !- Name
   Core_ZN ZN,                             !- Key Value
   Zone Air Relative Humidity,             !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9253,8 +9253,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {985ba5f0-80b4-4cda-bf54-e23ceac677ba}, !- Handle
-  Output Variable 12,                     !- Name
+  {c8880111-a3f6-4dce-87b5-e8c7495d8e34}, !- Handle
+  Attic ZN_Zone Air Relative Humidity,    !- Name
   Attic ZN,                               !- Key Value
   Zone Air Relative Humidity,             !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9262,8 +9262,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {6957c8e3-179e-4f72-8fa3-e41d01b09a49}, !- Handle
-  Output Variable 13,                     !- Name
+  {2b1eb597-48b7-430d-a598-8a8d2c411129}, !- Handle
+  Perimeter_ZN_4 ZN_Zone People Occupant Count, !- Name
   Perimeter_ZN_4 ZN,                      !- Key Value
   Zone People Occupant Count,             !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9271,8 +9271,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {dcd88ea6-7706-4f15-8609-a13d3d85cc8c}, !- Handle
-  Output Variable 14,                     !- Name
+  {b4191cae-7939-43ad-923c-081bb1e5a866}, !- Handle
+  Perimeter_ZN_2 ZN_Zone People Occupant Count, !- Name
   Perimeter_ZN_2 ZN,                      !- Key Value
   Zone People Occupant Count,             !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9280,8 +9280,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {4585c024-6d6e-4783-8e8c-14e3829363f4}, !- Handle
-  Output Variable 15,                     !- Name
+  {e8a4d625-5125-44bb-b4e1-be854da8f275}, !- Handle
+  Perimeter_ZN_3 ZN_Zone People Occupant Count, !- Name
   Perimeter_ZN_3 ZN,                      !- Key Value
   Zone People Occupant Count,             !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9289,8 +9289,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {7b10c009-6632-418c-afc6-f5f614569b21}, !- Handle
-  Output Variable 16,                     !- Name
+  {849006bc-7a63-46a2-a2d1-cf4a0e7cf356}, !- Handle
+  Perimeter_ZN_1 ZN_Zone People Occupant Count, !- Name
   Perimeter_ZN_1 ZN,                      !- Key Value
   Zone People Occupant Count,             !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9298,8 +9298,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {cff94072-3352-4391-afbb-631156527ac5}, !- Handle
-  Output Variable 17,                     !- Name
+  {829785b2-4b3f-429a-9ed6-d10a0cd36efc}, !- Handle
+  Core_ZN ZN_Zone People Occupant Count,  !- Name
   Core_ZN ZN,                             !- Key Value
   Zone People Occupant Count,             !- Variable Name
   timestep,                               !- Reporting Frequency
@@ -9307,8 +9307,8 @@ OS:Output:Variable,
   True;                                   !- Export To BCVTB
 
 OS:Output:Variable,
-  {54c9cc08-d997-45af-9ab5-3327e63b6b55}, !- Handle
-  Output Variable 18,                     !- Name
+  {e5b924a6-9d2e-4b62-ae20-6060134d1296}, !- Handle
+  Attic ZN_Zone People Occupant Count,    !- Name
   Attic ZN,                               !- Key Value
   Zone People Occupant Count,             !- Variable Name
   timestep,                               !- Reporting Frequency

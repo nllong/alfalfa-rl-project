@@ -42,12 +42,12 @@ class Variables:
         self.inputs_list = list()
 
         root = self.xml.getroot()
-        print ("xml path: ", xmlfilepath, "/ json path: ", jsonfilepath)
+
         inputIndex = 0
         outputIndex = 0
         for index, child in enumerate(root):
             eptag = child.find('EnergyPlus')
-            
+
             if child.attrib['source'] == 'EnergyPlus':
                 name = eptag.attrib['name']
                 variabletype = eptag.attrib['type']
@@ -57,10 +57,7 @@ class Variables:
                 outputIndex += 1
 
             if child.attrib['source'] == 'Ptolemy':
-                #print("Yanfei: ", eptag.tag, " / ", eptag.attrib)
                 tmp = eptag.attrib
-                #print("yanfei eptag: ", tmp,"/ type: ",  type(tmp))
-                
                 if "variable" in tmp.keys():
                     variable = eptag.attrib['variable']
                 elif "actuator" in tmp.keys():
@@ -70,9 +67,8 @@ class Variables:
 
                 inputitem = {'variable': variable, 'index': inputIndex}
                 self.inputs_list.append(inputitem)
-                
                 inputIndex += 1
-                
+
 
         fid = open(jsonfilepath, "r")
         json_string = fid.read()
@@ -117,7 +113,6 @@ class Variables:
 
     def outputIndexFromTypeAndName(self, variabletype, name):
         for outputitem in self.outputs_list:
-            #print ("yanfei output item: ", outputitem)
             if (outputitem['name'] == name) and (outputitem['type'] == variabletype):
                 return outputitem['index']
 
@@ -127,6 +122,6 @@ class Variables:
         for inputitem in self.inputs_list:
             if inputitem['variable'] == variable:
                 return inputitem['index']
-                
+
         return -1;
 

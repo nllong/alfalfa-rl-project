@@ -1,5 +1,5 @@
 EnergyPlus Starting
-EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.27 08:51
+EnergyPlus, Version 9.1.0-fafb9d5652, YMD=2019.11.27 15:09
 Initializing Response Factors
 Calculating CTFs for "INTERIORFURNISHINGS", Construction # 1
 Calculating CTFs for "TYPICAL ATTIC SOFFIT", Construction # 2
@@ -79,5 +79,5 @@ Starting Simulation at 02/02/2006 for RUN PERIOD 1
 Writing tabular output file results using HTML format.
 Computing Life Cycle Costs and Reporting
 Writing final SQL reports
-EnergyPlus Run Time=00hr 00min 19.93sec
+EnergyPlus Run Time=00hr 00min 20.56sec
 EnergyPlus Completed Successfully.
