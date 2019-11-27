@@ -16,6 +16,7 @@ def pe_signal():
     k_pe = 20000
     return [random.random() * k_pe for _ in range(5)]
 
+
 def dummy_flow():
     """
     :return: list, control actions
@@ -24,7 +25,7 @@ def dummy_flow():
     return [random.random() * 0.5 for _ in range(0, 5)]
 
 
-def pid_control(temp_states, previous_flow, setpoint, deadband = 1):
+def pid_control(temp_states, previous_flow, setpoint, deadband=1):
     """
     Simple proportional controller, need to add integrator, no need for derivative
 
@@ -38,34 +39,38 @@ def pid_control(temp_states, previous_flow, setpoint, deadband = 1):
     pid_flow = []
     for index, temp in enumerate(temp_states):
         k_p = 2000
-        if temp <= setpoint + deadband/2 and temp >= setpoint - deadband/2:
+        if temp <= setpoint + deadband / 2 and temp >= setpoint - deadband / 2:
+            # in the deadband... do nothing
+            # print(f'in range... skipping: {temp}')
             pid_flow.append(previous_flow[index])
         else:
-            if temp < setpoint - deadband/2:
-                e = abs(setpoint - temp)
-                pid_flow.append(max(k_p * e, 0))
-            elif temp > setpoint + deadband/2:
-                e = abs(temp - setpoint)
-                pid_flow.append(max(k_p * e, 0))
+            if temp < setpoint - deadband / 2:
+                pid_flow.append(1)
+                # e = abs(setpoint - temp)
+                # pid_flow.append(max(k_p * e, 0))
+            elif temp > setpoint + deadband / 2:
+                pid_flow.append(0)
+                # e = abs(temp - setpoint)
+                # pid_flow.append(max(k_p * e, 0))
 
-    return flow
+    return pid_flow
 
 
 # Setup
 bop = boptest.Boptest(url='http://localhost')
 
 # Winter Heating Window: 2019-11-06 --- 9AM for now
-start_time = datetime.datetime(2019, 11, 6, 9, 00, 0)
+start_time = datetime.datetime(2019, 2, 6, 9, 00, 0)
 simu_length = datetime.timedelta(hours=10)
 end_time = start_time + simu_length
 simu_steps = int(simu_length.total_seconds() / 60.0)  # number of time steps, of which each timestep is 1 minute
-# simu_steps = 60
+simu_steps = 30
 print(
     f'Simulation start {start_time.strftime("%m/%d/%Y %H:%M:%S")}, end {end_time.strftime("%m/%d/%Y %H:%M:%S")} with {simu_steps} total steps'
 )
 
 # Submit only one file
-files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'RefBuildingSmallOffice2013.osm')]
+files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'SmallOffice_1.osm')]
 siteids = bop.submit_many(files)
 bop.start_many(siteids, external_clock="true", start_datetime=start_time, end_datetime=end_time)
 
@@ -76,6 +81,11 @@ history = {
     'T3': [],
     'T4': [],
     'T5': [],
+    'RadTemp1': [],
+    'RadTemp2': [],
+    'RadTemp3': [],
+    'RadTemp4': [],
+    'RadTemp5': [],
     'u1': [],
     'u2': [],
     'u3': [],
@@ -101,7 +111,7 @@ history = {
 }
 
 # Initialize the flow control to random values
-flow = dummy_flow()
+flow = [1, 1, 1, 1, 1]
 # dual band thermostat
 heating_setpoint = 21
 cooling_setpoint = 25
@@ -113,7 +123,6 @@ for i in range(simu_steps):
     state_vars = []
     for siteid in siteids:
         model_outputs = bop.outputs(siteid)
-
 
         current_time = start_time + datetime.timedelta(minutes=i)
         history['timestamp'].append(current_time.strftime('%m/%d/%Y %H:%M:%S'))
@@ -129,6 +138,11 @@ for i in range(simu_steps):
         history['T3'].append(temp_p2)
         history['T4'].append(temp_p3)
         history['T5'].append(temp_p4)
+        history['RadTemp1'].append(model_outputs["Core_ZN ZN_Zone Mean Radiant Temperature"])
+        history['RadTemp2'].append(model_outputs["Perimeter_ZN_1 ZN_Zone Mean Radiant Temperature"])
+        history['RadTemp3'].append(model_outputs["Perimeter_ZN_2 ZN_Zone Mean Radiant Temperature"])
+        history['RadTemp4'].append(model_outputs["Perimeter_ZN_3 ZN_Zone Mean Radiant Temperature"])
+        history['RadTemp5'].append(model_outputs["Perimeter_ZN_4 ZN_Zone Mean Radiant Temperature"])
         state_vars.append(temp_core)
         state_vars.append(temp_p1)
         state_vars.append(temp_p2)
@@ -163,7 +177,15 @@ for i in range(simu_steps):
         print(f"heating rate: core/p1/p2/p3/p4: {heating_core}/{heating_p1}/{heating_p2}/{heating_p3}/{heating_p4}")
 
         temps = [temp_core, temp_p1, temp_p2, temp_p3, temp_p4]
-        flow = pid_control(temps, flow, cooling_setpoint)
+        # manually implement seasonal reset
+        run_cooling_data_start = datetime.datetime(2019, 4, 15, 0, 00, 0)
+        run_cooling_data_end = datetime.datetime(2019, 12, 30, 0, 00, 0)
+
+        if current_time > run_cooling_data_start and current_time < run_cooling_data_end:
+            flow = pid_control(temps, flow, cooling_setpoint)
+        else:
+            flow = pid_control(temps, flow, heating_setpoint)
+
         print(f"new control inputs: core/p1/p2/p3/p4: {flow[0]}/{flow[1]}/{flow[2]}/{flow[3]}/{flow[4]}")
         history['u1'].append(flow[0])
         history['u2'].append(flow[1])
@@ -192,7 +214,7 @@ for i in range(simu_steps):
         history['Tsetpoint_cooling'].append(cooling_setpoint)
         history['Tsetpoint_heating'].append(heating_setpoint)
 
-    bop.setInputs(siteid, new_inputs)
+        bop.setInputs(siteid, new_inputs)
 
     # throttle the requests a bit
     time.sleep(0.01)

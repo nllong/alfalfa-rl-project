@@ -42,9 +42,9 @@ print(
 )
 
 # Submit only one file
-files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'RefBuildingSmallOffice2013.osm')]
+files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'SmallOffice_1.osm')]
 siteids = bop.submit_many(files)
-bop.start_many(siteids, external_clock="false", start_datetime=start_time, end_datetime=end_time)
+bop.start_many(siteids, external_clock="true", start_datetime=start_time, end_datetime=end_time)
 
 history = {
     'timestamp': [],
