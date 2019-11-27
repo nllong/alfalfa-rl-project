@@ -42,7 +42,8 @@ print(
 )
 
 # Submit only one file
-files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'SmallOffice_1.osm')]
+files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'SmallOffice_Unitary_1.osm')]
+# files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'SmallOffice_VAV_1.osm')]
 siteids = bop.submit_many(files)
 bop.start_many(siteids, external_clock="true", start_datetime=start_time, end_datetime=end_time)
 
@@ -53,6 +54,11 @@ history = {
     'T3': [],
     'T4': [],
     'T5': [],
+    'RadTemp1': [],
+    'RadTemp2': [],
+    'RadTemp3': [],
+    'RadTemp4': [],
+    'RadTemp5': [],
     'u1': [],
     'u2': [],
     'u3': [],
@@ -99,6 +105,11 @@ for i in range(simu_steps):
         history['T3'].append(temp_p2)
         history['T4'].append(temp_p3)
         history['T5'].append(temp_p4)
+        history['RadTemp1'].append(model_outputs["Core_ZN ZN_Zone Mean Radiant Temperature"])
+        history['RadTemp2'].append(model_outputs["Perimeter_ZN_1 ZN_Zone Mean Radiant Temperature"])
+        history['RadTemp3'].append(model_outputs["Perimeter_ZN_2 ZN_Zone Mean Radiant Temperature"])
+        history['RadTemp4'].append(model_outputs["Perimeter_ZN_3 ZN_Zone Mean Radiant Temperature"])
+        history['RadTemp5'].append(model_outputs["Perimeter_ZN_4 ZN_Zone Mean Radiant Temperature"])
         state_vars.append(temp_core)
         state_vars.append(temp_p1)
         state_vars.append(temp_p2)
