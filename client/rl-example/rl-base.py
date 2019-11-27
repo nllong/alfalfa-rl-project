@@ -12,6 +12,13 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import boptest
 
 
+def static_flow(value):
+    """
+    :return: list, control actions
+    """
+    return [value for _ in range(0, 5)]
+
+
 def dummy_flow():
     """
     :return: list, control actions
@@ -143,7 +150,7 @@ for i in range(simu_steps):
         print(f"cooling rate: core/p1/p2/p3/p4: {cooling_core}/{cooling_p1}/{cooling_p2}/{cooling_p3}/{cooling_p4}")
         print(f"heating rate: core/p1/p2/p3/p4: {heating_core}/{heating_p1}/{heating_p2}/{heating_p3}/{heating_p4}")
 
-        flow = dummy_flow()
+        flow = static_flow(0)
         print(f"new control inputs: core/p1/p2/p3/p4: {flow[0]}/{flow[1]}/{flow[2]}/{flow[3]}/{flow[4]}")
         history['u1'].append(flow[0])
         history['u2'].append(flow[1])
@@ -177,6 +184,7 @@ for i in range(simu_steps):
         bop.setInputs(siteid, new_inputs)
 
     # throttle the requests a bit
+    time.sleep(5)
     time.sleep(0.01)
 
 bop.stop_many(siteids)

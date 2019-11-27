@@ -6131,13 +6131,18 @@ Output:Meter:MeterFileOnly,
   Hourly;                                 !- Reporting Frequency
 
 Output:Variable,
-  Perimeter_ZN_4 ZN,                      !- Key Value
+  Attic ZN,                               !- Key Value
+  Zone Air Relative Humidity,             !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Attic ZN,                               !- Key Value
   Zone Mean Radiant Temperature,          !- Variable Name
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
-  Perimeter_ZN_1 ZN,                      !- Key Value
-  Zone Air Relative Humidity,             !- Variable Name
+  Attic ZN,                               !- Key Value
+  Zone People Occupant Count,             !- Variable Name
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
@@ -6146,13 +6151,38 @@ Output:Variable,
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
-  Attic ZN,                               !- Key Value
+  Core_ZN ZN,                             !- Key Value
+  Zone Mean Radiant Temperature,          !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Core_ZN ZN,                             !- Key Value
+  Zone People Occupant Count,             !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_1 ZN,                      !- Key Value
   Zone Air Relative Humidity,             !- Variable Name
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
-  Perimeter_ZN_4 ZN,                      !- Key Value
+  Perimeter_ZN_1 ZN,                      !- Key Value
+  Zone Mean Radiant Temperature,          !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_1 ZN,                      !- Key Value
   Zone People Occupant Count,             !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_2 ZN,                      !- Key Value
+  Zone Air Relative Humidity,             !- Variable Name
+  timestep;                               !- Reporting Frequency
+
+Output:Variable,
+  Perimeter_ZN_2 ZN,                      !- Key Value
+  Zone Mean Radiant Temperature,          !- Variable Name
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
@@ -6162,27 +6192,7 @@ Output:Variable,
 
 Output:Variable,
   Perimeter_ZN_3 ZN,                      !- Key Value
-  Zone People Occupant Count,             !- Variable Name
-  timestep;                               !- Reporting Frequency
-
-Output:Variable,
-  Perimeter_ZN_1 ZN,                      !- Key Value
-  Zone People Occupant Count,             !- Variable Name
-  timestep;                               !- Reporting Frequency
-
-Output:Variable,
-  Core_ZN ZN,                             !- Key Value
-  Zone People Occupant Count,             !- Variable Name
-  timestep;                               !- Reporting Frequency
-
-Output:Variable,
-  Attic ZN,                               !- Key Value
-  Zone People Occupant Count,             !- Variable Name
-  timestep;                               !- Reporting Frequency
-
-Output:Variable,
-  Perimeter_ZN_2 ZN,                      !- Key Value
-  Zone Mean Radiant Temperature,          !- Variable Name
+  Zone Air Relative Humidity,             !- Variable Name
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
@@ -6191,18 +6201,8 @@ Output:Variable,
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
-  Perimeter_ZN_1 ZN,                      !- Key Value
-  Zone Mean Radiant Temperature,          !- Variable Name
-  timestep;                               !- Reporting Frequency
-
-Output:Variable,
-  Core_ZN ZN,                             !- Key Value
-  Zone Mean Radiant Temperature,          !- Variable Name
-  timestep;                               !- Reporting Frequency
-
-Output:Variable,
-  Attic ZN,                               !- Key Value
-  Zone Mean Radiant Temperature,          !- Variable Name
+  Perimeter_ZN_3 ZN,                      !- Key Value
+  Zone People Occupant Count,             !- Variable Name
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
@@ -6211,13 +6211,13 @@ Output:Variable,
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
-  Perimeter_ZN_2 ZN,                      !- Key Value
-  Zone Air Relative Humidity,             !- Variable Name
+  Perimeter_ZN_4 ZN,                      !- Key Value
+  Zone Mean Radiant Temperature,          !- Variable Name
   timestep;                               !- Reporting Frequency
 
 Output:Variable,
-  Perimeter_ZN_3 ZN,                      !- Key Value
-  Zone Air Relative Humidity,             !- Variable Name
+  Perimeter_ZN_4 ZN,                      !- Key Value
+  Zone People Occupant Count,             !- Variable Name
   timestep;                               !- Reporting Frequency
 
 OutputControl:Table:Style,

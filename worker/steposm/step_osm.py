@@ -138,11 +138,24 @@ def get_energyplus_datetime(variables, outputs):
     hour_index = variables.outputIndexFromTypeAndName("current_hour","EMS")
     minute_index = variables.outputIndexFromTypeAndName("current_minute","EMS")
 
+    # print(variables)
+    # print(outputs)
+    # print("month_index %s" % month_index)
+    # print("day_index %s" % day_index)
+    # print("hour_index %s" % hour_index)
+    # print("minute_index %s" % minute_index)
+
     day = int(round(outputs[ day_index ]))
     hour= int(round(outputs[ hour_index ]))
     minute= int(round(outputs[ minute_index ]))
     month = int(round(outputs[ month_index ]))
     year = sp.startDatetime.year
+
+    # print("day %s" % day)
+    # print("hour %s" % hour)
+    # print("minute %s" % minute)
+    # print("month %s" % month)
+    # print("year %s" % year)
 
     if minute == 60 and hour == 23:
         hour = 0
@@ -341,6 +354,8 @@ try:
     ep.arguments = (sp.idf, sp.weather)
 
     # Initialize input tuplet
+
+    # NL: Updated to fix index Orignial had the + 1
     ep.inputs = [0] * ((len(sp.variables.inputIds())) + 1)
     # ep.inputs = [0] * ((len(sp.variables.inputIds())) + 0)
     # Start EnergyPlus co-simulation
@@ -405,8 +420,6 @@ try:
             if stop == False:
                 # Write user inputs to E+
                 inputs = getInputs(bypass_flag)
-                #print ("Yanfei inputs: ", inputs)
-
                 ep.write(mlep.mlep_encode_real_data(2, 0, (ep.kStep - 1) * ep.deltaT, inputs))
 
                 # Read outputs
