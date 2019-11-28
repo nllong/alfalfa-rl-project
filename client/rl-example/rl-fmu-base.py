@@ -141,7 +141,9 @@ def main():
         # get zone mean air temperature
         # get zone cooling/heating rate
         # throttle the requests a bit
-        history['timestamp'].append(start_time + datetime.timedelta(seconds=(i * step)))
+        current_time = start_time + datetime.timedelta(seconds=(i * step))
+        print(f'Running time: {current_time.strftime("%m/%d/%Y %H:%M:%S")}')
+        history['timestamp'].append(current_time)
         history['T1'].append(model_outputs['TRooAir_y'] - 273)
         history['ZN1_Heating_Rate'].append(model_outputs['PHea_y'])
         history['u1'].append(u['oveAct_u'])
