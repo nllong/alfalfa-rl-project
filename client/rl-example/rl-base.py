@@ -189,7 +189,6 @@ def main():
             bop.setInputs(siteid, new_inputs)
 
         # throttle the requests a bit
-        time.sleep(5)
         time.sleep(0.01)
 
     bop.stop_many(siteids)
@@ -202,6 +201,7 @@ def main():
     print(history_df)
     history_df.to_csv(f'{result_dir}/{file_basename}.csv')
 
+# In windows you must include this to allow boptest client to multiprocess
 if __name__ == '__main__':
     freeze_support()
     p = Process(target=main)
