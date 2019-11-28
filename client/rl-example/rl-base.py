@@ -1,14 +1,11 @@
 # Author: Nicholas Long / Yanfei Li / Sourav Dey
 
-from multiprocessing import Process, freeze_support
-
-
-
 import datetime
 import os
 import random
 import sys
 import time
+from multiprocessing import Process, freeze_support
 
 import pandas as pd
 
@@ -201,8 +198,13 @@ def main():
     print(history_df)
     history_df.to_csv(f'{result_dir}/{file_basename}.csv')
 
+
 # In windows you must include this to allow boptest client to multiprocess
 if __name__ == '__main__':
-    freeze_support()
-    p = Process(target=main)
-    p.start()
+    if os.name == 'nt':
+        freeze_support()
+        p = Process(target=main)
+        p.start()
+    else:
+        # Running the debugger doesn't work on mac with freeze_support()
+        main()

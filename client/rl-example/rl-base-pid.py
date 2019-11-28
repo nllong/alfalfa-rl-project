@@ -5,6 +5,7 @@ import os
 import random
 import sys
 import time
+from multiprocessing import Process, freeze_support
 
 import pandas as pd
 
@@ -54,6 +55,7 @@ def pid_control(temp_states, previous_flow, setpoint, deadband=1):
                 # pid_flow.append(max(k_p * e, 0))
 
     return pid_flow
+
 
 def main():
     bop = boptest.Boptest(url='http://localhost')
@@ -229,8 +231,13 @@ def main():
     print(history_df)
     history_df.to_csv(f'{result_dir}/{file_basename}.csv')
 
+
 # In windows you must include this to allow boptest client to multiprocess
 if __name__ == '__main__':
-    freeze_support()
-    p = Process(target=main)
-    p.start()
+    if os.name == 'nt':
+        freeze_support()
+        p = Process(target=main)
+        p.start()
+    else:
+        # Running the debugger doesn't work on mac with freeze_support()
+        main()
