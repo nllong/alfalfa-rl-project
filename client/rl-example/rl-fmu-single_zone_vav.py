@@ -47,13 +47,13 @@ def compute_control(y, heating_setpoint, cooling_setpoint):
     u = {
         'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
         'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
-        'oveUSetFan_u': y['senUSetFan_y']
+        'oveUSetFan_u': y['senUSetFan_y'],
     }
 
     return u
 
 
-def initialize_control():
+def initialize_control(heating_setpoint, cooling_setpoint):
     '''Initialize the control input u.
 
     Parameters
@@ -69,8 +69,8 @@ def initialize_control():
     '''
 
     u = {
-        'oveTSetRooHea_u': 18 + 273.15,
-        'oveTSetRooCoo_u': 25 + 273.15,
+        'oveTSetRooHea_u': heating_setpoint + 273.15,
+        'oveTSetRooCoo_u': cooling_setpoint + 273.15,
         'oveUSetFan_u': 0.2,
     }
 
@@ -159,28 +159,28 @@ def main():
     bop = boptest.Boptest(url='http://localhost')
 
     # Denver weather
-    start_time = datetime.datetime(2019, 1, 1, 1, 00, 0)
-    length = 48 * 3600  # 48 hours
+    # 1/1/2019 00:00:00  - Note that we have to start at 1/1 right now.
+    start_time = datetime.datetime(2019, 1, 1, 0, 0, 0)
+    end_time = datetime.datetime(2019, 1, 2, 0, 0, 0)
+
     step = 300  # 5 minutes
+    sim_steps = int((end_time - start_time).total_seconds() / step)  # total time (in seconds) / 5 minute steps
 
-    # Swap the sim_steps to run for a full 48 hours
-    # sim_steps = int(length / step) - 1
-    sim_steps = 100  # test a few steps
-
-    u = initialize_control()
     heating_setpoint = 21
     cooling_setpoint = 25
+    u = initialize_control(heating_setpoint, cooling_setpoint)
 
     file = os.path.join(os.path.dirname(__file__), 'fmus', 'single_zone_vav', 'wrapped.fmu')
     print(f"Uploading test case {file}")
     site = bop.submit(file)
 
     print('Starting simulation')
-    bop.start(site, external_clock="true")
+    bop.start(site, external_clock="true", start_time=start_time, end_time=end_time)
 
     historian = Historian()
     historian.add_point('timestamp', 'Time', None)
     historian.add_point('T1', 'degC', 'TRooAir_y', f_conversion=deg_k_to_c)
+    historian.add_point('Toutdoor', 'degC', 'TOutdoorDB_y', f_conversion=deg_k_to_c)
     historian.add_point('CoolingPower', 'W', 'PCoo_y')
     historian.add_point('HeatingPower', 'W', 'PHea_y')
     historian.add_point('FanPower', 'W', 'PFan_y')
@@ -216,7 +216,7 @@ def main():
         historian.add_data(model_outputs)
 
         # throttle the requests a bit
-        time.sleep(0.01)
+        time.sleep(0.05)
 
     bop.stop(site)
 

@@ -17,7 +17,7 @@ package SingleZoneVAV
       kHea=4,
       TSupChi_nominal=TSupChi_nominal,
       TSetSupAir=286.15) "Controller"
-      annotation (Placement(transformation(extent={{-100,-10},{-80,10}})));
+      annotation (Placement(transformation(extent={{-112,-10},{-92,10}})));
     Buildings.Air.Systems.SingleZone.VAV.ChillerDXHeatingEconomizer hvac(
       redeclare package MediumA = MediumA,
       redeclare package MediumW = MediumW,
@@ -26,7 +26,7 @@ package SingleZoneVAV
       QHea_flow_nominal=7000,
       QCoo_flow_nominal=-7000,
       TSupChi_nominal=TSupChi_nominal)   "Single zone VAV system"
-      annotation (Placement(transformation(extent={{-40,-20},{0,20}})));
+      annotation (Placement(transformation(extent={{-38,-20},{2,20}})));
     Buildings.Air.Systems.SingleZone.VAV.Examples.BaseClasses.Room zon(
         mAir_flow_nominal=0.75,
         lat=weaDat.lat) "Thermal envelope of single zone"
@@ -48,7 +48,7 @@ package SingleZoneVAV
       annotation (Placement(transformation(extent={{40,-140},{60,-120}})));
 
     Buildings.BoundaryConditions.WeatherData.Bus weaBus "Weather data bus"
-      annotation (Placement(transformation(extent={{-118,120},{-98,140}})));
+      annotation (Placement(transformation(extent={{-134,120},{-114,140}})));
 
     Modelica.Blocks.Sources.CombiTimeTable TSetRooHea(
       smoothness=Modelica.Blocks.Types.Smoothness.ConstantSegments,
@@ -68,14 +68,14 @@ package SingleZoneVAV
         unit="K",
         min=273.15 + 10,
         max=273.15 + 35), description="Heating setpoint")
-      annotation (Placement(transformation(extent={{-140,20},{-120,40}})));
+      annotation (Placement(transformation(extent={{-152,20},{-132,40}})));
     Buildings.Utilities.IO.SignalExchange.Overwrite
                              oveTSetRooCoo(
                               u(
         unit="K",
         min=273.15 + 10,
         max=273.15 + 35), description="Cooling setpoint")
-      annotation (Placement(transformation(extent={{-140,-20},{-120,0}})));
+      annotation (Placement(transformation(extent={{-152,-20},{-132,0}})));
     Buildings.Utilities.IO.SignalExchange.Read
                         PPum(y(unit="W"),
       KPIs=Buildings.Utilities.IO.SignalExchange.SignalTypes.SignalsForKPIs.ElectricPower,
@@ -104,12 +104,16 @@ package SingleZoneVAV
       y(unit="K"),
       KPIs=Buildings.Utilities.IO.SignalExchange.SignalTypes.SignalsForKPIs.None,
       description="Room cooling setpoint")
-      annotation (Placement(transformation(extent={{-100,-80},{-80,-60}})));
+      annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+          rotation=180,
+          origin={-142,-36})));
     Buildings.Utilities.IO.SignalExchange.Read senTSetRooHea(
       y(unit="K"),
       KPIs=Buildings.Utilities.IO.SignalExchange.SignalTypes.SignalsForKPIs.None,
       description="Room heating setpoint")
-      annotation (Placement(transformation(extent={{-100,40},{-80,60}})));
+      annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+          rotation=180,
+          origin={-142,64})));
     Buildings.Utilities.IO.SignalExchange.Read ECumuHVAC(
       y(unit="Wh"),
       description="Cumulative HVAV Energy",
@@ -132,60 +136,60 @@ package SingleZoneVAV
         unit="Fraction",
         min=0,
         max=10), description="Override Fan Control")
-      annotation (Placement(transformation(extent={{-72,18},{-52,38}})));
+      annotation (Placement(transformation(extent={{-70,52},{-50,72}})));
   equation
     connect(weaDat.weaBus, weaBus) annotation (Line(
-        points={{-140,130},{-108,130}},
+        points={{-140,130},{-124,130}},
         color={255,204,51},
         thickness=0.5), Text(
         string="%second",
         index=1,
         extent={{6,3},{6,3}}));
 
-    connect(con.yHea, hvac.uHea) annotation (Line(points={{-79,6},{-40,6},{-56,6},
-            {-56,12},{-42,12}},        color={0,0,127}));
-    connect(con.yCooCoiVal, hvac.uCooVal) annotation (Line(points={{-79,0},{-54,0},
-            {-54,5},{-42,5}},             color={0,0,127}));
-    connect(con.yOutAirFra, hvac.uEco) annotation (Line(points={{-79,3},{-50,3},{
-            -50,-2},{-42,-2}},             color={0,0,127}));
-    connect(hvac.chiOn, con.chiOn) annotation (Line(points={{-42,-10},{-60,-10},{
-            -60,-4},{-79,-4}},                                color={255,0,255}));
-    connect(con.TSetSupChi, hvac.TSetChi) annotation (Line(points={{-79,-8},{-70,
-            -8},{-70,-15},{-42,-15}},           color={0,0,127}));
-    connect(con.TMix, hvac.TMix) annotation (Line(points={{-102,2},{-112,2},{
-            -112,-40},{10,-40},{10,-4},{1,-4}},             color={0,0,127}));
+    connect(con.yHea, hvac.uHea) annotation (Line(points={{-91,6},{-56,6},{-56,
+            12},{-40,12}},             color={0,0,127}));
+    connect(con.yCooCoiVal, hvac.uCooVal) annotation (Line(points={{-91,0},{-54,
+            0},{-54,5},{-40,5}},          color={0,0,127}));
+    connect(con.yOutAirFra, hvac.uEco) annotation (Line(points={{-91,3},{-50,3},
+            {-50,-2},{-40,-2}},            color={0,0,127}));
+    connect(hvac.chiOn, con.chiOn) annotation (Line(points={{-40,-10},{-60,-10},
+            {-60,-4},{-91,-4}},                               color={255,0,255}));
+    connect(con.TSetSupChi, hvac.TSetChi) annotation (Line(points={{-91,-8},{
+            -70,-8},{-70,-15},{-40,-15}},       color={0,0,127}));
+    connect(con.TMix, hvac.TMix) annotation (Line(points={{-114,2},{-122,2},{
+            -122,-40},{10,-40},{10,-4},{3,-4}},             color={0,0,127}));
 
-    connect(hvac.supplyAir, zon.supplyAir) annotation (Line(points={{0,8},{10,8},
+    connect(hvac.supplyAir, zon.supplyAir) annotation (Line(points={{2,8},{10,8},
             {10,2},{40,2}},          color={0,127,255}));
-    connect(hvac.returnAir, zon.returnAir) annotation (Line(points={{0,0},{6,0},{
-            6,-2},{10,-2},{40,-2}},  color={0,127,255}));
+    connect(hvac.returnAir, zon.returnAir) annotation (Line(points={{2,0},{6,0},
+            {6,-2},{40,-2}},         color={0,127,255}));
 
-    connect(con.TOut, weaBus.TDryBul) annotation (Line(points={{-102,-2},{-108,
-            -2},{-108,130}},              color={0,0,127}));
+    connect(con.TOut, weaBus.TDryBul) annotation (Line(points={{-114,-2},{-124,
+            -2},{-124,130}},              color={0,0,127}));
     connect(hvac.weaBus, weaBus) annotation (Line(
-        points={{-36,17.8},{-36,130},{-108,130}},
+        points={{-34,17.8},{-34,130},{-124,130}},
         color={255,204,51},
         thickness=0.5));
     connect(zon.weaBus, weaBus) annotation (Line(
-        points={{46,18},{42,18},{42,130},{-108,130}},
+        points={{46,18},{42,18},{42,130},{-124,130}},
         color={255,204,51},
         thickness=0.5));
-    connect(con.TSup, hvac.TSup) annotation (Line(points={{-102,-9},{-108,-9},{
-            -108,-32},{4,-32},{4,-8},{1,-8}},
+    connect(con.TSup, hvac.TSup) annotation (Line(points={{-114,-9},{-118,-9},{
+            -118,-32},{4,-32},{4,-8},{3,-8}},
           color={0,0,127}));
-    connect(con.TRoo, zon.TRooAir) annotation (Line(points={{-102,-6},{-110,-6},{
-            -110,-36},{6,-36},{6,-22},{90,-22},{90,0},{81,0}},      color={0,0,
+    connect(con.TRoo, zon.TRooAir) annotation (Line(points={{-114,-6},{-120,-6},
+            {-120,-36},{6,-36},{6,-22},{90,-22},{90,0},{81,0}},     color={0,0,
             127}));
 
-    connect(hvac.PFan, EFan.u) annotation (Line(points={{1,18},{24,18},{24,-40},{
-            38,-40}},  color={0,0,127}));
-    connect(hvac.QHea_flow, EHea.u) annotation (Line(points={{1,16},{22,16},{22,
+    connect(hvac.PFan, EFan.u) annotation (Line(points={{3,18},{24,18},{24,-40},
+            {38,-40}}, color={0,0,127}));
+    connect(hvac.QHea_flow, EHea.u) annotation (Line(points={{3,16},{22,16},{22,
             -70},{38,-70}},
                        color={0,0,127}));
-    connect(hvac.PCoo, ECoo.u) annotation (Line(points={{1,14},{20,14},{20,-100},
+    connect(hvac.PCoo, ECoo.u) annotation (Line(points={{3,14},{20,14},{20,-100},
             {38,-100}},color={0,0,127}));
-    connect(hvac.PPum, EPum.u) annotation (Line(points={{1,12},{18,12},{18,-130},{
-            38,-130}},   color={0,0,127}));
+    connect(hvac.PPum, EPum.u) annotation (Line(points={{3,12},{18,12},{18,-130},
+            {38,-130}},  color={0,0,127}));
 
     connect(EFan.y, EHVAC.u[1]) annotation (Line(points={{61,-40},{70,-40},{70,-54.75},
             {80,-54.75}},         color={0,0,127}));
@@ -197,41 +201,41 @@ package SingleZoneVAV
     connect(EPum.y, EHVAC.u[4]) annotation (Line(points={{61,-130},{74,-130},{74,-65.25},
             {80,-65.25}},         color={0,0,127}));
     connect(TSetRooHea.y[1], oveTSetRooHea.u)
-      annotation (Line(points={{-159,30},{-142,30}}, color={0,0,127}));
-    connect(oveTSetRooHea.y, con.TSetRooHea) annotation (Line(points={{-119,30},
-            {-116,30},{-116,10},{-102,10}}, color={0,0,127}));
+      annotation (Line(points={{-159,30},{-154,30}}, color={0,0,127}));
+    connect(oveTSetRooHea.y, con.TSetRooHea) annotation (Line(points={{-131,30},
+            {-126,30},{-126,10},{-114,10}}, color={0,0,127}));
     connect(TSetRooCoo.y[1], oveTSetRooCoo.u)
-      annotation (Line(points={{-159,-10},{-142,-10}}, color={0,0,127}));
-    connect(oveTSetRooCoo.y, con.TSetRooCoo) annotation (Line(points={{-119,-10},
-            {-116,-10},{-116,6},{-102,6}}, color={0,0,127}));
-    connect(hvac.PPum, PPum.u) annotation (Line(points={{1,12},{18,12},{18,80},
+      annotation (Line(points={{-159,-10},{-154,-10}}, color={0,0,127}));
+    connect(oveTSetRooCoo.y, con.TSetRooCoo) annotation (Line(points={{-131,-10},
+            {-126,-10},{-126,6},{-114,6}}, color={0,0,127}));
+    connect(hvac.PPum, PPum.u) annotation (Line(points={{3,12},{18,12},{18,80},
             {118,80}}, color={0,0,127}));
-    connect(hvac.PCoo, PCoo.u) annotation (Line(points={{1,14},{14,14},{14,100},
+    connect(hvac.PCoo, PCoo.u) annotation (Line(points={{3,14},{14,14},{14,100},
             {138,100}}, color={0,0,127}));
-    connect(hvac.QHea_flow, PHea.u) annotation (Line(points={{1,16},{10,16},{10,
+    connect(hvac.QHea_flow, PHea.u) annotation (Line(points={{3,16},{10,16},{10,
             120},{118,120}}, color={0,0,127}));
-    connect(hvac.PFan, PFan.u) annotation (Line(points={{1,18},{6,18},{6,140},{
+    connect(hvac.PFan, PFan.u) annotation (Line(points={{3,18},{6,18},{6,140},{
             138,140}}, color={0,0,127}));
     connect(zon.TRooAir, TRooAir.u)
       annotation (Line(points={{81,0},{118,0}}, color={0,0,127}));
-    connect(oveTSetRooCoo.y, senTSetRooCoo.u) annotation (Line(points={{-119,
-            -10},{-116,-10},{-116,-70},{-102,-70}}, color={0,0,127}));
-    connect(oveTSetRooHea.y, senTSetRooHea.u) annotation (Line(points={{-119,30},
-            {-116,30},{-116,50},{-102,50}}, color={0,0,127}));
+    connect(oveTSetRooCoo.y, senTSetRooCoo.u) annotation (Line(points={{-131,
+            -10},{-126,-10},{-126,-36},{-130,-36}}, color={0,0,127}));
+    connect(oveTSetRooHea.y, senTSetRooHea.u) annotation (Line(points={{-131,30},
+            {-126,30},{-126,64},{-130,64}}, color={0,0,127}));
     connect(EHVAC.y, ECumuHVAC.u)
       annotation (Line(points={{101.7,-60},{118,-60}}, color={0,0,127}));
     connect(TOutdoorDB.u, weaBus.TDryBul) annotation (Line(points={{118,38},{
-            -108,38},{-108,130}}, color={0,0,127}), Text(
+            -124,38},{-124,130}}, color={0,0,127}), Text(
         string="%second",
         index=1,
         extent={{-6,3},{-6,3}},
         horizontalAlignment=TextAlignment.Right));
-    connect(con.yFan, oveUSetFan.u) annotation (Line(points={{-79,9},{-79,18.5},
-            {-74,18.5},{-74,28}}, color={0,0,127}));
-    connect(oveUSetFan.y, hvac.uFan) annotation (Line(points={{-51,28},{-46,28},
-            {-46,18},{-42,18}}, color={0,0,127}));
+    connect(con.yFan, oveUSetFan.u) annotation (Line(points={{-91,9},{-91,18.5},
+            {-72,18.5},{-72,62}}, color={0,0,127}));
+    connect(oveUSetFan.y, hvac.uFan) annotation (Line(points={{-49,62},{-46,62},
+            {-46,18},{-40,18}}, color={0,0,127}));
     connect(senUSetFan.u, hvac.uFan) annotation (Line(points={{-32,52},{-40,52},
-            {-40,28},{-46,28},{-46,18},{-42,18}}, color={0,0,127}));
+            {-40,28},{-46,28},{-46,18},{-40,18}}, color={0,0,127}));
     annotation (
       experiment(
         StopTime=504800,
