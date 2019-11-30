@@ -25,7 +25,6 @@ cd {root_path}/client/rl-example/fmus/<package_to_build>
 * Now you can submit the wrapped.mo file to Alfalfa!
 
 
-
 # Notes / Issues
 
 * The kpis.json file needs to be added to the FMU before it is uploaded to Alfalfa. The data_manager.py library is in the worker node, but it doesn't compile or wgrap the FMU (Which it probably should). Needed to add generate and add kpi.json by updating the parser and data_manager python files.
