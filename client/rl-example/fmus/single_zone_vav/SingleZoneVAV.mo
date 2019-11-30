@@ -110,6 +110,29 @@ package SingleZoneVAV
       KPIs=Buildings.Utilities.IO.SignalExchange.SignalTypes.SignalsForKPIs.None,
       description="Room heating setpoint")
       annotation (Placement(transformation(extent={{-100,40},{-80,60}})));
+    Buildings.Utilities.IO.SignalExchange.Read ECumuHVAC(
+      y(unit="Wh"),
+      description="Cumulative HVAV Energy",
+      KPIs=Buildings.Utilities.IO.SignalExchange.SignalTypes.SignalsForKPIs.None)
+      annotation (Placement(transformation(extent={{120,-70},{140,-50}})));
+
+    Buildings.Utilities.IO.SignalExchange.Read TOutdoorDB(
+      KPIs=Buildings.Utilities.IO.SignalExchange.SignalTypes.SignalsForKPIs.None,
+      y(unit="K"),
+      description="Outdoor Drybulb")
+      annotation (Placement(transformation(extent={{120,28},{140,48}})));
+
+    Buildings.Utilities.IO.SignalExchange.Read senUSetFan(
+      y(unit="K"),
+      KPIs=Buildings.Utilities.IO.SignalExchange.SignalTypes.SignalsForKPIs.None,
+      description="Fan Control Setpoint")
+      annotation (Placement(transformation(extent={{-30,42},{-10,62}})));
+
+    Buildings.Utilities.IO.SignalExchange.Overwrite oveUSetFan(u(
+        unit="Fraction",
+        min=0,
+        max=10), description="Override Fan Control")
+      annotation (Placement(transformation(extent={{-72,18},{-52,38}})));
   equation
     connect(weaDat.weaBus, weaBus) annotation (Line(
         points={{-140,130},{-108,130}},
@@ -119,8 +142,6 @@ package SingleZoneVAV
         index=1,
         extent={{6,3},{6,3}}));
 
-    connect(con.yFan, hvac.uFan) annotation (Line(points={{-79,9},{-60,9},{-60,18},
-            {-42,18}},               color={0,0,127}));
     connect(con.yHea, hvac.uHea) annotation (Line(points={{-79,6},{-40,6},{-56,6},
             {-56,12},{-42,12}},        color={0,0,127}));
     connect(con.yCooCoiVal, hvac.uCooVal) annotation (Line(points={{-79,0},{-54,0},
@@ -197,6 +218,20 @@ package SingleZoneVAV
             -10},{-116,-10},{-116,-70},{-102,-70}}, color={0,0,127}));
     connect(oveTSetRooHea.y, senTSetRooHea.u) annotation (Line(points={{-119,30},
             {-116,30},{-116,50},{-102,50}}, color={0,0,127}));
+    connect(EHVAC.y, ECumuHVAC.u)
+      annotation (Line(points={{101.7,-60},{118,-60}}, color={0,0,127}));
+    connect(TOutdoorDB.u, weaBus.TDryBul) annotation (Line(points={{118,38},{
+            -108,38},{-108,130}}, color={0,0,127}), Text(
+        string="%second",
+        index=1,
+        extent={{-6,3},{-6,3}},
+        horizontalAlignment=TextAlignment.Right));
+    connect(con.yFan, oveUSetFan.u) annotation (Line(points={{-79,9},{-79,18.5},
+            {-74,18.5},{-74,28}}, color={0,0,127}));
+    connect(oveUSetFan.y, hvac.uFan) annotation (Line(points={{-51,28},{-46,28},
+            {-46,18},{-42,18}}, color={0,0,127}));
+    connect(senUSetFan.u, hvac.uFan) annotation (Line(points={{-32,52},{-40,52},
+            {-40,28},{-46,28},{-46,18},{-42,18}}, color={0,0,127}));
     annotation (
       experiment(
         StopTime=504800,

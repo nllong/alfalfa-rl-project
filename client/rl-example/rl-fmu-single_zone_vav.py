@@ -42,9 +42,12 @@ def compute_control(y, heating_setpoint, cooling_setpoint):
     # Compute control
     e = setpoint - y['TRooAir_y']
     # value = max(k_p * e, 0)
+
+    # Sourav -- I think we want to try and control the oveUSetFan_u value.
     u = {
-        'oveTSetRooHea_u': heating_setpoint + 273.15 + random.randint(-4, 1),
-        'oveTSetRooCoo_u': cooling_setpoint + 273.15 + random.randint(-1, 4)
+        'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
+        'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
+        'oveUSetFan_u': y['senUSetFan_y']
     }
 
     return u
@@ -65,8 +68,11 @@ def initialize_control():
 
     '''
 
-    u = {'oveAct_u': 0,
-         'oveAct_activate': 1}
+    u = {
+        'oveTSetRooHea_u': 18 + 273.15,
+        'oveTSetRooCoo_u': 25 + 273.15,
+        'oveUSetFan_u': 0.2,
+    }
 
     return u
 
@@ -122,12 +128,16 @@ class Historian(object):
         """
 
         for point_name, value in values.items():
-            name = self.name_map[point_name]
-            # print(f"name {name} and point {point_name} with value {value}")
-            f = self.conversion_map[name] if self.conversion_map[name] is not None else None
-            if f:
-                value = f(value)
-            self.data[name].append(value)
+            if point_name in self.name_map:
+                name = self.name_map[point_name]
+                # print(f"name {name} and point {point_name} with value {value}")
+                f = self.conversion_map[name] if self.conversion_map[name] is not None else None
+                if f:
+                    value = f(value)
+                self.data[name].append(value)
+            else:
+                # point_name is not registered in historian, skipping
+                pass
 
     def add_datum(self, name, value):
         f = self.conversion_map[name] if self.conversion_map[name] is not None else None
@@ -152,8 +162,10 @@ def main():
     start_time = datetime.datetime(2019, 1, 1, 1, 00, 0)
     length = 48 * 3600  # 48 hours
     step = 300  # 5 minutes
-    sim_steps = int(length / step) - 1
-    # sim_steps = 100  # test a few steps
+
+    # Swap the sim_steps to run for a full 48 hours
+    # sim_steps = int(length / step) - 1
+    sim_steps = 100  # test a few steps
 
     u = initialize_control()
     heating_setpoint = 21
@@ -173,11 +185,13 @@ def main():
     historian.add_point('HeatingPower', 'W', 'PHea_y')
     historian.add_point('FanPower', 'W', 'PFan_y')
     historian.add_point('PumpPower', 'W', 'PPum_y')
+    historian.add_point('TotalHVACEnergy', 'Ws', 'ECumuHVAC_y')  # I think this is in Watt-seconds! (sorry)
     historian.add_point('HeatingSetpoint', '', 'senTSetRooHea_y', f_conversion=deg_k_to_c)
     historian.add_point('CoolingSetpoint', '', 'senTSetRooCoo_y', f_conversion=deg_k_to_c)
+    historian.add_point('FanControlInput', '', 'senUSetFan_y')
     historian.add_point('u_CoolingSetpoint', '', 'oveTSetRooCoo_u', f_conversion=deg_k_to_c)
     historian.add_point('u_HeatingSetpoint', '', 'oveTSetRooHea_u', f_conversion=deg_k_to_c)
-
+    historian.add_point('u_FanOverride', '', 'oveUSetFan_u')
 
     # Initialize the flow control to random values
     # flow = [1, 1, 1, 1, 1]
