@@ -19,7 +19,7 @@ def pe_signal():
 
 
 # def Controller(object):
-def compute_control(y, costs, heating_setpoint, cooling_setpoint):
+def compute_control(y, costs, time, heating_setpoint, cooling_setpoint):
     """
     y has any of the accessible model outputs such as the cooling power etc.
     costs are the caclulated costs for the latest timestep, including PMV
@@ -30,16 +30,31 @@ def compute_control(y, costs, heating_setpoint, cooling_setpoint):
     """
     # Controller parameters
     setpoint = heating_setpoint + 273.15
-    k_p = 3500
+    k_fan = 4
     # Compute control
-    e = setpoint - y['TRooAir_y']
-    # value = max(k_p * e, 0)
+    e = setpoint - y['TRooAir_y']  # 275-273 = 2 deg C
+    if e > 0:
+        value = 0
+    else:
+        value = abs(k_fan * e)
+        if value > 1:
+            value = 1
+
+    # read from existing values
+    # y['TRooAir_y']
+    # y['ECumuHVAC']
+
+    # if datetime.time(11, 00) < time.time() < datetime.time(15, 00):
+    #     new_control_fan = 2.5
+    # else:
+    #     new_control_fan = 0.4
 
     # Sourav -- I think we want to try and control the oveUSetFan_u value.
     result = {
         'u': {
-            'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
-            'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
+            # 'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
+            # 'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
+            'oveUSetFan_u': value
         },
         'historian': {
             'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
@@ -193,7 +208,7 @@ def main():
     site = bop.submit(file)
 
     print('Starting simulation')
-    bop.start(site, external_clock="true")  # , start_time=start_time, end_time=end_time)
+    bop.start(site, external_clock="true", start_datetime=57000, end_datetime=90000)
 
     historian = Historian()
     historian.add_point('timestamp', 'Time', None)
@@ -231,7 +246,7 @@ def main():
         costs = compute_costs(model_outputs, current_time)
         historian.add_data(costs)
 
-        u = compute_control(model_outputs, costs, heating_setpoint, cooling_setpoint)
+        u = compute_control(model_outputs, costs, current_time, heating_setpoint, cooling_setpoint)
         historian.add_data(u['historian'])
 
         # current_time = start_time + datetime.timedelta(minutes=i)

@@ -264,7 +264,7 @@ startTime = sys.argv[4]
 if startTime == 'undefined':
     startTime = 0;
 else:
-    starTime = int(sys.argv[4])
+    startTime = int(sys.argv[4])
 endTime = sys.argv[5]
 if endTime == 'undefined':
     endTime = 86400;
