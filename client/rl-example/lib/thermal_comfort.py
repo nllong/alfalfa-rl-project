@@ -11,7 +11,7 @@ class ThermalComfort(object):
 
 
     @classmethod
-    def pmv(cls, ta, tr, met, clo, vel, rh, wme=0):
+    def pmv_ppd(cls, ta, tr, met, clo, vel, rh, wme=0):
         """
         :param ta: float, Air Temperature (C)
         :param tr: float, mean radiant temperature (C)

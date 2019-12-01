@@ -6,7 +6,7 @@ import random
 import sys
 import time
 from multiprocessing import Process, freeze_support
-
+from lib.thermal_comfort import ThermalComfort
 import pandas as pd
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -18,24 +18,16 @@ def pe_signal():
     return [random.random() * k_pe for _ in range(5)]
 
 
-def dummy_flow():
-    """
-    :return: list, control actions
-    """
-    # create a number for the Supply Fan status
-    return [random.random() * 0.5 for _ in range(0, 5)]
-
-
 # def Controller(object):
-def compute_control(y, heating_setpoint, cooling_setpoint):
+def compute_control(y, costs, heating_setpoint, cooling_setpoint):
     """
+    y has any of the accessible model outputs such as the cooling power etc.
+    costs are the caclulated costs for the latest timestep, including PMV
 
     :param y: Temperature of zone, K
     :param heating_setpoint: Temperature Setpoint, C
     :return: dict, control input to be used for the next step {<input_name> : <input_value>}
     """
-    # y has any of the accessible model outputs such as the cooling power etc.
-
     # Controller parameters
     setpoint = heating_setpoint + 273.15
     k_p = 3500
@@ -44,13 +36,42 @@ def compute_control(y, heating_setpoint, cooling_setpoint):
     # value = max(k_p * e, 0)
 
     # Sourav -- I think we want to try and control the oveUSetFan_u value.
-    u = {
-        'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
-        'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
-        'oveUSetFan_u': y['senUSetFan_y'],
+    result = {
+        'u': {
+            'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
+            'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
+        },
+        'historian': {
+            'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
+            'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
+            'oveUSetFan_u': y['senUSetFan_y'],
+        }
     }
 
-    return u
+    return result
+
+
+def compute_costs(y, timestamp):
+    # Assumptions:
+    #   Occupied hours: 8 - 18
+    #   TRadiant is 1.5 degC lower than room drybulb -- rough assumption. Need from model.
+    #   met is 1.2 (office filing seated)
+    #   clo is 1 clo for winter
+    #   vel is 0.2 m/s
+    #   rh is 50
+
+    if datetime.time(8, 00) < timestamp.time() < datetime.time(18, 00):
+        pmv, ppd = ThermalComfort.pmv_ppd(y['TRooAir_y'] - 273.15, y['TRooAir_y'] - 273.15 - 1.5, 1.20, 1, 0.2, 50)
+    else:
+        pmv = 0
+        ppd = 0
+
+    result = {
+        'pmv': pmv,
+        'ppd': ppd,
+    }
+
+    return result
 
 
 def initialize_control(heating_setpoint, cooling_setpoint):
@@ -68,13 +89,18 @@ def initialize_control(heating_setpoint, cooling_setpoint):
 
     '''
 
-    u = {
-        'oveTSetRooHea_u': heating_setpoint + 273.15,
-        'oveTSetRooCoo_u': cooling_setpoint + 273.15,
-        'oveUSetFan_u': 0.2,
+    result = {
+        'u': {
+            'oveTSetRooHea_u': heating_setpoint + 273.15,
+            'oveTSetRooCoo_u': cooling_setpoint + 273.15,
+        },
+        'historian': {
+            'oveTSetRooHea_u': heating_setpoint + 273.15,
+            'oveTSetRooCoo_u': cooling_setpoint + 273.15,
+            'oveUSetFan_u': 0.2,
+        }
     }
-
-    return u
+    return result
 
 
 def deg_k_to_c(kelvin):
@@ -87,15 +113,6 @@ class Historian(object):
         self.name_map = {}
         self.units = {}
         self.conversion_map = {}
-
-    # def name_from_point(self, point_name):
-    #     """
-    #     Assumes that the mapping exists, will not check for non-existent keys at the moment.
-    #
-    #     :param point_name: point_name to look up the historian name
-    #     :return:
-    #     """
-    #     return list(self.name_map.keys())[list(self.name_map.values()).index(point_name)]
 
     def add_point(self, name, units, point_name, f_conversion=None):
         """
@@ -112,6 +129,7 @@ class Historian(object):
 
         self.data[name] = []
         self.conversion_map[name] = f_conversion
+        self.units[name] = units
 
         if point_name is not None:
             if point_name in self.name_map.keys():
@@ -175,7 +193,7 @@ def main():
     site = bop.submit(file)
 
     print('Starting simulation')
-    bop.start(site, external_clock="true", start_time=start_time, end_time=end_time)
+    bop.start(site, external_clock="true")  # , start_time=start_time, end_time=end_time)
 
     historian = Historian()
     historian.add_point('timestamp', 'Time', None)
@@ -192,6 +210,8 @@ def main():
     historian.add_point('u_CoolingSetpoint', '', 'oveTSetRooCoo_u', f_conversion=deg_k_to_c)
     historian.add_point('u_HeatingSetpoint', '', 'oveTSetRooHea_u', f_conversion=deg_k_to_c)
     historian.add_point('u_FanOverride', '', 'oveUSetFan_u')
+    historian.add_point('PMV', '', 'pmv')
+    historian.add_point('PPD', '', 'ppd')
 
     # Initialize the flow control to random values
     # flow = [1, 1, 1, 1, 1]
@@ -199,18 +219,24 @@ def main():
 
     print('Stepping through time')
     for i in range(sim_steps):
-        bop.setInputs(site, u)
+        current_time = start_time + datetime.timedelta(seconds=(i * step))
+
+        bop.setInputs(site, u['u'])
         bop.advance([site])
         model_outputs = bop.outputs(site)
         # print(u)
         # print(model_outputs)
         sys.stdout.flush()
-        u = compute_control(model_outputs, heating_setpoint, cooling_setpoint)
-        historian.add_data(u)
+
+        costs = compute_costs(model_outputs, current_time)
+        historian.add_data(costs)
+
+        u = compute_control(model_outputs, costs, heating_setpoint, cooling_setpoint)
+        historian.add_data(u['historian'])
 
         # current_time = start_time + datetime.timedelta(minutes=i)
         # history['timestamp'].append(current_time.strftime('%m/%d/%Y %H:%M:%S'))
-        current_time = start_time + datetime.timedelta(seconds=(i * step))
+
         print(f'Running time: {current_time.strftime("%m/%d/%Y %H:%M:%S")}')
         historian.add_datum('timestamp', current_time)
         historian.add_data(model_outputs)
