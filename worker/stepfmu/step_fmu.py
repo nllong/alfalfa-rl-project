@@ -89,17 +89,18 @@ class RunFMUSite:
         # Load fmu
         config = {
             'fmupath'  : fmupath,
+            'start_time': self.startTime,
             'step'     : 300,
-            'kpipath' : self.directory + '/resources/kpis.json'
+            'kpipath'  : self.directory + '/resources/kpis.json',
         }
 
         (self.tagid_and_outputs, self.id_and_dis, self.default_input) = self.create_tag_dictionaries(tagpath)
 
-        #initiate the testcase
-        self.tc = common.testcase.TestCase(config)
+        #initiate the testcase. Pass the config dict as arguments to use the kwargs in the initializer.
+        self.tc = common.testcase.TestCase(**config)
 
         #run the FMU simulation
-        self.kstep=0
+        self.kstep = 0
         self.stop = False
         self.simtime = 0
 
@@ -154,7 +155,7 @@ class RunFMUSite:
                         self.set_idle_state()
                     elif data == 'stop':
                         self.set_idle_state()
-                        break;
+                        break
         else:
             while self.simtime < self.endTime:
                 if self.db_stop_set():
@@ -219,7 +220,7 @@ class RunFMUSite:
 
     def step(self):
         # u represents simulation input values
-        u=self.default_input.copy()
+        u = self.default_input.copy()
         # look in the database for current write arrays
         # for each write array there is an array of controller
         # input values, the first element in the array with a value
@@ -262,12 +263,12 @@ if real_time_flag:
     time_scale = 1
 startTime = sys.argv[4]
 if startTime == 'undefined':
-    startTime = 0;
+    startTime = 0
 else:
     startTime = int(sys.argv[4])
 endTime = sys.argv[5]
 if endTime == 'undefined':
-    endTime = 86400;
+    endTime = 86400
 else:
     endTime = int(sys.argv[5])
 externalClock = (sys.argv[6] == 'true')

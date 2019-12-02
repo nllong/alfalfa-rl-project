@@ -6,8 +6,9 @@ import random
 import sys
 import time
 from multiprocessing import Process, freeze_support
-from lib.thermal_comfort import ThermalComfort
+
 import pandas as pd
+from lib.thermal_comfort import ThermalComfort
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import boptest
@@ -193,8 +194,9 @@ def main():
 
     # Denver weather
     # 1/1/2019 00:00:00  - Note that we have to start at 1/1 right now.
-    start_time = datetime.datetime(2019, 1, 1, 0, 0, 0)
-    end_time = datetime.datetime(2019, 1, 2, 0, 0, 0)
+    beg_time = datetime.datetime(2019, 1, 1, 0, 0, 0)
+    start_time = datetime.datetime(2019, 1, 2, 0, 0, 0)
+    end_time = datetime.datetime(2019, 1, 3, 0, 0, 0)
 
     step = 300  # 5 minutes
     sim_steps = int((end_time - start_time).total_seconds() / step)  # total time (in seconds) / 5 minute steps
@@ -208,7 +210,12 @@ def main():
     site = bop.submit(file)
 
     print('Starting simulation')
-    bop.start(site, external_clock="true", start_datetime=57000, end_datetime=90000)
+    bop.start(
+        site,
+        external_clock="true",
+        start_datetime=int((start_time - beg_time).total_seconds()),
+        end_datetime=int((end_time - beg_time).total_seconds())
+    )
 
     historian = Historian()
     historian.add_point('timestamp', 'Time', None)
