@@ -1,5 +1,5 @@
 # Alfalfa
-
+ 
 This is a Haystack implementation backed by a virtual building. Virtual building simulation is performed using OpenStudio and EnergyPlus.
 
 ## Getting Started (Server)
