@@ -27,10 +27,10 @@ def pe_signal():
 def states(model_outputs, current_time):
     i_temp = y['TRooAir_y'] - 273.15
     o_temp = y['TOutdoorDB_y'] - 273.15
-    energy = y['ECumuHVAC']
+    #energy = y['ECumuHVAC']
     t_state = current_time.time().hour + current_time.time().minute / 60
 
-    return (np.array([[i_temp,o_temp,energy,t_state]))
+    return (np.array([[i_temp,o_temp,t_state]))
 
 
 # def Controller(object):
@@ -98,12 +98,26 @@ def action_flowrate(action_mean):
         action=[0.001]
     elif action>1.0:
         action=[1.0]
-    return (action)
+
+    result = {
+        'u': {
+            # 'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
+            # 'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
+            'oveUSetFan_u': action
+        },
+        'historian': {
+            'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
+            'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
+            'oveUSetFan_u': y['senUSetFan_y'],
+        }
+    }
+
+    return result
 
 #create the actor network
-def actor_network(current_state,next_state):
+def actor_network():
     actor=Sequential()
-    actor.add(Dense(100,activation='sigmoid',input_shape=(4,),kernel_initializer='he_uniform'))
+    actor.add(Dense(100,activation='sigmoid',input_shape=(3,),kernel_initializer='he_uniform'))
     actor.add(Dense(200, activation='tanh', kernel_initializer='he_uniform'))
     actor.add(Dense(8, activation='tanh', kernel_initializer='he_uniform'))
     actor.add(Dense(1, activation='sigmoid', kernel_initializer='he_uniform'))
@@ -129,7 +143,7 @@ def actor_network(current_state,next_state):
 #create the critic network
 def critic_network():
     critic=Sequential()
-    critic.add(Dense(100,activation='sigmoid',input_shape=(4,),kernel_initializer='he_uniform'))
+    critic.add(Dense(100,activation='sigmoid',input_shape=(3,),kernel_initializer='he_uniform'))
     critic.add(Dense(200, activation='relu', kernel_initializer='he_uniform'))
     critic.add(Dense(8, activation='tanh', kernel_initializer='he_uniform'))
     critic.add(Dense(1, activation='tanh', kernel_initializer='he_uniform'))
@@ -142,9 +156,9 @@ def critic_network():
 
     return critic
 
-def train_model(current_state,action,next_state,reward):
+def train_model(current_state,next_state,reward):
 
-    value = critic_network().predict([state[0:1]])
+    value = critic_network().predict([current_state[0:1]])
     next_value=critic_network().predict([next_state[0:1]])
 
     gamma_td=0.9
@@ -152,7 +166,7 @@ def train_model(current_state,action,next_state,reward):
     target = reward+gamma_td*next_value
     targ = np.array([target])
 
-    critic_v=critic_network().fit(state, targ, epochs=50, verbose=0)
+    critic_v=critic_network().fit(current_state, targ, epochs=50, verbose=0)
     actor_a=actor_network(current_state,next_state).fit(current_state,advantage,epochs=50)
 
 
@@ -328,23 +342,49 @@ def main():
     # dual band thermostat
 
     print('Stepping through time')
+
+    #initialize the first state
+    (np.array([[i_temp, o_temp, energy, t_state]))
+    current_state=np.array([21.2,0,0])
+
+
     for i in range(sim_steps):
         current_time = start_time + datetime.timedelta(seconds=(i * step))
 
-        bop.setInputs(site, u['u'])
+
+
+        #compute action
+        actor_mean = actor_network().predict([state[0:1]])
+        u =float(action_flowrate(action_mean))
+
+        bop.setInputs(site, {'oveUSetFan_u': u})
         bop.advance([site])
         model_outputs = bop.outputs(site)
+
+        next_state=states(model_outputs, current_time)
+
+
         # print(u)
         # print(model_outputs)
         sys.stdout.flush()
 
         current_state= states(model_outputs, current_time) #get the current state
+        reward = compute_costs(model_outputs, current_time)  #get the current cost
 
 
-        costs = compute_costs(model_outputs, current_time)
+        train_model(current_state, next_state, reward)
+
+        current_state=next_state
+
+
+
+
+
         historian.add_data(costs)
 
-        u = compute_control(model_outputs, costs, current_time, heating_setpoint, cooling_setpoint)
+
+
+        #u = compute_control(model_outputs, costs, current_time, heating_setpoint, cooling_setpoint)
         historian.add_data(u['historian'])
 
         # current_time = start_time + datetime.timedelta(minutes=i)
