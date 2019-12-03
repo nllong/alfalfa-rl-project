@@ -101,7 +101,7 @@ def action_flowrate(action_mean):
     return (action)
 
 #create the actor network
-def actor_network(state,next_state):
+def actor_network(current_state,next_state):
     actor=Sequential()
     actor.add(Dense(100,activation='sigmoid',input_shape=(4,),kernel_initializer='he_uniform'))
     actor.add(Dense(200, activation='tanh', kernel_initializer='he_uniform'))
@@ -114,8 +114,14 @@ def actor_network(state,next_state):
 
     actor.compile(loss=custom_loss, optimizer=sgd)
 
+
+
+
+
     def custom_loss(y_true,y_pred):
-        s=np.clip(y_pred,a_min=0.0001, a_max=1.0)
+        s= np.clip(y_pred,a_min=0.0001, a_max=1.0)
+        s=-np.log(s)
+        return s
 
     return actor
 
@@ -136,7 +142,22 @@ def critic_network():
 
     return critic
 
-def actor_action():
+def train_model(current_state,action,next_state,reward):
+
+    value = critic_network().predict([state[0:1]])
+    next_value=critic_network().predict([next_state[0:1]])
+
+    gamma_td=0.9
+    advantage=reward+gamma_td*next_value-value
+    target = reward+gamma_td*next_value
+    targ = np.array([target])
+
+    critic_v=critic_network().fit(state, targ, epochs=50, verbose=0)
+    actor_a=actor_network(current_state,next_state).fit(current_state,advantage,epochs=50)
+
+
+
+
 
 
 
