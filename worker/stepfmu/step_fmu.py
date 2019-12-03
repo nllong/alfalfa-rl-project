@@ -159,7 +159,7 @@ class RunFMUSite:
         else:
             while self.simtime < self.endTime:
                 if self.db_stop_set():
-                    break;
+                    break
                 self.step()
                 # TODO: Make this respect time scale provided by user
                 time.sleep(5)
