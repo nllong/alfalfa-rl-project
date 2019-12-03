@@ -13,7 +13,6 @@ from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import SGD
 from lib.thermal_comfort import ThermalComfort
-import tensorflow as tf
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import boptest
@@ -30,7 +29,7 @@ def states(model_outputs, current_time):
     # energy = y['ECumuHVAC']
     t_state = current_time.time().hour + current_time.time().minute / 60
 
-    return np.array([i_temp, o_temp, t_state])
+    return np.array([[i_temp, o_temp, t_state]])
 
 
 # def Controller(object):
@@ -48,7 +47,7 @@ def compute_control(y, costs, time, heating_setpoint, cooling_setpoint):
     k_fan = 4
 
     # Defining the input states
-    state = np.array([i_temp, o_temp, energy])
+    state = np.array([[i_temp, o_temp, energy]])
 
     # Compute control
     e = setpoint - y['TRooAir_y']  # 275-273 = 2 deg C
@@ -110,9 +109,10 @@ def action_flowrate(action_mean):
 # create the actor network
 def actor_network():
     def custom_loss(y_true, y_pred):
-        s= tf.keras.backend.clip(y_pred,0.0001,1.0)
-        #s = np.clip(y_pred, a_min=0.0001, a_max=1.0)
-        s = -tf.keras.backend.log(s)
+        print(y_true)
+        print(y_pred)
+        s = np.clip(y_pred, a_min=0.0001, a_max=1.0)
+        s = -np.log(s)
         return s
 
     actor = Sequential()
@@ -148,8 +148,8 @@ def critic_network():
 
 
 def train_model(current_state, next_state, reward):
-    value = critic_network().predict(current_state)
-    next_value = critic_network().predict(next_state)
+    value = critic_network().predict([current_state[0:1]])
+    next_value = critic_network().predict([next_state[0:1]])
 
     gamma_td = 0.9
     advantage = reward + gamma_td * next_value - value
@@ -346,7 +346,7 @@ def main():
         current_time = start_time + datetime.timedelta(seconds=(i * step))
 
         # compute action
-        actor_mean = actor_network().predict(current_state)
+        actor_mean = actor_network().predict([current_state[0:1]])
         u = float(action_flowrate(actor_mean))
 
         bop.setInputs(site, {'oveUSetFan_u': u})
