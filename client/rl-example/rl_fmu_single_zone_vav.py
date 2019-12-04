@@ -1,15 +1,15 @@
 # Author: Nicholas Long / Sourav Dey
 
 import datetime
+import json
 import os
 import random
 import sys
 import time
 from multiprocessing import Process, freeze_support
 
-import pandas as pd
-from lib.thermal_comfort import ThermalComfort
 from lib.historian import Historian
+from lib.thermal_comfort import ThermalComfort
 from lib.unit_conversions import deg_k_to_c
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -216,9 +216,14 @@ def main():
     # storage for results
     file_basename = os.path.splitext(os.path.basename(__file__))[0]
     result_dir = f'results_{file_basename}'
-    print(historian.to_df())
     historian.save_csv(result_dir, f'{file_basename}.csv')
-    print(historian.evaluate_performance())
+    historian.save_pickle(result_dir, f'{file_basename}.pkl')
+    print(historian.to_df().describe())
+    kpis = historian.evaluate_performance()
+    with open(f'{result_dir}/kpis_result.json', 'w') as f:
+        f.write(json.dumps(kpis, indent=2))
+    print(kpis)
+
 
 # In windows you must include this to allow boptest client to multiprocess
 if __name__ == '__main__':

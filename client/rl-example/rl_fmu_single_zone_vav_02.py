@@ -1,6 +1,7 @@
 # Author: Nicholas Long / Sourav Dey
 
 import datetime
+import json
 import os
 import random
 import sys
@@ -265,9 +266,13 @@ def main():
     # storage for results
     file_basename = os.path.splitext(os.path.basename(__file__))[0]
     result_dir = f'results_{file_basename}'
-    print(historian.to_df())
     historian.save_csv(result_dir, f'{file_basename}.csv')
-    print(historian.evaluate_performance())
+    historian.save_pickle(result_dir, f'{file_basename}.pkl')
+    print(historian.to_df().describe())
+    kpis = historian.evaluate_performance()
+    with open(f'{result_dir}/kpis_result.json', 'w') as f:
+        f.write(json.dumps(kpis, indent=2))
+    print(kpis)
 
 
 # In windows you must include this to allow boptest client to multiprocess
