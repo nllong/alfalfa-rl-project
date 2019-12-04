@@ -30,7 +30,7 @@ def states(model_outputs, current_time):
     # energy = y['ECumuHVAC']
     t_state = current_time.time().hour + current_time.time().minute / 60
 
-    return np.array([i_temp, o_temp, t_state])
+    return np.array([[i_temp, o_temp, t_state]])
 
 
 # def Controller(object):
@@ -48,7 +48,7 @@ def compute_control(y, costs, time, heating_setpoint, cooling_setpoint):
     k_fan = 4
 
     # Defining the input states
-    state = np.array([i_temp, o_temp, energy])
+    #state = np.array([i_temp, o_temp, energy])
 
     # Compute control
     e = setpoint - y['TRooAir_y']  # 275-273 = 2 deg C
@@ -84,8 +84,8 @@ def compute_control(y, costs, time, heating_setpoint, cooling_setpoint):
 
 
 # defining the action and limiting it between nearly zero and 1, we should get this value from the actor network
-def action_flowrate(action_mean):
-    action = float(np.random.normal(action_mean, 0.01, 1))
+def action_flowrate(action_mean,exploration):
+    action = float(np.random.normal(action_mean, exploration, 1))
     if action < 0.001:
         action = [0.001]
     elif action > 1.0:
@@ -148,8 +148,8 @@ def critic_network():
 
 
 def train_model(current_state, next_state, reward):
-    value = critic_network().predict(current_state)
-    next_value = critic_network().predict(next_state)
+    value = float(critic_network().predict(current_state))
+    next_value = float(critic_network().predict(next_state))
 
     gamma_td = 0.9
     advantage = reward + gamma_td * next_value - value
@@ -339,15 +339,21 @@ def main():
     print('Stepping through time')
 
     # initialize the first state
-    # (np.array([[i_temp, o_temp, energy, t_state]]))
-    current_state = np.array([21.2, 0, 0])
+    current_state = np.array([[21.2, 0, 0]])
+
+    #initialize the exploration term
+    exploration=0.01
+    exploration_dot=(exploration-0.001)/sim_steps
+
 
     for i in range(sim_steps):
         current_time = start_time + datetime.timedelta(seconds=(i * step))
 
         # compute action
         actor_mean = actor_network().predict(current_state)
-        u = float(action_flowrate(actor_mean))
+        u = float(action_flowrate(actor_mean,exploration))
+
+        exploration = exploration- exploration_dot #decrease exploration gradually per time step
 
         bop.setInputs(site, {'oveUSetFan_u': u})
         bop.advance([site])
