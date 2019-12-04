@@ -6,6 +6,7 @@ import datetime
 import os
 import sys
 import time
+import json
 from multiprocessing import Process, freeze_support
 
 from lib.historian import Historian
@@ -99,7 +100,10 @@ def main():
     historian.save_csv(result_dir, f'{file_basename}.csv')
     historian.save_pickle(result_dir, f'{file_basename}.pkl')
     print(historian.to_df().describe())
-    print(historian.evaluate_performance())
+    kpis = historian.evaluate_performance()
+    with open(f'{result_dir}/kpis_result.json', 'w') as f:
+        f.write(json.dumps(kpis, indent=2))
+    print(kpis)
 
 
 # In windows you must include this to allow boptest client to multiprocess

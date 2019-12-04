@@ -2,3 +2,9 @@
 */*_result.mat
 **/*.csv_trimmed
 */kpis.json
+*/ds*.txt
+*/ds*.c
+*/ds*.obj
+*/buildlog.txt
+*/dymosim.exe
+
