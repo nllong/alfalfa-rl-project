@@ -7,13 +7,16 @@ import sys
 import time
 from multiprocessing import Process, freeze_support
 
+
 import numpy as np
 import pandas as pd
+import tensorflow as tf
+
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import SGD
 from lib.thermal_comfort import ThermalComfort
-import tensorflow as tf
+
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import boptest
@@ -147,8 +150,9 @@ def train_model(current_state, next_state, reward):
     target = reward + gamma_td * next_value
     targ = np.array([target])
 
-    critic_v = critic_network().fit(current_state, targ, epochs=10, verbose=0)
-    actor_a = actor_network(current_state, next_state).fit(current_state, advantage, epochs=10)
+    #update the actor and critic network
+    critic_network().fit(np.array(current_state), targ, epochs=10, verbose=0)
+    actor_network().fit(np.array(current_state), np.array([advantage]), epochs=10)
 
 
 def compute_rewards(y, timestamp):
