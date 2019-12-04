@@ -10,6 +10,7 @@ from multiprocessing import Process, freeze_support
 import pandas as pd
 from lib.thermal_comfort import ThermalComfort
 from lib.historian import Historian
+from lib.unit_conversions import deg_k_to_c
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import boptest
@@ -128,10 +129,6 @@ def initialize_control(heating_setpoint, cooling_setpoint):
         }
     }
     return result
-
-
-def deg_k_to_c(kelvin):
-    return kelvin - 273.15
 
 
 def main():

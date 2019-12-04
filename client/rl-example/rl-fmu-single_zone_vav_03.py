@@ -8,11 +8,12 @@ import time
 from multiprocessing import Process, freeze_support
 
 import numpy as np
-import pandas as pd
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import SGD
+from lib.historian import Historian
 from lib.thermal_comfort import ThermalComfort
+from lib.unit_conversions import deg_k_to_c
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import boptest
@@ -30,56 +31,6 @@ def states(model_outputs, current_time):
     t_state = current_time.time().hour + current_time.time().minute / 60
 
     return np.array([[i_temp, o_temp, t_state]])
-
-
-# def Controller(object):
-def compute_control(y, costs, time, heating_setpoint, cooling_setpoint):
-    """
-    y has any of the accessible model outputs such as the cooling power etc.
-    costs are the caclulated costs for the latest timestep, including PMV
-
-    :param y: Temperature of zone, K
-    :param heating_setpoint: Temperature Setpoint, C
-    :return: dict, control input to be used for the next step {<input_name> : <input_value>}
-    """
-    # Controller parameters
-    setpoint = heating_setpoint + 273.15
-    k_fan = 4
-
-    # Defining the input states
-    state = np.array([[i_temp, o_temp, energy]])
-
-    # Compute control
-    e = setpoint - y['TRooAir_y']  # 275-273 = 2 deg C
-    if e > 0:
-        value = 0
-    else:
-        value = abs(k_fan * e)
-        if value > 1:
-            value = 1
-
-    # y['ECumuHVAC']
-
-    # if datetime.time(11, 00) < time.time() < datetime.time(15, 00):
-    #     new_control_fan = 2.5
-    # else:
-    #     new_control_fan = 0.4
-
-    # Sourav -- I think we want to try and control the oveUSetFan_u value.
-    result = {
-        'u': {
-            # 'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
-            # 'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
-            'oveUSetFan_u': value
-        },
-        'historian': {
-            'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
-            'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
-            'oveUSetFan_u': y['senUSetFan_y'],
-        }
-    }
-
-    return result
 
 
 # defining the action and limiting it between nearly zero and 1, we should get this value from the actor network
@@ -222,76 +173,6 @@ def initialize_control(heating_setpoint, cooling_setpoint):
     return result
 
 
-def deg_k_to_c(kelvin):
-    return kelvin - 273.15
-
-
-class Historian(object):
-    def __init__(self):
-        self.data = {}
-        self.name_map = {}
-        self.units = {}
-        self.conversion_map = {}
-
-    def add_point(self, name, units, point_name, f_conversion=None):
-        """
-        Add a point to store to the historian
-
-        :param name: string, name of the datapoint. Must be convertible into dict key and dataframe column
-        :param units: string, units in which the values are stored
-        :param point_name: string, name of the point to extract from the model output dictionary from Alfalfa
-        :param f_conversion: function pointer, function to call to convert the value
-        :return:
-        """
-        if name in self.data.keys():
-            raise Exception(f'Historian point already exists for {name}')
-
-        self.data[name] = []
-        self.conversion_map[name] = f_conversion
-        self.units[name] = units
-
-        if point_name is not None:
-            if point_name in self.name_map.keys():
-                raise Exception(f'Point name in name map already exists for {point_name}')
-
-            self.name_map[point_name] = name
-
-    def add_data(self, values):
-        """
-        Append the data in the fields into the mapped column names. Pulls data out of values and
-        into the historian.
-
-        :param values: dict
-        """
-
-        for point_name, value in values.items():
-            if point_name in self.name_map:
-                name = self.name_map[point_name]
-                # print(f"name {name} and point {point_name} with value {value}")
-                f = self.conversion_map[name] if self.conversion_map[name] is not None else None
-                if f:
-                    value = f(value)
-                self.data[name].append(value)
-            else:
-                # point_name is not registered in historian, skipping
-                pass
-
-    def add_datum(self, name, value):
-        f = self.conversion_map[name] if self.conversion_map[name] is not None else None
-
-        if f:
-            value = f(value)
-        self.data[name].append(value)
-
-    def to_df(self):
-        return pd.DataFrame.from_dict(self.data)
-
-    def save_csv(self, filepath, filename):
-        os.makedirs(filepath, exist_ok=True)
-
-        self.to_df().to_csv(f'{filepath}/{filename}')
-
-
 def main():
     bop = boptest.Boptest(url='http://localhost')
 
@@ -385,9 +266,10 @@ def main():
 
     # storage for results
     file_basename = os.path.splitext(os.path.basename(__file__))[0]
-    result_dir = f'results-{file_basename}'
+    result_dir = f'results_{file_basename}'
     print(historian.to_df())
     historian.save_csv(result_dir, f'{file_basename}.csv')
+    print(historian.evaluate_performance())
 
 
 # In windows you must include this to allow boptest client to multiprocess
