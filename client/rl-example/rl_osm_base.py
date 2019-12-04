@@ -192,7 +192,7 @@ def main():
 
     # storage for results
     file_basename = os.path.splitext(os.path.basename(__file__))[0]
-    result_dir = f'results-{file_basename}'
+    result_dir = f'results_{file_basename}'
     os.makedirs(result_dir, exist_ok=True)
     history_df = pd.DataFrame.from_dict(history)
     print(history_df)

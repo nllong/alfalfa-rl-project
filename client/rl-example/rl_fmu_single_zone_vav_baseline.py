@@ -46,6 +46,7 @@ def main():
     historian = Historian()
     historian.add_point('timestamp', 'Time', None)
     historian.add_point('T1', 'degC', 'TRooAir_y', f_conversion=deg_k_to_c)
+    historian.add_point('T1_Rad', 'degC', 'TRooRad_y', f_conversion=deg_k_to_c)
     historian.add_point('Toutdoor', 'degC', 'TOutdoorDB_y', f_conversion=deg_k_to_c)
     historian.add_point('CoolingPower', 'W', 'PCoo_y')
     historian.add_point('HeatingPower', 'W', 'PHea_y')
@@ -94,7 +95,7 @@ def main():
 
     # storage for results
     file_basename = os.path.splitext(os.path.basename(__file__))[0]
-    result_dir = f'results-{file_basename}'
+    result_dir = f'results_{file_basename}'
     historian.save_csv(result_dir, f'{file_basename}.csv')
     historian.save_pickle(result_dir, f'{file_basename}.pkl')
     print(historian.to_df().describe())
