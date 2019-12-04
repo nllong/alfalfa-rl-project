@@ -25,9 +25,8 @@ def pe_signal():
 
 
 def states(model_outputs, current_time):
-    i_temp = y['TRooAir_y'] - 273.15
-    o_temp = y['TOutdoorDB_y'] - 273.15
-    # energy = y['ECumuHVAC']
+    i_temp = model_outputs['TRooAir_y'] - 273.15
+    o_temp = model_outputs['TOutdoorDB_y'] - 273.15
     t_state = current_time.time().hour + current_time.time().minute / 60
 
     return np.array([[i_temp, o_temp, t_state]])
@@ -87,24 +86,16 @@ def compute_control(y, costs, time, heating_setpoint, cooling_setpoint):
 def action_flowrate(action_mean,exploration):
     action = float(np.random.normal(action_mean, exploration, 1))
     if action < 0.001:
-        action = [0.001]
+        action = 0.001
     elif action > 1.0:
-        action = [1.0]
+        action = 1.0
 
-    result = {
-        'u': {
-            # 'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
-            # 'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
-            'oveUSetFan_u': action
-        },
-        'historian': {
-            'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
-            'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
-            'oveUSetFan_u': y['senUSetFan_y'],
-        }
-    }
+    heating_setpoint = 21
+    cooling_setpoint = 25
 
-    return result
+
+
+    return action
 
 
 # create the actor network
@@ -156,8 +147,8 @@ def train_model(current_state, next_state, reward):
     target = reward + gamma_td * next_value
     targ = np.array([target])
 
-    critic_v = critic_network().fit(current_state, targ, epochs=50, verbose=0)
-    actor_a = actor_network(current_state, next_state).fit(current_state, advantage, epochs=50)
+    critic_v = critic_network().fit(current_state, targ, epochs=10, verbose=0)
+    actor_a = actor_network(current_state, next_state).fit(current_state, advantage, epochs=10)
 
 
 def compute_rewards(y, timestamp):
@@ -207,6 +198,7 @@ def initialize_control(heating_setpoint, cooling_setpoint):
         {<input_name> : <input_value>}
 
     '''
+
 
     result = {
         'u': {
@@ -359,13 +351,13 @@ def main():
         bop.advance([site])
         model_outputs = bop.outputs(site)
 
-        next_state = states(model_outputs, current_time)
+        next_state = states(model_outputs, current_time) #get the next state
 
         # print(u)
         # print(model_outputs)
         sys.stdout.flush()
 
-        current_state = states(model_outputs, current_time)  # get the current state
+
         reward, all_rewards = compute_rewards(model_outputs, current_time)  # get the current cost
 
         train_model(current_state, next_state, reward)
