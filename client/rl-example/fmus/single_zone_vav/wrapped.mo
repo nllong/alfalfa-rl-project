@@ -10,6 +10,7 @@ model wrapped "Wrapped model"
 	Modelica.Blocks.Interfaces.RealOutput PHea_y(unit="W") = mod.PHea.y "Heater power";
 	Modelica.Blocks.Interfaces.RealOutput PFan_y(unit="W") = mod.PFan.y "Fan electrical power";
 	Modelica.Blocks.Interfaces.RealOutput senTSetRooCoo_y(unit="K") = mod.senTSetRooCoo.y "Room cooling setpoint";
+	Modelica.Blocks.Interfaces.RealOutput TRooRad_y(unit="K") = mod.TRooRad.y "Room rad temperature";
 	Modelica.Blocks.Interfaces.RealOutput PCoo_y(unit="W") = mod.PCoo.y "Cooling electrical power";
 	Modelica.Blocks.Interfaces.RealOutput TRooAir_y(unit="K") = mod.TRooAir.y "Room air temperature";
 	Modelica.Blocks.Interfaces.RealOutput senUSetFan_y(unit="K") = mod.senUSetFan.y "Fan Control Setpoint";

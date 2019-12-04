@@ -80,7 +80,7 @@ def compute_rewards(y, timestamp):
     power = y['PCoo_y'] + y['PHea_y'] + y['PFan_y'] + y['PPum_y']
 
     if datetime.time(8, 00) < timestamp.time() < datetime.time(18, 00):
-        pmv, ppd = ThermalComfort.pmv_ppd(y['TRooAir_y'] - 273.15, y['TRooAir_y'] - 273.15 - 1.5, 1.20, 1, 0.2, 50)
+        pmv, ppd = ThermalComfort.pmv_ppd(y['TRooAir_y'] - 273.15, y['TRooRad_y'] - 273.15, 1.20, 1, 0.2, 50)
     else:
         pmv = 0
         ppd = 0
@@ -165,6 +165,7 @@ def main():
     historian = Historian()
     historian.add_point('timestamp', 'Time', None)
     historian.add_point('T1', 'degC', 'TRooAir_y', f_conversion=deg_k_to_c)
+    historian.add_point('T1_Rad', 'degC', 'TRooRad_y', f_conversion=deg_k_to_c)
     historian.add_point('Toutdoor', 'degC', 'TOutdoorDB_y', f_conversion=deg_k_to_c)
     historian.add_point('CoolingPower', 'W', 'PCoo_y')
     historian.add_point('HeatingPower', 'W', 'PHea_y')
