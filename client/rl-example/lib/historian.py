@@ -98,6 +98,7 @@ class Historian(object):
         total_hvac_energy = df.sum(axis=0)['TotalHVACPower'] / 12 / 1000  # kwh
         total_hvac_energy_occupied = df_occ_hours.sum(axis=0)['TotalHVACPower'] / 12 / 1000  # kwh
         average_ppd = df.mean(axis=0)['PPD']
+        average_ppd_occupied = df_occ_hours.mean(axis=0)['PPD']
         # average_ppd_occupied = df_occ_hours.mean(axis=0)['PPD']  # this is not valuable
 
         return {
@@ -108,6 +109,7 @@ class Historian(object):
             'total_hvac_energy': total_hvac_energy,
             'total_hvac_energy_occupied': total_hvac_energy_occupied,
             'average_ppd': average_ppd,
+            'average_ppd_occupied': average_ppd_occupied,
         }
 
 

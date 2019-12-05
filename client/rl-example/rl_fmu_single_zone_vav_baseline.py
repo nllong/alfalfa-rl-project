@@ -30,7 +30,6 @@ def main():
 
     heating_setpoint = 21
     cooling_setpoint = 25
-    # u = initialize_control(heating_setpoint, cooling_setpoint)
 
     file = os.path.join(os.path.dirname(__file__), 'fmus', 'single_zone_vav', 'wrapped.fmu')
     print(f"Uploading test case {file}")

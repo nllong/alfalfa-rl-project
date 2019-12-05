@@ -3,7 +3,6 @@
 import datetime
 import json
 import os
-import random
 import sys
 import time
 from multiprocessing import Process, freeze_support
@@ -16,13 +15,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import boptest
 
 
-def pe_signal():
-    k_pe = 20000
-    return [random.random() * k_pe for _ in range(5)]
-
-
 # def Controller(object):
-def compute_control(y, costs, time, heating_setpoint, cooling_setpoint):
+def compute_control(y, reward, time, heating_setpoint, cooling_setpoint):
     """
     y has any of the accessible model outputs such as the cooling power etc.
     costs are the caclulated costs for the latest timestep, including PMV
@@ -33,30 +27,13 @@ def compute_control(y, costs, time, heating_setpoint, cooling_setpoint):
     """
     # Controller parameters
     setpoint = heating_setpoint + 273.15
-    k_fan = 4
+    k_fan = 3.5
     # Compute control
     e = setpoint - y['TRooAir_y']  # 275-273 = 2 deg C
-    if e > 0:
-        value = 0
-    else:
-        value = abs(k_fan * e)
-        if value > 1:
-            value = 1
+    value = min(max(k_fan * e, 0), 0.45)
 
-    # read from existing values
-    # y['TRooAir_y']
-    # y['ECumuHVAC']
-
-    # if datetime.time(11, 00) < time.time() < datetime.time(15, 00):
-    #     new_control_fan = 2.5
-    # else:
-    #     new_control_fan = 0.4
-
-    # Sourav -- I think we want to try and control the oveUSetFan_u value.
     result = {
         'u': {
-            # 'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
-            # 'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
             'oveUSetFan_u': value
         },
         'historian': {
@@ -179,30 +156,25 @@ def main():
     historian.add_point('PMV', '', 'pmv')
     historian.add_point('PPD', '', 'ppd')
     historian.add_point('Reward', '', 'reward')
-
-    # Initialize the flow control to random values
-    # flow = [1, 1, 1, 1, 1]
-    # dual band thermostat
-
     print('Stepping through time')
     for i in range(sim_steps):
         current_time = start_time + datetime.timedelta(seconds=(i * step))
         bop.setInputs(site, u['u'])
         bop.advance([site])
         model_outputs = bop.outputs(site)
-
-        # print(u)
-        # print(model_outputs)
         sys.stdout.flush()
 
         reward_scalar, all_rewards = compute_rewards(model_outputs, current_time)
         historian.add_data(all_rewards)
 
+        # if datetime.time(8, 00) < current_time.time() < datetime.time(18, 00):
+        #     heating_setpoint = 21 + 273.15
+        #     cooling_setpoint = 25 + 273.15
+        # else:
+        #     heating_setpoint = 16 + 273.15
+        #     cooling_setpoint = 29 + 273.15
         u = compute_control(model_outputs, reward_scalar, current_time, heating_setpoint, cooling_setpoint)
         historian.add_data(u['historian'])
-
-        # current_time = start_time + datetime.timedelta(minutes=i)
-        # history['timestamp'].append(current_time.strftime('%m/%d/%Y %H:%M:%S'))
 
         print(f'Running time: {current_time.strftime("%m/%d/%Y %H:%M:%S")}')
         historian.add_datum('timestamp', current_time)
