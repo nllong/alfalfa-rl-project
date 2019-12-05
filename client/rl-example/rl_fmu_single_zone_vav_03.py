@@ -1,6 +1,7 @@
 # Author: Nicholas Long / Sourav Dey
 
 import datetime
+import json
 import os
 import random
 import sys
@@ -8,6 +9,7 @@ import time
 from multiprocessing import Process, freeze_support
 
 import numpy as np
+import tensorflow as tf
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import SGD
@@ -25,54 +27,39 @@ def pe_signal():
 
 
 def states(model_outputs, current_time):
-    i_temp = y['TRooAir_y'] - 273.15
-    o_temp = y['TOutdoorDB_y'] - 273.15
-    # energy = y['ECumuHVAC']
+    i_temp = model_outputs['TRooAir_y'] - 273.15
+    o_temp = model_outputs['TOutdoorDB_y'] - 273.15
     t_state = current_time.time().hour + current_time.time().minute / 60
 
     return np.array([[i_temp, o_temp, t_state]])
 
 
 # defining the action and limiting it between nearly zero and 1, we should get this value from the actor network
-def action_flowrate(action_mean):
-    action = float(np.random.normal(action_mean, 0.01, 1))
+def action_flowrate(action_mean, exploration):
+    action = float(np.random.normal(action_mean, exploration, 1))
     if action < 0.001:
-        action = [0.001]
+        action = 0.001
     elif action > 1.0:
-        action = [1.0]
+        action = 1.0
 
-    result = {
-        'u': {
-            # 'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
-            # 'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
-            'oveUSetFan_u': action
-        },
-        'historian': {
-            'oveTSetRooHea_u': heating_setpoint + 273.15,  # + random.randint(-4, 1),
-            'oveTSetRooCoo_u': cooling_setpoint + 273.15,  # + random.randint(-1, 4)
-            'oveUSetFan_u': y['senUSetFan_y'],
-        }
-    }
-
-    return result
+    return action
 
 
 # create the actor network
-def actor_network():
+def actor_network(advantage):
     def custom_loss(y_true, y_pred):
-        print(y_true)
-        print(y_pred)
-        s = np.clip(y_pred, a_min=0.0001, a_max=1.0)
-        s = -np.log(s)
+        s = tf.keras.backend.clip(y_pred, 0.00008, 1.0)  #prevent any log zero case
+        # s = np.clip(y_pred, a_min=0.0001, a_max=1.0)
+        s = -tf.keras.backend.log(s)*advantage
         return s
 
     actor = Sequential()
-    actor.add(Dense(100, activation='sigmoid', input_shape=(3,), kernel_initializer='he_uniform'))
-    actor.add(Dense(200, activation='tanh', kernel_initializer='he_uniform'))
-    actor.add(Dense(8, activation='tanh', kernel_initializer='he_uniform'))
+    actor.add(Dense(200, activation='sigmoid', input_shape=(3,), kernel_initializer='he_uniform'))
+    actor.add(Dense(250, activation='tanh', kernel_initializer='he_uniform'))
+    actor.add(Dense(50, activation='tanh', kernel_initializer='he_uniform'))
     actor.add(Dense(1, activation='sigmoid', kernel_initializer='he_uniform'))
 
-    epochs, learning_rate, momentum = 80, 0.01, 0.8
+    epochs, learning_rate, momentum = 80, 0.0005, 0.7
     decay_rate = learning_rate / epochs
     sgd = SGD(lr=learning_rate, momentum=momentum, decay=decay_rate)
 
@@ -84,12 +71,12 @@ def actor_network():
 # create the critic network
 def critic_network():
     critic = Sequential()
-    critic.add(Dense(100, activation='sigmoid', input_shape=(3,), kernel_initializer='he_uniform'))
-    critic.add(Dense(200, activation='relu', kernel_initializer='he_uniform'))
-    critic.add(Dense(8, activation='tanh', kernel_initializer='he_uniform'))
+    critic.add(Dense(200, activation='sigmoid', input_shape=(3,), kernel_initializer='he_uniform'))
+    critic.add(Dense(250, activation='relu', kernel_initializer='he_uniform'))
+    critic.add(Dense(50, activation='tanh', kernel_initializer='he_uniform'))
     critic.add(Dense(1, activation='tanh', kernel_initializer='he_uniform'))
 
-    epochs, learning_rate, momentum = 100, 0.1, 0.8
+    epochs, learning_rate, momentum = 100, 0.02, 0.7
     decay_rate = learning_rate / epochs
     sgd = SGD(lr=learning_rate, momentum=momentum, decay=decay_rate, )
 
@@ -99,21 +86,22 @@ def critic_network():
 
 
 def train_model(current_state, next_state, reward):
-    value = critic_network().predict([current_state[0:1]])
-    next_value = critic_network().predict([next_state[0:1]])
+    value = float(critic_network().predict(current_state))
+    next_value = float(critic_network().predict(next_state))
 
     gamma_td = 0.9
     advantage = reward + gamma_td * next_value - value
     target = reward + gamma_td * next_value
-    targ = np.array([target])
 
-    critic_v = critic_network().fit(current_state, targ, epochs=50, verbose=0)
-    actor_a = actor_network(current_state, next_state).fit(current_state, advantage, epochs=50)
+
+    # update the actor and critic network
+    critic_network().fit(np.array(current_state), np.array([target]), epochs=5, verbose=0)
+    actor_network(advantage).fit(np.array(current_state), np.array([advantage]), epochs=5)
 
 
 def compute_rewards(y, timestamp):
     # Assumptions:
-    #   Occupied hours: 8 - 18
+    #    Occupied hours: 8 - 18
     #   TRadiant is 1.5 degC lower than room drybulb -- rough assumption. Need from model.
     #   met is 1.2 (office filing seated)
     #   clo is 1 clo for winter
@@ -123,7 +111,7 @@ def compute_rewards(y, timestamp):
     power = y['PCoo_y'] + y['PHea_y'] + y['PFan_y'] + y['PPum_y']
 
     if datetime.time(8, 00) < timestamp.time() < datetime.time(18, 00):
-        pmv, ppd = ThermalComfort.pmv_ppd(y['TRooAir_y'] - 273.15, y['TRooAir_y'] - 273.15 - 1.5, 1.20, 1, 0.2, 50)
+        pmv, ppd = ThermalComfort.pmv_ppd(y['TRooAir_y'] - 273.15, y['TRooRad_y'] - 273.15, 1.20, 1, 0.2, 50)
     else:
         pmv = 0
         ppd = 0
@@ -132,7 +120,7 @@ def compute_rewards(y, timestamp):
     # power is between 0 and ~ 7000. Assume max at 10,000 W. 7000/10000 = 0.7 * 10 = 7 E [0, 10]
     # ppd is between 0 and 100 E [0,100]
     # reward E [-100, 0]
-    reward = -1 * (power / 1000 + ppd)
+    reward = -1 * (power / 1000 + 1.5*ppd)
 
     all_data = {
         'pmv': pmv,
@@ -198,11 +186,13 @@ def main():
     historian = Historian()
     historian.add_point('timestamp', 'Time', None)
     historian.add_point('T1', 'degC', 'TRooAir_y', f_conversion=deg_k_to_c)
+    historian.add_point('T1_Rad', 'degC', 'TRooRad_y', f_conversion=deg_k_to_c)
     historian.add_point('Toutdoor', 'degC', 'TOutdoorDB_y', f_conversion=deg_k_to_c)
     historian.add_point('CoolingPower', 'W', 'PCoo_y')
     historian.add_point('HeatingPower', 'W', 'PHea_y')
     historian.add_point('FanPower', 'W', 'PFan_y')
     historian.add_point('PumpPower', 'W', 'PPum_y')
+    historian.add_point('TotalHVACPower', 'W', 'power')
     historian.add_point('TotalHVACEnergy', 'Ws', 'ECumuHVAC_y')  # I think this is in Watt-seconds! (sorry)
     historian.add_point('HeatingSetpoint', '', 'senTSetRooHea_y', f_conversion=deg_k_to_c)
     historian.add_point('CoolingSetpoint', '', 'senTSetRooCoo_y', f_conversion=deg_k_to_c)
@@ -212,6 +202,7 @@ def main():
     historian.add_point('u_FanOverride', '', 'oveUSetFan_u')
     historian.add_point('PMV', '', 'pmv')
     historian.add_point('PPD', '', 'ppd')
+    historian.add_point('Reward', '', 'reward')
 
     # Initialize the flow control to random values
     # flow = [1, 1, 1, 1, 1]
@@ -220,28 +211,41 @@ def main():
     print('Stepping through time')
 
     # initialize the first state
-    # (np.array([[i_temp, o_temp, energy, t_state]]))
-    current_state = np.array([21.2, 0, 0])
+    current_state = np.array([[21.2, 0, 0]])
+
+    # initialize the exploration term
+    exploration = 0.01
+    exploration_dot = (exploration - 0.001) / sim_steps
+    advantage=0
 
     for i in range(sim_steps):
         current_time = start_time + datetime.timedelta(seconds=(i * step))
 
         # compute action
-        actor_mean = actor_network().predict([current_state[0:1]])
-        u = float(action_flowrate(actor_mean))
+        actor_mean = actor_network(advantage).predict(current_state)
+        u = float(action_flowrate(actor_mean, exploration))
+
+        exploration = exploration - exploration_dot  # decrease exploration gradually per time step
 
         bop.setInputs(site, {'oveUSetFan_u': u})
         bop.advance([site])
         model_outputs = bop.outputs(site)
 
-        next_state = states(model_outputs, current_time)
+        next_state = states(model_outputs, current_time)  # get the next state
+
 
         # print(u)
         # print(model_outputs)
         sys.stdout.flush()
 
-        current_state = states(model_outputs, current_time)  # get the current state
         reward, all_rewards = compute_rewards(model_outputs, current_time)  # get the current cost
+
+        value = float(critic_network().predict(current_state))
+        next_value = float(critic_network().predict(next_state))
+
+        gamma_td = 0.9
+        advantage = reward + gamma_td * next_value - value
+
 
         train_model(current_state, next_state, reward)
 
@@ -250,7 +254,11 @@ def main():
         historian.add_data(all_rewards)
 
         # u = compute_control(model_outputs, costs, current_time, heating_setpoint, cooling_setpoint)
-        historian.add_data(u['historian'])
+        historian.add_data({
+            'oveTSetRooHea_u': heating_setpoint + 273.15,
+            'oveTSetRooCoo_u': cooling_setpoint + 273.15,
+            'oveUSetFan_u': u,
+        })
 
         # current_time = start_time + datetime.timedelta(minutes=i)
         # history['timestamp'].append(current_time.strftime('%m/%d/%Y %H:%M:%S'))
@@ -267,9 +275,13 @@ def main():
     # storage for results
     file_basename = os.path.splitext(os.path.basename(__file__))[0]
     result_dir = f'results_{file_basename}'
-    print(historian.to_df())
     historian.save_csv(result_dir, f'{file_basename}.csv')
-    print(historian.evaluate_performance())
+    historian.save_pickle(result_dir, f'{file_basename}.pkl')
+    print(historian.to_df().describe())
+    kpis = historian.evaluate_performance()
+    with open(f'{result_dir}/kpis_result.json', 'w') as f:
+        f.write(json.dumps(kpis, indent=2))
+    print(kpis)
 
 
 # In windows you must include this to allow boptest client to multiprocess

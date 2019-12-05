@@ -101,7 +101,7 @@ def train_model(current_state, next_state, reward):
 
 def compute_rewards(y, timestamp):
     # Assumptions:
-    #   Occupied hours: 8 - 18
+    #    Occupied hours: 8 - 18
     #   TRadiant is 1.5 degC lower than room drybulb -- rough assumption. Need from model.
     #   met is 1.2 (office filing seated)
     #   clo is 1 clo for winter
