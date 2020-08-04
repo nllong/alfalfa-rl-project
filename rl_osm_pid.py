@@ -230,7 +230,7 @@ def main():
     history_df.to_csv(f'{result_dir}/{file_basename}.csv')
 
 
-# In windows you must include this to allow boptest client to multiprocess
+# In windows you must include this to allow alfalfa client to multiprocess
 if __name__ == '__main__':
     if os.name == 'nt':
         freeze_support()
