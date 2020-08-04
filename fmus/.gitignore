@@ -1,0 +1,10 @@
+*/*_log.txt
+*/*_result.mat
+**/*.csv_trimmed
+single_zone_vav/kpis.json
+*/ds*.txt
+*/ds*.c
+*/ds*.obj
+*/buildlog.txt
+*/dymosim.exe
+
