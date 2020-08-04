@@ -7,7 +7,7 @@ import random
 import sys
 import time
 from multiprocessing import Process, freeze_support
-
+from alfalfa_client import AlfalfaClient
 import numpy as np
 import tensorflow as tf
 from keras.layers import Dense
@@ -16,9 +16,6 @@ from keras.optimizers import SGD
 from lib.historian import Historian
 from lib.thermal_comfort import ThermalComfort
 from lib.unit_conversions import deg_k_to_c
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-import boptest
 
 
 def pe_signal():
@@ -162,7 +159,7 @@ def initialize_control(heating_setpoint, cooling_setpoint):
 
 
 def main():
-    bop = boptest.Boptest(url='http://localhost')
+    alfalfa = AlfalfaClient(url='http://localhost')
 
     # Denver weather
     # 1/1/2019 00:00:00  - Note that we have to start at 1/1 right now.
@@ -178,10 +175,10 @@ def main():
 
     file = os.path.join(os.path.dirname(__file__), 'fmus', 'single_zone_vav', 'wrapped.fmu')
     print(f"Uploading test case {file}")
-    site = bop.submit(file)
+    site = alfalfa.submit(file)
 
     print('Starting simulation')
-    bop.start(site, external_clock="true", start_datetime=57000, end_datetime=90000)
+    alfalfa.start(site, external_clock="true", start_datetime=57000, end_datetime=90000)
 
     historian = Historian()
     historian.add_point('timestamp', 'Time', None)
@@ -227,9 +224,9 @@ def main():
 
         exploration = exploration - exploration_dot  # decrease exploration gradually per time step
 
-        bop.setInputs(site, {'oveUSetFan_u': u})
-        bop.advance([site])
-        model_outputs = bop.outputs(site)
+        alfalfa.setInputs(site, {'oveUSetFan_u': u})
+        alfalfa.advance([site])
+        model_outputs = alfalfa.outputs(site)
 
         next_state = states(model_outputs, current_time)  # get the next state
 
@@ -270,7 +267,7 @@ def main():
         # throttle the requests a bit
         time.sleep(0.05)
 
-    bop.stop(site)
+    alfalfa.stop(site)
 
     # storage for results
     file_basename = os.path.splitext(os.path.basename(__file__))[0]

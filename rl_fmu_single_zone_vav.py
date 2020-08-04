@@ -3,16 +3,17 @@
 import datetime
 import json
 import os
+import random
 import sys
 import time
 from multiprocessing import Process, freeze_support
+from alfalfa_client import AlfalfaClient
+import pandas as pd
+
 
 from lib.historian import Historian
 from lib.thermal_comfort import ThermalComfort
 from lib.unit_conversions import deg_k_to_c
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-import boptest
 
 
 # def Controller(object):
@@ -109,7 +110,7 @@ def initialize_control(heating_setpoint, cooling_setpoint):
 
 
 def main():
-    bop = boptest.Boptest(url='http://localhost')
+    alfalfa = AlfalfaClient(url='http://localhost')
 
     # Denver weather
     # 1/1/2019 00:00:00  - Note that we have to start at 1/1 right now.
@@ -126,10 +127,10 @@ def main():
 
     file = os.path.join(os.path.dirname(__file__), 'fmus', 'single_zone_vav', 'wrapped.fmu')
     print(f"Uploading test case {file}")
-    site = bop.submit(file)
+    site = alfalfa.submit(file)
 
     print('Starting simulation')
-    bop.start(
+    alfalfa.start(
         site,
         external_clock="true",
         start_datetime=int((start_time - beg_time).total_seconds()),
@@ -159,9 +160,9 @@ def main():
     print('Stepping through time')
     for i in range(sim_steps):
         current_time = start_time + datetime.timedelta(seconds=(i * step))
-        bop.setInputs(site, u['u'])
-        bop.advance([site])
-        model_outputs = bop.outputs(site)
+        alfalfa.setInputs(site, u['u'])
+        alfalfa.advance([site])
+        model_outputs = alfalfa.outputs(site)
         sys.stdout.flush()
 
         reward_scalar, all_rewards = compute_rewards(model_outputs, current_time)
@@ -183,7 +184,7 @@ def main():
         # throttle the requests a bit
         time.sleep(0.05)
 
-    bop.stop(site)
+    alfalfa.stop(site)
 
     # storage for results
     file_basename = os.path.splitext(os.path.basename(__file__))[0]
@@ -197,7 +198,7 @@ def main():
     print(kpis)
 
 
-# In windows you must include this to allow boptest client to multiprocess
+# In windows you must include this to allow alfalfa client to multiprocess
 if __name__ == '__main__':
     if os.name == 'nt':
         freeze_support()

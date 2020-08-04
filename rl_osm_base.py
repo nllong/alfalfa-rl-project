@@ -6,11 +6,8 @@ import random
 import sys
 import time
 from multiprocessing import Process, freeze_support
-
+from alfalfa_client import AlfalfaClient
 import pandas as pd
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-import boptest
 
 
 def static_flow(value):
@@ -38,7 +35,7 @@ def rl_control(temp):
 
 def main():
     # Setup
-    bop = boptest.Boptest(url='http://localhost')
+    alfalfa = AlfalfaClient(url='http://localhost')
 
     # Winter
     start_time = datetime.datetime(2019, 2, 6, 9, 00, 0)
@@ -53,8 +50,8 @@ def main():
     # Submit only one file
     files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'SmallOffice_Unitary_1.osm')]
     # files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'SmallOffice_VAV_1.osm')]
-    siteids = bop.submit_many(files)
-    bop.start_many(siteids, external_clock="true", start_datetime=start_time, end_datetime=end_time)
+    siteids = alfalfa.submit_many(files)
+    alfalfa.start_many(siteids, external_clock="true", start_datetime=start_time, end_datetime=end_time)
 
     history = {
         'timestamp': [],
@@ -94,11 +91,11 @@ def main():
 
     for i in range(simu_steps):
         print(f"Simulation step: {i}")
-        bop.advance(siteids)
+        alfalfa.advance(siteids)
         new_inputs = {}
         state_vars = []
         for siteid in siteids:
-            model_outputs = bop.outputs(siteid)
+            model_outputs = alfalfa.outputs(siteid)
             # print ('model-outputs: ', model_outputs)
             current_time = start_time + datetime.timedelta(minutes=i)
             history['timestamp'].append(current_time.strftime('%m/%d/%Y %H:%M:%S'))
@@ -166,7 +163,7 @@ def main():
             history['vdot4'].append(flow[3])
             history['vdot5'].append(flow[4])
 
-            model_inputs = bop.inputs(siteid)
+            model_inputs = alfalfa.inputs(siteid)
 
             # new_inputs must be dictionary format
             new_inputs["SA_FlowRate_Zone_Core_CMD"] = flow[0]
@@ -183,12 +180,12 @@ def main():
             history['Tsetpoint_cooling'].append(cooling_setpoint)
             history['Tsetpoint_heating'].append(heating_setpoint)
 
-            bop.setInputs(siteid, new_inputs)
+            alfalfa.setInputs(siteid, new_inputs)
 
         # throttle the requests a bit
         time.sleep(0.01)
 
-    bop.stop_many(siteids)
+    alfalfa.stop_many(siteids)
 
     # storage for results
     file_basename = os.path.splitext(os.path.basename(__file__))[0]

@@ -9,8 +9,6 @@ from multiprocessing import Process, freeze_support
 from alfalfa_client import AlfalfaClient
 import pandas as pd
 
-# sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 
 def pe_signal():
     k_pe = 20000

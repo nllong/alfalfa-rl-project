@@ -6,11 +6,8 @@ import random
 import sys
 import time
 from multiprocessing import Process, freeze_support
-
+from alfalfa_client import AlfalfaClient
 import pandas as pd
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-import boptest
 
 
 def pe_signal():
@@ -68,7 +65,7 @@ def initialize_control():
 
 
 def main():
-    bop = boptest.Boptest(url='http://localhost')
+    alfalfa = AlfalfaClient(url='http://localhost')
 
     # set an arbitrary start time because there is no weather at the moment
     start_time = datetime.datetime(2019, 2, 6, 9, 00, 0)
@@ -80,10 +77,10 @@ def main():
 
     file = os.path.join(os.path.dirname(__file__), 'fmus', 'simple_1_zone_heating', 'simple_1_zone_heating.fmu')
     print(f"Uploading test case {file}")
-    site = bop.submit(file)
+    site = alfalfa.submit(file)
 
     print('Starting simulation')
-    bop.start(site, external_clock="true")
+    alfalfa.start(site, external_clock="true")
 
     history = {
         'timestamp': [],
@@ -127,9 +124,9 @@ def main():
 
     print('Stepping through time')
     for i in range(int(length / step)):
-        bop.setInputs(site, u)
-        bop.advance([site])
-        model_outputs = bop.outputs(site)
+        alfalfa.setInputs(site, u)
+        alfalfa.advance([site])
+        model_outputs = alfalfa.outputs(site)
         # print(u)
         # print(model_outputs)
         sys.stdout.flush()
@@ -150,7 +147,7 @@ def main():
         history['Tsetpoint_heating'].append(heating_setpoint)
         time.sleep(0.01)
 
-    bop.stop(site)
+    alfalfa.stop(site)
 
     # storage for results
     file_basename = os.path.splitext(os.path.basename(__file__))[0]
@@ -161,7 +158,7 @@ def main():
     history_df.to_csv(f'{result_dir}/{file_basename}.csv')
 
 
-# In windows you must include this to allow boptest client to multiprocess
+# In windows you must include this to allow alfalfa client to multiprocess
 if __name__ == '__main__':
     if os.name == 'nt':
         freeze_support()
