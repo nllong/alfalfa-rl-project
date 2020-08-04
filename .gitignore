@@ -1,7 +1,9 @@
-# IDEs
-.idea
+# Mac
+*.DS_Store
 
-# Python
+# Autosave
+*.autosave
+*~
 .python-version
 *~$*
 *.pyc
@@ -9,39 +11,5 @@
 *.swo
 *.swn
 
-# Simulations
-/worker/test/output
-/s3/*
-# E+
-*.audit
-*.bnd
-*.edd
-*.eio
-*.err
-*.eso
-*.mdd
-*.mtd
-*.mtr
-*.rdd
-*.rvaudit
-*.sql
-*.log
-*.svg
-*Zsz.csv
-*Ssz.csv
-*Meter.csv
-*.shd
-*.dbg
-*.idd
-socket.cfg
-fort.6
-
-# Mac
-*.DS_Store
-
-# Autosave
-*.autosave
-*~
-
 # Custom
-client/__pycache__/*
+*/__pycache__/*

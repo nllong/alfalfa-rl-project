@@ -1,0 +1,9 @@
+# Install the alfalfa_client. This also installs numpy and scipy since alfalfa client
+# includes the packages.
+# -e git+https://github.com/nrel/alfalfa-client.git@develop#egg=alfalfa-client
+-e file:../../../alfalfa-client#egg=alfalfa_client
+
+# Other packages of interest
+seaborn==0.10.1
+keras==2.3.1
+tensorflow==2.0.1
