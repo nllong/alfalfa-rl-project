@@ -3,8 +3,8 @@
   "end_time": "01/02/2019 23:55:00",
   "total_hours": 24.0,
   "total_hours_occupied": 10.083333333333334,
-  "total_hvac_energy": 130.59317769284064,
-  "total_hvac_energy_occupied": 53.572149263061675,
-  "average_ppd": 8.339315825860485,
-  "average_ppd_occupied": 19.848950064858013
+  "total_hvac_energy": 41.59781132065335,
+  "total_hvac_energy_occupied": 4.742567671020431,
+  "average_ppd": 28.53686020638865,
+  "average_ppd_occupied": 67.92244412760273
 }

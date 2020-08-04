@@ -2,18 +2,18 @@
 
 import datetime
 import json
+import numpy as np
 import os
 import random
 import sys
-import time
-from multiprocessing import Process, freeze_support
-from alfalfa_client import AlfalfaClient
-import numpy as np
 import tensorflow as tf
+import time
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import SGD
-from lib.historian import Historian
+from multiprocessing import Process, freeze_support
+
+from alfalfa_client import AlfalfaClient, Historian
 from lib.thermal_comfort import ThermalComfort
 from lib.unit_conversions import deg_k_to_c
 
@@ -178,9 +178,9 @@ def main():
     site = alfalfa.submit(file)
 
     print('Starting simulation')
-    alfalfa.start(site, external_clock="true", start_datetime=57000, end_datetime=90000)
+    alfalfa.start(site, external_clock="true", end_datetime=end_time)
 
-    historian = Historian()
+    historian = Historian(5)
     historian.add_point('timestamp', 'Time', None)
     historian.add_point('T1', 'degC', 'TRooAir_y', f_conversion=deg_k_to_c)
     historian.add_point('T1_Rad', 'degC', 'TRooRad_y', f_conversion=deg_k_to_c)

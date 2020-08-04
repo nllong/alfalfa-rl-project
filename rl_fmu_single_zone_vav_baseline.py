@@ -3,15 +3,16 @@
 # from __future__ import absolute_import
 
 import datetime
+import json
 import os
 import sys
 import time
-import json
 from multiprocessing import Process, freeze_support
-from alfalfa_client import AlfalfaClient
-from lib.historian import Historian
+
+from alfalfa_client import AlfalfaClient, Historian
 from lib.unit_conversions import deg_k_to_c
 from rl_fmu_single_zone_vav import compute_rewards, compute_control
+
 
 def main():
     alfalfa = AlfalfaClient(url='http://localhost')
@@ -36,11 +37,10 @@ def main():
     alfalfa.start(
         site,
         external_clock="true",
-        start_datetime=int((start_time - beg_time).total_seconds()),
-        end_datetime=int((end_time - beg_time).total_seconds())
+        end_datetime=end_time
     )
 
-    historian = Historian()
+    historian = Historian(5)
     historian.add_point('timestamp', 'Time', None)
     historian.add_point('T1', 'degC', 'TRooAir_y', f_conversion=deg_k_to_c)
     historian.add_point('T1_Rad', 'degC', 'TRooRad_y', f_conversion=deg_k_to_c)

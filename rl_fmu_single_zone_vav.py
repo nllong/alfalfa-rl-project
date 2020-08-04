@@ -3,15 +3,13 @@
 import datetime
 import json
 import os
+import pandas as pd
 import random
 import sys
 import time
 from multiprocessing import Process, freeze_support
-from alfalfa_client import AlfalfaClient
-import pandas as pd
 
-
-from lib.historian import Historian
+from alfalfa_client import AlfalfaClient, Historian
 from lib.thermal_comfort import ThermalComfort
 from lib.unit_conversions import deg_k_to_c
 
@@ -130,14 +128,14 @@ def main():
     site = alfalfa.submit(file)
 
     print('Starting simulation')
+    # all simulatios start at time = 0 right now.
     alfalfa.start(
         site,
         external_clock="true",
-        start_datetime=int((start_time - beg_time).total_seconds()),
-        end_datetime=int((end_time - beg_time).total_seconds())
+        end_datetime=end_time,
     )
 
-    historian = Historian()
+    historian = Historian(5)
     historian.add_point('timestamp', 'Time', None)
     historian.add_point('T1', 'degC', 'TRooAir_y', f_conversion=deg_k_to_c)
     historian.add_point('T1_Rad', 'degC', 'TRooRad_y', f_conversion=deg_k_to_c)

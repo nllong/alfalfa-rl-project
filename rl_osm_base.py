@@ -2,12 +2,13 @@
 
 import datetime
 import os
+import pandas as pd
 import random
 import sys
 import time
 from multiprocessing import Process, freeze_support
+
 from alfalfa_client import AlfalfaClient
-import pandas as pd
 
 
 def static_flow(value):
