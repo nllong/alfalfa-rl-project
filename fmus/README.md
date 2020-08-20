@@ -22,7 +22,7 @@ cd {root_path}/client/rl-example/fmus/<package_to_build>
 ../jm_ipython.sh ../jmodelica.py SingleZoneVAV.TestCaseSupervisory
 ```
 
-* Now you can submit the wrapped.mo file to Alfalfa!
+* Now you can submit the wrapped.mo file to Alfalfa/BOPTEST!
 
 
 # Notes / Issues
