@@ -2,12 +2,11 @@
 
 import datetime
 import os
-import pandas as pd
 import random
-import sys
 import time
 from multiprocessing import Process, freeze_support
 
+import pandas as pd
 from alfalfa_client import AlfalfaClient
 
 
@@ -37,7 +36,7 @@ def pid_control(temp_states, previous_flow, setpoint, deadband=1):
     # this is for 5 zones, assuming uniform setpoint
     pid_flow = []
     for index, temp in enumerate(temp_states):
-        k_p = 2000
+        # k_p = 2000
         if temp <= setpoint + deadband / 2 and temp >= setpoint - deadband / 2:
             # in the deadband... do nothing
             # print(f'in range... skipping: {temp}')
@@ -65,7 +64,7 @@ def main():
     simu_steps = int(simu_length.total_seconds() / 60.0)  # number of time steps, of which each timestep is 1 minute
     simu_steps = 30
     print(
-        f'Simulation start {start_time.strftime("%m/%d/%Y %H:%M:%S")}, end {end_time.strftime("%m/%d/%Y %H:%M:%S")} with {simu_steps} total steps'
+        f'start {start_time.strftime("%m/%d/%Y %H:%M:%S")}, end {end_time.strftime("%m/%d/%Y %H:%M:%S")} with {simu_steps} total steps'  # noqa
     )
 
     # Submit only one file
@@ -199,7 +198,7 @@ def main():
             history['vdot4'].append(flow[3])
             history['vdot5'].append(flow[4])
 
-            model_inputs = alfalfa.inputs(siteid)
+            # model_inputs = alfalfa.inputs(siteid)
 
             # new_inputs must be dictionary format
             new_inputs["SA_FlowRate_Zone_Core_CMD"] = flow[0]

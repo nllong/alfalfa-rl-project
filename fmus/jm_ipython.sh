@@ -11,6 +11,8 @@
 set -e
 
 # Use local version of jmodelica (this must be built independent of this script, see README.md)
+#IMG_NAME=jmodelica-boptest
+#DOCKER_USERNAME=nllong
 IMG_NAME=jmodelica
 DOCKER_USERNAME=local
 

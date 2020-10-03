@@ -2,18 +2,18 @@
 
 import datetime
 import json
-import numpy as np
 import os
 import random
 import sys
-import tensorflow as tf
 import time
+from multiprocessing import Process, freeze_support
+
+import numpy as np
+import tensorflow as tf
+from alfalfa_client import AlfalfaClient, Historian
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import SGD
-from multiprocessing import Process, freeze_support
-
-from alfalfa_client import AlfalfaClient, Historian
 from lib.thermal_comfort import ThermalComfort
 from lib.unit_conversions import deg_k_to_c
 
