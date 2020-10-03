@@ -99,8 +99,8 @@ class Data_Manager(object):
                                                                       file_name))
                         os.remove(f + '_trimmed')
                 else:
-                    warnings.warn('The following file does not have ' \
-                                  'time column and therefore no data is going to ' \
+                    warnings.warn('The following file does not have '
+                                  'time column and therefore no data is going to '
                                   'be used from this file as test case data.', Warning)
                     print(f)
 
@@ -137,7 +137,7 @@ class Data_Manager(object):
                     # Write a copy all .csv files within the fmu resources folder
             self._append_csv_data()
         else:
-            warnings.warn('No Resources folder found for this FMU, ' \
+            warnings.warn('No Resources folder found for this FMU, '
                           'No additional data will be stored within the FMU.')
 
         # Find the kpis.json path
@@ -149,7 +149,7 @@ class Data_Manager(object):
             print("KPI path is {}".format(kpi_path))
             self.z_fmu.write(kpi_path, os.path.join('resources', 'kpis.json'))
         else:
-            warnings.warn('No kpis.json found for this test case, ' \
+            warnings.warn('No kpis.json found for this test case, '
                           'use the parser to get this file or otherwise create it.')
 
         # Close the fmu
@@ -306,8 +306,8 @@ class Data_Manager(object):
                             g = interpolate.interp1d(df['time'], df[key], kind='zero')
                             self.case.data.loc[:, key] = g(self.case.data.index)
             else:
-                warnings.warn('The following file does not have ' \
-                              'time column and therefore no data is going to ' \
+                warnings.warn('The following file does not have '
+                              'time column and therefore no data is going to '
                               'be used from this file as test case data.', Warning)
                 print(f)
 

@@ -11,7 +11,7 @@ from multiprocessing import Process, freeze_support
 
 from alfalfa_client import AlfalfaClient, Historian
 from lib.unit_conversions import deg_k_to_c
-from rl_fmu_single_zone_vav import compute_rewards, compute_control
+from rl_fmu_single_zone_vav import compute_control, compute_rewards
 
 
 def main():
@@ -19,7 +19,7 @@ def main():
 
     # Denver weather
     # 1/1/2019 00:00:00  - Note that we have to start at 1/1 right now.
-    beg_time = datetime.datetime(2019, 1, 1, 0, 0, 0)
+    # beg_time = datetime.datetime(2019, 1, 1, 0, 0, 0)
     start_time = datetime.datetime(2019, 1, 2, 0, 0, 0)
     end_time = datetime.datetime(2019, 1, 3, 0, 0, 0)
 

@@ -2,18 +2,18 @@
 
 import datetime
 import json
-import numpy as np
 import os
 import random
 import sys
-import tensorflow as tf
 import time
+from multiprocessing import Process, freeze_support
+
+import numpy as np
+import tensorflow as tf
+from alfalfa_client import AlfalfaClient, Historian
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import SGD
-from multiprocessing import Process, freeze_support
-
-from alfalfa_client import AlfalfaClient, Historian
 from lib.thermal_comfort import ThermalComfort
 from lib.unit_conversions import deg_k_to_c
 
@@ -45,9 +45,9 @@ def action_flowrate(action_mean, exploration):
 # create the actor network
 def actor_network(advantage):
     def custom_loss(y_true, y_pred):
-        s = tf.keras.backend.clip(y_pred, 0.00008, 1.0)  #prevent any log zero case
+        s = tf.keras.backend.clip(y_pred, 0.00008, 1.0)  # prevent any log zero case
         # s = np.clip(y_pred, a_min=0.0001, a_max=1.0)
-        s = -tf.keras.backend.log(s)*advantage
+        s = -tf.keras.backend.log(s) * advantage
         return s
 
     actor = Sequential()
@@ -90,7 +90,6 @@ def train_model(current_state, next_state, reward):
     advantage = reward + gamma_td * next_value - value
     target = reward + gamma_td * next_value
 
-
     # update the actor and critic network
     critic_network().fit(np.array(current_state), np.array([target]), epochs=5, verbose=0)
     actor_network(advantage).fit(np.array(current_state), np.array([advantage]), epochs=5)
@@ -117,7 +116,7 @@ def compute_rewards(y, timestamp):
     # power is between 0 and ~ 7000. Assume max at 10,000 W. 7000/10000 = 0.7 * 10 = 7 E [0, 10]
     # ppd is between 0 and 100 E [0,100]
     # reward E [-100, 0]
-    reward = -1 * (power / 1000 + 1.5*ppd)
+    reward = -1 * (power / 1000 + 1.5 * ppd)
 
     all_data = {
         'pmv': pmv,
@@ -213,7 +212,7 @@ def main():
     # initialize the exploration term
     exploration = 0.01
     exploration_dot = (exploration - 0.001) / sim_steps
-    advantage=0
+    advantage = 0
 
     for i in range(sim_steps):
         current_time = start_time + datetime.timedelta(seconds=(i * step))
@@ -230,7 +229,6 @@ def main():
 
         next_state = states(model_outputs, current_time)  # get the next state
 
-
         # print(u)
         # print(model_outputs)
         sys.stdout.flush()
@@ -242,7 +240,6 @@ def main():
 
         gamma_td = 0.9
         advantage = reward + gamma_td * next_value - value
-
 
         train_model(current_state, next_state, reward)
 
