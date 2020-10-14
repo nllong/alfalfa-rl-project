@@ -3,8 +3,6 @@
 import datetime
 import json
 import os
-import pandas as pd
-import random
 import sys
 import time
 from multiprocessing import Process, freeze_support
@@ -112,7 +110,7 @@ def main():
 
     # Denver weather
     # 1/1/2019 00:00:00  - Note that we have to start at 1/1 right now.
-    beg_time = datetime.datetime(2019, 1, 1, 0, 0, 0)
+    # beg_time = datetime.datetime(2019, 1, 1, 0, 0, 0)
     start_time = datetime.datetime(2019, 1, 2, 0, 0, 0)
     end_time = datetime.datetime(2019, 1, 3, 0, 0, 0)
 

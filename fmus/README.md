@@ -51,7 +51,7 @@ if key in appended and appended[key] is not None:
 
 * Add in SignalExchange objects to your model.
 
-* Create a new `wrapped.mo` file and add in the required Modelica.Blocks.Interfaces to handle the FMU 
+* Create a new `wrapped.mo` file and add in the required Modelica.Blocks.Interfaces to handle the FMU
 export correctly. Note that this is typically done without any issues using JModelica
 
 ```bash
