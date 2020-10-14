@@ -2,12 +2,12 @@
 
 import datetime
 import os
-import pandas as pd
 import random
 import sys
 import time
 from multiprocessing import Process, freeze_support
 
+import pandas as pd
 from alfalfa_client import AlfalfaClient
 
 
@@ -74,7 +74,7 @@ def main():
     step = 300  # 5 minutes
     u = initialize_control()
     heating_setpoint = 21
-    cooling_setpoint = 25
+    # cooling_setpoint = 25
 
     file = os.path.join(os.path.dirname(__file__), 'fmus', 'simple_1_zone_heating', 'simple_1_zone_heating.fmu')
     print(f"Uploading test case {file}")

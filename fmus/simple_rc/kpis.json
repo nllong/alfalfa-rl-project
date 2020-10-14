@@ -1,0 +1,11 @@
+{
+  "None": [
+    "setZone_y"
+  ],
+  "GasPower": [
+    "PHeat_y"
+  ],
+  "AirZoneTemperature": [
+    "TZone_y"
+  ]
+}
