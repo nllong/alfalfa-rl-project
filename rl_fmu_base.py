@@ -82,7 +82,7 @@ def main():
     site = alfalfa.submit(file)
 
     print('Starting simulation')
-    alfalfa.start(site, external_clock="true")
+    alfalfa.start(site, external_clock=True)
 
     history = {
         'timestamp': [],

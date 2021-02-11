@@ -9,7 +9,8 @@ import sys
 import time
 from multiprocessing import Process, freeze_support
 
-from alfalfa_client import AlfalfaClient, Historian
+from alfalfa_client.alfalfa_client import AlfalfaClient
+from alfalfa_client.historian import Historian
 from lib.unit_conversions import deg_k_to_c
 from rl_fmu_single_zone_vav import compute_control, compute_rewards
 
@@ -34,11 +35,7 @@ def main():
     site = alfalfa.submit(file)
 
     print('Starting simulation')
-    alfalfa.start(
-        site,
-        external_clock="true",
-        end_datetime=end_time
-    )
+    alfalfa.start(site, external_clock=True, end_datetime=end_time)
 
     historian = Historian(5)
     historian.add_point('timestamp', 'Time', None)

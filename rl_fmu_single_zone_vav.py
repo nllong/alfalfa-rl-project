@@ -7,7 +7,8 @@ import sys
 import time
 from multiprocessing import Process, freeze_support
 
-from alfalfa_client import AlfalfaClient, Historian
+from alfalfa_client.alfalfa_client import AlfalfaClient
+from alfalfa_client.historian import Historian
 from lib.thermal_comfort import ThermalComfort
 from lib.unit_conversions import deg_k_to_c
 
@@ -127,11 +128,7 @@ def main():
 
     print('Starting simulation')
     # all simulatios start at time = 0 right now.
-    alfalfa.start(
-        site,
-        external_clock="true",
-        end_datetime=end_time,
-    )
+    alfalfa.start(site, external_clock=True, end_datetime=end_time,)
 
     historian = Historian(5)
     historian.add_point('timestamp', 'Time', None)

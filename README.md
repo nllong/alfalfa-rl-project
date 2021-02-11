@@ -12,10 +12,10 @@ This project assumes that you have installed Python (>= 3.5) and pip. The use of
 
     ```
     cd <this-checkout-root>
-    pip install -r requirements.txt
+    pip install poetry
 
     # Note if a github dependency is not updating then run
-    pip install -U --upgrade-strategy eager -r requirements.txt
+    poetry install
     ```
 
 1. Run one of the example projects

@@ -10,7 +10,8 @@ from multiprocessing import Process, freeze_support
 
 import numpy as np
 import tensorflow as tf
-from alfalfa_client import AlfalfaClient, Historian
+from alfalfa_client.alfalfa_client import AlfalfaClient
+from alfalfa_client.historian import Historian
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import SGD
@@ -177,7 +178,7 @@ def main():
     site = alfalfa.submit(file)
 
     print('Starting simulation')
-    alfalfa.start(site, external_clock="true", end_datetime=end_time)
+    alfalfa.start(site, external_clock=True, end_datetime=end_time)
 
     historian = Historian(5)
     historian.add_point('timestamp', 'Time', None)

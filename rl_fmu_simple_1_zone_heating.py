@@ -8,7 +8,7 @@ import time
 from multiprocessing import Process, freeze_support
 
 import pandas as pd
-from alfalfa_client import AlfalfaClient
+from alfalfa_client.alfalfa_client import AlfalfaClient
 
 
 def pe_signal():
@@ -81,7 +81,7 @@ def main():
     site = alfalfa.submit(file)
 
     print('Starting simulation')
-    alfalfa.start(site, external_clock="true")
+    alfalfa.start(site, external_clock=True)
 
     history = {
         'timestamp': [],

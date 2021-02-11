@@ -7,7 +7,7 @@ import time
 from multiprocessing import Process, freeze_support
 
 import pandas as pd
-from alfalfa_client import AlfalfaClient
+from alfalfa_client.alfalfa_client import AlfalfaClient
 
 
 def pe_signal():
@@ -71,7 +71,7 @@ def main():
     files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'SmallOffice_Unitary_1.osm')]
     # files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'SmallOffice_VAV_1.osm')]
     siteids = alfalfa.submit_many(files)
-    alfalfa.start_many(siteids, external_clock="true", start_datetime=start_time, end_datetime=end_time)
+    alfalfa.start_many(siteids, external_clock=True, start_datetime=start_time, end_datetime=end_time)
 
     history = {
         'timestamp': [],
