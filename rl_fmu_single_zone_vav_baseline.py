@@ -11,6 +11,7 @@ from multiprocessing import Process, freeze_support
 
 from alfalfa_client.alfalfa_client import AlfalfaClient
 from alfalfa_client.historian import Historian
+
 from lib.unit_conversions import deg_k_to_c
 from rl_fmu_single_zone_vav import compute_control, compute_rewards
 

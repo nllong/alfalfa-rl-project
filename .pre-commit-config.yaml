@@ -40,10 +40,10 @@ repos:
     hooks:
       - id: flake8
         args: [ '--ignore=E501,E402,W503,W504,E731,F401' ]
-#  - repo: https://github.com/pre-commit/mirrors-isort
-#    rev: v5.7.0
-#    hooks:
-#      - id: isort
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.7.0
+    hooks:
+      - id: isort
 #        args: ['-m 3']  # vertical hanging
   - repo: local
     hooks:

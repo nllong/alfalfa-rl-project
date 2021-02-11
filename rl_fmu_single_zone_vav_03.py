@@ -15,6 +15,7 @@ from alfalfa_client.historian import Historian
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import SGD
+
 from lib.thermal_comfort import ThermalComfort
 from lib.unit_conversions import deg_k_to_c
 
