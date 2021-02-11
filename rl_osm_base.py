@@ -48,10 +48,9 @@ def main():
     )
 
     # Submit only one file
-    files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'SmallOffice_Unitary_1.osm')]
-    # files = [os.path.join(os.path.dirname(__file__), 'openstudio_model', 'SmallOffice_VAV_1.osm')]
-    siteids = alfalfa.submit_many(files)
-    alfalfa.start_many(siteids, external_clock=True, start_datetime=start_time, end_datetime=end_time)
+    file = os.path.join(os.path.dirname(__file__), 'openstudio_model', 'SmallOffice_Unitary_1.osm')
+    siteids = alfalfa.submit(file)
+    alfalfa.start(siteids, external_clock=True, start_datetime=start_time, end_datetime=end_time)
 
     history = {
         'timestamp': [],

@@ -22,6 +22,9 @@ This project assumes that you have installed Python (>= 3.5) and pip. The use of
 
     ```
     python rl_fmu_simple_1_zone_heating.py
+
+    # or openstudio
+    python rl_osm_base.py
     ```
 
 # Debugging
