@@ -34,7 +34,7 @@ def compute_control(y, heating_setpoint):
     """
     # Controller parameters
     setpoint = 273.15 + 20
-    k_p = 3500
+    k_p = 5
     # Compute control
     e = setpoint - y['TRooAir_y']
     value = max(k_p * e, 0)
@@ -68,10 +68,10 @@ def initialize_control():
 def main():
     alfalfa = AlfalfaClient(url='http://localhost')
 
-    # set an arbitrary start time because there is no weather at the moment
     start_time = datetime.datetime(2019, 2, 6, 9, 00, 0)
+    end_time = datetime.datetime(2019, 2, 10, 9, 00, 0)
     length = 48 * 3600  # 48 hours
-    step = 300  # 5 minutes
+    step = 300  # 5 minutes -- this may be hard coded in step_fmu.py
     u = initialize_control()
     heating_setpoint = 21
     # cooling_setpoint = 25
@@ -81,7 +81,12 @@ def main():
     site = alfalfa.submit(file)
 
     print('Starting simulation')
-    alfalfa.start(site, external_clock=True)
+    alfalfa.start(
+        site,
+        start_time=start_time,
+        end_time=end_time,
+        external_clock=True,
+    )
 
     history = {
         'timestamp': [],

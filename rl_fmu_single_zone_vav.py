@@ -128,7 +128,7 @@ def main():
     site = alfalfa.submit(file)
 
     print('Starting simulation')
-    # all simulatios start at time = 0 right now.
+    # all simulations start at time = 0 right now.
     alfalfa.start(site, external_clock=True, end_datetime=end_time,)
 
     historian = Historian(5)

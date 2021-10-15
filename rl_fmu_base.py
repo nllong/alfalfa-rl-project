@@ -70,6 +70,7 @@ def main():
 
     # set an arbitrary start time because there is no weather at the moment
     start_time = datetime.datetime(2019, 2, 6, 9, 00, 0)
+    end_time = datetime.datetime(2019, 2, 10, 9, 00, 0)
     length = 48 * 3600  # 48 hours
     step = 300  # 5 minutes
     u = initialize_control()
@@ -82,7 +83,12 @@ def main():
     site = alfalfa.submit(file)
 
     print('Starting simulation')
-    alfalfa.start(site, external_clock=True)
+    alfalfa.start(
+        site,
+        external_clock=True,
+        start_time=start_time,
+        end_time=end_time,
+    )
 
     history = {
         'timestamp': [],
