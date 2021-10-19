@@ -11,7 +11,7 @@ six = "*"
 
 [[package]]
 name = "alfalfa-client"
-version = "0.1.0-dev7"
+version = "0.1.1"
 description = "A standalone client for the NREL Alfalfa application"
 category = "main"
 optional = false
@@ -27,8 +27,8 @@ requests-toolbelt = "0.9.1"
 [package.source]
 type = "git"
 url = "https://git@github.com/nrel/alfalfa-client.git"
-reference = "main"
-resolved_reference = "a595989340b9e38cba4dda78fdf529fae0688009"
+reference = "develop"
+resolved_reference = "995e9223068695d957cd5e5901077927eb374fee"
 
 [[package]]
 name = "astunparse"
@@ -862,7 +862,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "18c398812d2c92d62bf63e3e26abe19402aee5ac4bbe39ad51b310b3b8a1971f"
+content-hash = "12ac1172becfef01c45caad592b366aab739c76ec20eb24635a64e3366e28549"
 
 [metadata.files]
 absl-py = [

@@ -10,11 +10,13 @@ seaborn = "^0.11.1"
 Keras = "^2.4.3"
 tensorflow = "^2.4.1"
 #alfalfa-client = "^0.1.0b1"
-alfalfa-client = {git = "https://git@github.com/nrel/alfalfa-client.git", rev = "main"}
+#alfalfa-client = {path = "../alfalfa-client", develop = true}
+alfalfa-client = {git = "https://git@github.com/nrel/alfalfa-client.git", rev = "develop"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 pre-commit = "^2.10.1"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
