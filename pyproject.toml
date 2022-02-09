@@ -8,7 +8,7 @@ authors = ["Nicholas Long <nicholas.long@nrel.gov>"]
 python = "^3.7"
 seaborn = "^0.11.1"
 Keras = "^2.4.3"
-tensorflow = "^2.4.1"
+tensorflow = "^2.6.3"
 #alfalfa-client = "^0.1.0b1"
 #alfalfa-client = {path = "../alfalfa-client", develop = true}
 alfalfa-client = {git = "https://git@github.com/nrel/alfalfa-client.git", rev = "develop"}

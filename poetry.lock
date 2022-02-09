@@ -186,19 +186,20 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
 name = "google-auth"
-version = "2.3.0"
+version = "1.35.0"
 description = "Google Authentication Library"
 category = "main"
 optional = false
-python-versions = ">= 3.6"
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*"
 
 [package.dependencies]
 cachetools = ">=2.0.0,<5.0"
 pyasn1-modules = ">=0.2.1"
-rsa = ">=3.1.4,<5"
+rsa = {version = ">=3.1.4,<5", markers = "python_version >= \"3.6\""}
+six = ">=1.9.0"
 
 [package.extras]
-aiohttp = ["aiohttp (>=3.6.2,<4.0.0dev)", "requests (>=2.20.0,<3.0.0dev)"]
+aiohttp = ["requests (>=2.20.0,<3.0.0dev)", "aiohttp (>=3.6.2,<4.0.0dev)"]
 pyopenssl = ["pyopenssl (>=20.0.0)"]
 reauth = ["pyu2f (>=0.1.5)"]
 
@@ -691,7 +692,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "tensorboard"
-version = "2.7.0"
+version = "2.6.0"
 description = "TensorBoard lets you watch Tensors Flow"
 category = "main"
 optional = false
@@ -699,7 +700,7 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 absl-py = ">=0.4"
-google-auth = ">=1.6.3,<3"
+google-auth = ">=1.6.3,<2"
 google-auth-oauthlib = ">=0.4.1,<0.5"
 grpcio = ">=1.24.3"
 markdown = ">=2.6.8"
@@ -728,7 +729,7 @@ python-versions = "*"
 
 [[package]]
 name = "tensorflow"
-version = "2.6.0"
+version = "2.6.3"
 description = "TensorFlow is an open source machine learning framework for everyone."
 category = "main"
 optional = false
@@ -743,16 +744,16 @@ gast = "0.4.0"
 google-pasta = ">=0.2,<1.0"
 grpcio = ">=1.37.0,<2.0"
 h5py = ">=3.1.0,<3.2.0"
-keras = ">=2.6,<3.0"
+keras = ">=2.6.0,<2.7"
 keras-preprocessing = ">=1.1.2,<1.2.0"
 numpy = ">=1.19.2,<1.20.0"
 opt-einsum = ">=3.3.0,<3.4.0"
 protobuf = ">=3.9.2"
 six = ">=1.15.0,<1.16.0"
-tensorboard = ">=2.6,<3.0"
-tensorflow-estimator = ">=2.6,<3.0"
+tensorboard = ">=2.6.0,<2.7"
+tensorflow-estimator = ">=2.6.0,<2.7"
 termcolor = ">=1.1.0,<1.2.0"
-typing-extensions = ">=3.7.4,<3.8.0"
+typing-extensions = ">=3.7,<3.11"
 wrapt = ">=1.12.1,<1.13.0"
 
 [[package]]
@@ -862,7 +863,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "12ac1172becfef01c45caad592b366aab739c76ec20eb24635a64e3366e28549"
+content-hash = "f0b6d8e7af6651183c1b011ea1a04177a0dab53bc52ceafdab91e9bfff4bf66f"
 
 [metadata.files]
 absl-py = [
@@ -935,8 +936,8 @@ gast = [
     {file = "gast-0.4.0.tar.gz", hash = "sha256:40feb7b8b8434785585ab224d1568b857edb18297e5a3047f1ba012bc83b42c1"},
 ]
 google-auth = [
-    {file = "google-auth-2.3.0.tar.gz", hash = "sha256:2800f6dfad29c6ced5faf9ca0c38ea8ba1ebe2559b10c029bd021e3de3301627"},
-    {file = "google_auth-2.3.0-py2.py3-none-any.whl", hash = "sha256:91892727c09cf5d090c391936a8e67ef5b9a9794c2f426b3d0ceedddbcc0ef50"},
+    {file = "google-auth-1.35.0.tar.gz", hash = "sha256:b7033be9028c188ee30200b204ea00ed82ea1162e8ac1df4aa6ded19a191d88e"},
+    {file = "google_auth-1.35.0-py2.py3-none-any.whl", hash = "sha256:997516b42ecb5b63e8d80f5632c1a61dddf41d2a4c2748057837e06e00014258"},
 ]
 google-auth-oauthlib = [
     {file = "google-auth-oauthlib-0.4.6.tar.gz", hash = "sha256:a90a072f6993f2c327067bf65270046384cda5a8ecb20b94ea9a687f1f233a7a"},
@@ -1395,7 +1396,7 @@ six = [
     {file = "six-1.15.0.tar.gz", hash = "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259"},
 ]
 tensorboard = [
-    {file = "tensorboard-2.7.0-py3-none-any.whl", hash = "sha256:239f78a4a8dff200ce585a030c787773a8c1184d5c159252f5f85bac4e3c3b38"},
+    {file = "tensorboard-2.6.0-py3-none-any.whl", hash = "sha256:f7dac4cdfb52d14c9e3f74585ce2aaf8e6203620a864e51faf84988b09f7bbdb"},
 ]
 tensorboard-data-server = [
     {file = "tensorboard_data_server-0.6.1-py3-none-any.whl", hash = "sha256:809fe9887682d35c1f7d1f54f0f40f98bb1f771b14265b453ca051e2ce58fca7"},
@@ -1406,18 +1407,15 @@ tensorboard-plugin-wit = [
     {file = "tensorboard_plugin_wit-1.8.0-py3-none-any.whl", hash = "sha256:2a80d1c551d741e99b2f197bb915d8a133e24adb8da1732b840041860f91183a"},
 ]
 tensorflow = [
-    {file = "tensorflow-2.6.0-cp36-cp36m-macosx_10_11_x86_64.whl", hash = "sha256:c67fad296a3a2133b7a14da5f06c9937e7911b02c5d7a3ff6ba52a1d79b6bc9e"},
-    {file = "tensorflow-2.6.0-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:8b5ce09ede0fe45ef100f4dc65cf3f46722194e75139f85d524058315e2ce9fa"},
-    {file = "tensorflow-2.6.0-cp36-cp36m-win_amd64.whl", hash = "sha256:dea97f664246e185d79cbe40a86309527affd4232f06afa8a6500c4fc4b64a03"},
-    {file = "tensorflow-2.6.0-cp37-cp37m-macosx_10_11_x86_64.whl", hash = "sha256:4716c9b25a61a2c79b1f253d1e114f1f8679241559c13ad18c657c626a7d5924"},
-    {file = "tensorflow-2.6.0-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:e45e026a9d08c89cecc1160d8248135e2fb79bdc3267328399e1fb25ce583bd6"},
-    {file = "tensorflow-2.6.0-cp37-cp37m-win_amd64.whl", hash = "sha256:6e38b6969414d16afc560c58ca34e1328cc0a5dbd644b64e060f5be8a6653274"},
-    {file = "tensorflow-2.6.0-cp38-cp38-macosx_10_11_x86_64.whl", hash = "sha256:2a067d22a356c2cd4753bdd16ee492c55a610f5ebc52713e2954c642f070321c"},
-    {file = "tensorflow-2.6.0-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:2c9b8c6adc060acfcf805a2ea501db0124b679d95b522fd5983a4c110e8e0264"},
-    {file = "tensorflow-2.6.0-cp38-cp38-win_amd64.whl", hash = "sha256:d6468e05552720100e8f94097feb770de320e4c8c244323a8746bd84e5ba4052"},
-    {file = "tensorflow-2.6.0-cp39-cp39-macosx_10_11_x86_64.whl", hash = "sha256:00b1af0a0c5c102db19caceffac4bd4e6c536e6d7512144c241a4ace4428e7c6"},
-    {file = "tensorflow-2.6.0-cp39-cp39-manylinux2010_x86_64.whl", hash = "sha256:bc73ebdd30c48cfc27ba307271117e6dbb795b37396ed817b2fec9393380b115"},
-    {file = "tensorflow-2.6.0-cp39-cp39-win_amd64.whl", hash = "sha256:bfb255c2b0400bc5b4060dda098d46cd7ddeb53b7cbac1dfa29435612cba828c"},
+    {file = "tensorflow-2.6.3-cp37-cp37m-macosx_10_11_x86_64.whl", hash = "sha256:eea2e9dab76899eb024b4ce0a366cfbc239df528f2e1a49412d995b2ee7a256e"},
+    {file = "tensorflow-2.6.3-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:70b1cd4732bb5f8d4712ac83a01bd8844e0b09b214a08cbb144f4458f96463cb"},
+    {file = "tensorflow-2.6.3-cp37-cp37m-win_amd64.whl", hash = "sha256:77ed2d597e03c86d973ad2a932ecf604220f75c60f33233c0c2d58788c5ff4a7"},
+    {file = "tensorflow-2.6.3-cp38-cp38-macosx_10_11_x86_64.whl", hash = "sha256:2c396830c0cfb18e928505eac572b2934b22eebe905349df8624988198904983"},
+    {file = "tensorflow-2.6.3-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:b64e05e070ffdb24eec4a81c38817db9eabb6bd470dc25119038fb3b3ed38935"},
+    {file = "tensorflow-2.6.3-cp38-cp38-win_amd64.whl", hash = "sha256:a39b279cf6e68cfb2a7b061d0c9380200f158c187052704274da9494ffc40bb8"},
+    {file = "tensorflow-2.6.3-cp39-cp39-macosx_10_11_x86_64.whl", hash = "sha256:746a344364e80346e190a6677cfd130216d868b31a94e0339bcb87616c67ec58"},
+    {file = "tensorflow-2.6.3-cp39-cp39-manylinux2010_x86_64.whl", hash = "sha256:1facdf8574af1fa5a50c5352975dc01b685c816955ada5afe68deb7cc647eb4a"},
+    {file = "tensorflow-2.6.3-cp39-cp39-win_amd64.whl", hash = "sha256:d4ff5a5f9fa69108f81fbd54e9a0d83db68a29043e3bd38d9f2b8f5efece6d41"},
 ]
 tensorflow-estimator = [
     {file = "tensorflow_estimator-2.6.0-py2.py3-none-any.whl", hash = "sha256:cf78528998efdb637ac0abaf525c929bf192767544eb24ae20d9266effcf5afd"},
